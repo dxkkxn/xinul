@@ -8,6 +8,7 @@ Building the full system emulator and the user mode emulator on Linux:
     apt update && apt install \
     build-essential zlib1g-dev pkg-config flex bison libglib2.0-dev binutils-dev libboost-all-dev autoconf libtool libssl-dev libpixman-1-dev libpython-dev python-pip python-capstone virtualenv
     git clone --recursive https://github.com/riscv/riscv-qemu.git
+    mkdir $HOME/bin-qemu
     cd riscv-qemu
     mkdir build
     cd build
@@ -18,3 +19,13 @@ Building the full system emulator and the user mode emulator on Linux:
 
 
 
+
+# Glossaire
+## ISA
+
+??
+
+## Spike
+
+* Spike, is the RISC-V ISA Simulator, implements a functional model of one or more RISC-V processors.
+* Source du projet sur [github riscv/riscv-isa-sim](https://github.com/riscv/riscv-isa-sim).
