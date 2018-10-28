@@ -18,7 +18,9 @@ clean:
 	rm -rf $(KERNEL_BIN) .image-built
 
 $(KERNEL_BIN):
-	touch kernel.bin
+	make -C ../examples/riscv-probe/
+	cp ../examples/riscv-probe/build/bin/rv64imac/spike/hello $(KERNEL_BIN)
+	
 
 # Lance l'OS dans un terminal et attend gdb.
 run: all
@@ -51,11 +53,10 @@ make aall:
 # Docker
 DK_IMAGE_NAME=riscv-src
 DK_DOCKERFILE_DIR=../docker/riscv-env-src/
-DK_MNT_DIR=/mnt/host
-DK_RUN_CMD=docker run -ti --rm -v ${PWD}:${DK_MNT_DIR} -w ${DK_MNT_DIR} ${DK_IMAGE_NAME}
-DK_CMD=
+DK_MNT_DIR=/mnt/oson
+DK_RUN_CMD=docker run -ti --rm -v ${PWD}/..:${DK_MNT_DIR} -w ${DK_MNT_DIR}/src ${DK_IMAGE_NAME}
 
-dk-build:.image-built
+dk-image-build:.image-built
 
 .image-built:$(DK_DOCKERFILE_DIR)/Dockerfile
 	docker image build -t ${DK_IMAGE_NAME} ${DK_DOCKERFILE_DIR}
@@ -66,6 +67,9 @@ dk-bash:.image-built
 
 dk-make::.image-built
 	${DK_RUN_CMD} make $(TARGET)
+
+dk-go:.image-built
+	${DK_RUN_CMD} make go
 
 dk-clean:
 	rm -f .image-built
