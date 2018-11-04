@@ -44,14 +44,14 @@ kill9:
 
 # Lancement de GDB
 gdb:
-	$(GDB) $(KERNEL_bin)
+	$(GDB) $(KERNEL_BIN)
 
 # make accessible
 make aall:
 	(make 2> out && echo "Built success" ) || nano out
 
 # Docker
-DK_IMAGE_NAME=riscv-src
+DK_IMAGE_NAME=raifer/risc-v
 DK_DOCKERFILE_DIR=../docker/riscv-env-src/
 DK_MNT_DIR=/mnt/oson
 DK_RUN_CMD=docker run -ti --rm -v ${PWD}/..:${DK_MNT_DIR} -w ${DK_MNT_DIR}/src ${DK_IMAGE_NAME}
