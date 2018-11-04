@@ -1,5 +1,7 @@
 FROM debian:testing
 
+MAINTAINER Mathieu Barbe <mathieu@kolabnow.com>
+
 # Set RISC-V env
 ENV RISCV=/tools
 ENV PATH=$PATH:/tools/bin/
@@ -47,8 +49,8 @@ cd / && rm -rf /riscv-src/riscv-pk
 
 # Install Qemu from RISCV-QEMU source
 RUN apt-get update && apt-get install -y git python libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev libsdl1.2-dev && \
-git clone --recurse-submodules -j8 https://github.com/qemu/qemu.git && \
-cd qemu && mkdir build && cd build && \
+git clone https://github.com/riscv/riscv-qemu/ && \
+cd riscv-qemu && mkdir build && cd build && \
 ../configure --prefix=$RISCV --target-list=riscv64-softmmu,riscv64-linux-user | tee /$(RISCV)/qemu-configure-log.txt && \ 
 make && make install && \
 apt-get clean && \
