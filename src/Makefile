@@ -16,10 +16,11 @@ CC=riscv64-unknown-elf-gcc
 GDB=riscv64-unknown-elf-gdb
 
 # Docker
-DK_IMAGE_NAME=risc-v
-DK_DOCKERFILE_DIR=../docker/riscv/
-DK_MNT_DIR=/mnt/oson
-DK_RUN_CMD=docker run -ti --rm -v ${PWD}/..:${DK_MNT_DIR} -w ${DK_MNT_DIR}/src ${DK_IMAGE_NAME}
+DK_IMAGE_NAME = risc-v
+DK_HUB_IMAGE_NAME = raifer/risc-v:latest
+DK_DOCKERFILE_DIR = ../docker/riscv/
+DK_MNT_DIR = /mnt/oson
+DK_RUN_CMD = docker run -ti --rm -v ${PWD}/..:${DK_MNT_DIR} -w ${DK_MNT_DIR}/src ${DK_IMAGE_NAME}
 
 all:$(KERNEL_BIN)
 
@@ -60,6 +61,10 @@ make aall:
 	(make 2> out && echo "Built success" ) || nano out
 
 # Target Docker
+dk-image-pull:.image-built
+	docker image pull $(DK_HUB_IMAGE_NAME)
+	touch .image-built
+
 dk-image-build:.image-built
 
 .image-built:$(DK_DOCKERFILE_DIR)/Dockerfile
