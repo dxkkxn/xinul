@@ -27,7 +27,7 @@ clean:
 	rm -rf $(KERNEL_BIN) .image-built
 
 $(KERNEL_BIN):
-	make -C ../examples/riscv-probe/
+	make -C ../examples/reduce_probe/
 	cp ../examples/riscv-probe/build/bin/rv64imac/spike/hello $(KERNEL_BIN)
 	
 
