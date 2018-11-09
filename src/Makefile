@@ -16,11 +16,11 @@ CC=riscv64-unknown-elf-gcc
 GDB=riscv64-unknown-elf-gdb
 
 # Docker
-DK_IMAGE_NAME = risc-v
-DK_HUB_IMAGE_NAME = raifer/risc-v:latest
+DK_IMAGE_NAME = raifer/risc-v
 DK_DOCKERFILE_DIR = ../docker/riscv/
 DK_MNT_DIR = /mnt/oson
-DK_RUN_CMD = docker run -ti --rm -v ${PWD}/..:${DK_MNT_DIR} -w ${DK_MNT_DIR}/src ${DK_IMAGE_NAME}
+DK_SHARE_DIR != pwd
+DK_RUN_CMD = docker run -ti --rm -v $(DK_SHARE_DIR)/:$(DK_MNT_DIR) -w $(DK_MNT_DIR) ${DK_IMAGE_NAME}
 
 all:$(KERNEL_BIN)
 
