@@ -16,16 +16,13 @@ CC=riscv64-unknown-elf-gcc
 GDB=riscv64-unknown-elf-gdb
 
 # Docker
-DK_IMAGE_NAME = raifer/risc-v
-DK_DOCKERFILE_DIR = ../docker/riscv/
-DK_MNT_DIR = /mnt/oson
-DK_SHARE_DIR != pwd
-DK_RUN_CMD = docker run -ti --rm -v $(DK_SHARE_DIR)/:$(DK_MNT_DIR) -w $(DK_MNT_DIR) ${DK_IMAGE_NAME}
+DK_MAKEFILE_DIR = ../docker/riscv/
+DK_SHARE_DIR = $(PWD)
 
 all:$(KERNEL_BIN)
 
 clean:
-	rm -rf $(KERNEL_BIN) .image-built
+	rm -rf $(KERNEL_BIN)
 
 $(KERNEL_BIN):
 	make -C ../examples/reduce_probe/
@@ -61,28 +58,22 @@ make aall:
 	(make 2> out && echo "Built success" ) || nano out
 
 # Target Docker
-dk-image-pull:.image-built
-	docker image pull $(DK_HUB_IMAGE_NAME)
-	touch .image-built
+dk-image-dl: $(DK_MAKEFILE_DIR)/Makefile
+	make -C $(DK_MAKEFILE_DIR) pull
 
-dk-image-build:.image-built
+dk-image-build: $(DK_MAKEFILE_DIR)/Makefile
+	make -C $(DK_MAKEFILE_DIR) build
 
-.image-built:$(DK_DOCKERFILE_DIR)/Dockerfile
-	docker image build -t ${DK_IMAGE_NAME} ${DK_DOCKERFILE_DIR}
-	touch .image-built
+dk-bash: $(DK_MAKEFILE_DIR)/Makefile
+	make -C $(DK_MAKEFILE_DIR) bash
 
-dk-bash:.image-built
-	${DK_RUN_CMD} /bin/bash
+dk-all: $(DK_MAKEFILE_DIR)/Makefile
+	make -C $(DK_MAKEFILE_DIR) CMD="make all" exec
 
-dk-make::.image-built
-	${DK_RUN_CMD} make $(TARGET)
+dk-go: $(DK_MAKEFILE_DIR)/Makefile
+	make -C $(DK_MAKEFILE_DIR) CMD="make go" exec
 
-dk-go:.image-built
-	${DK_RUN_CMD} make go
+dk-rm-image: $(DK_MAKEFILE_DIR)/Makefile
+	make -C $(DK_MAKEFILE_DIR) CMD="make clean" exec
 
-dk-clean:
-	rm -f .image-built
-
-dk-rm-image:dk-clean
-	docker image rm ${DK_IMAGE_NAME}; \
 

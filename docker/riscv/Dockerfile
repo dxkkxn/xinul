@@ -1,6 +1,7 @@
 FROM debian:testing
 
-MAINTAINER Mathieu Barbe <mathieu@kolabnow.com>
+LABEL maintainer="Mathieu Barbe <mathieu@kolabnow.com>"
+LABEL Description="This image is used to cross compile and run Qemu for RISC-V project"
 
 # Set RISC-V env
 ENV RISCV=/tools
@@ -55,5 +56,4 @@ cd riscv-qemu && mkdir build && cd build && \
 make && make install && \
 apt-get clean && \
 rm -rf /riscv-src 
-
 
