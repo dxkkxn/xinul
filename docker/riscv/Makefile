@@ -1,5 +1,5 @@
 
-DK_IMAGE_NAME=riscv
+DK_IMAGE_NAME=raifer/risc-v
 DK_DOCKERFILE_DIR=.
 DK_MNT_DIR=/mnt/host
 DK_RUN_CMD=docker run -ti --rm -v ${PWD}:${DK_MNT_DIR} -w ${DK_MNT_DIR} ${DK_IMAGE_NAME}
@@ -7,7 +7,12 @@ DK_RUN_CMD=docker run -ti --rm -v ${PWD}:${DK_MNT_DIR} -w ${DK_MNT_DIR} ${DK_IMA
 built:.image-built 
 
 .image-built:${DK_DOCKERFILE_DIR}/Dockerfile
-	docker image build -t ${DK_IMAGE_NAME} ${DK_DOCKERFILE_DIR}
+	docker image build -t ${DK_IMAGE_NAME} ${DK_DOCKERFILE_DIR}:lasted
+	touch .image-built
+
+dl: .image-built
+pull: .image-built
+	docker pull $(DK_IMAGE_NAME):latest
 	touch .image-built
 
 bash:.image-built
