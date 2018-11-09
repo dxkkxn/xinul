@@ -85,7 +85,7 @@ $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
 	OBJ=`$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=$(@F)` && cp "$$OBJ" $@
 
 .c.o:
-	$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS)
+	$(CC) -c $< -o $@ $(CFLAGS)
 
 .s.o:
 	$(CC) -c $< -o $@ $(CFLAGS) -Iarch/rv64/common

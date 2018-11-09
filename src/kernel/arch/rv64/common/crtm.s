@@ -26,7 +26,7 @@ _start:
     bnez    a0, park
 
     # jump to libfemto_start_main
-    j       libfemto_start_main
+    j       boot_riscv
 
     # sleeping harts mtvec calls trap_fn upon receiving IPI
 park:
