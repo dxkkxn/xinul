@@ -1,5 +1,7 @@
 
-KERNEL_BIN=kernel.bin
+KERNEL_NAME = kernel.bin
+BUILD_DIR = build
+KERNEL_BIN = $(BUILD_DIR)/$(KERNEL_NAME)
 
 # Qemu
 # Qemu environement machine : spike_v1.10
@@ -19,15 +21,17 @@ GDB=riscv64-unknown-elf-gdb
 DK_MAKEFILE_DIR = ../docker/riscv/
 DK_SHARE_DIR = $(PWD)
 
+#
+# Targets
+#
+
 all:$(KERNEL_BIN)
 
 clean:
-	rm -rf $(KERNEL_BIN)
+	rm -rf $(BUILD_DIR)
 
 $(KERNEL_BIN):
-	make -C ../examples/reduce_probe/
-	cp ../examples/riscv-probe/build/bin/rv64imac/spike/hello $(KERNEL_BIN)
-	
+	make -C kernel/ all	
 
 # Lance l'OS dans un terminal et attend gdb.
 run: all

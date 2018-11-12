@@ -4,7 +4,11 @@
 # Maintainer : Mathieu Barbe <mathieu.barbe@grenoble-inp.org>
 #
 
-KERNEL_BIN ?= kernel.bin
+KERNEL_NAME ?= kernel.bin
+BUILD_DIR ?= ../build
+OBJS_DIR = $(BUILD_DIR)/obj
+KERNEL_BIN ?= $(BUILD_DIR)/$(KERNEL_NAME)
+
 all: $(KERNEL_BIN)
 
 #
@@ -18,7 +22,6 @@ MACHINE ?= $(DEFAULT_MACHINE)
 
 ARCH_DIR = arch/$(HOSTARCH)
 MACHINE_DIR = $(ARCH_DIR)/$(MACHINE)
-BUILD_DIR ?= ../build
 
 #
 # Librairies configuration
@@ -85,7 +88,6 @@ KERNEL_OBJS = $(sort $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.s=.o))
 # KERNEL_ARCH_OBJS extrated from./arch/xxx/make.config
 OBJS = $(KERNEL_ARCH_OBJS) $(KERNEL_OBJS)
 
-
 #
 # Targets
 #
@@ -94,20 +96,21 @@ OBJS = $(KERNEL_ARCH_OBJS) $(KERNEL_OBJS)
 .SUFFIXES: .o .c .s
 
 $(KERNEL_BIN): $(OBJS) $(LD_SCRIPT) $(LIBS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -T $(LD_SCRIPT) $(OBJS) $(LIBS) -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) -T $(LD_SCRIPT) $(addprefix $(OBJS_DIR)/, $(OBJS)) $(LIBS) -o $@
 
 .c.o:
-	$(CC) -c $< -o $@ $(CFLAGS) $(addprefix -I,$(INCLUDE_DIRS))
+	mkdir -p $(OBJS_DIR)/$(dir $@)
+	$(CC) -c $< -o $(OBJS_DIR)/$@ $(CFLAGS) $(addprefix -I,$(INCLUDE_DIRS))
 
 .s.o:
-	$(CC) -c $< -o $@ $(CFLAGS) $(addprefix -I,$(INCLUDE_DIRS))
+	mkdir -p $(OBJS_DIR)/$(dir $@)
+	$(CC) -c $< -o $(OBJS_DIR)/$@ $(CFLAGS) $(addprefix -I,$(INCLUDE_DIRS))
 
 clean:
-	rm -f $(KERNEL_BIN)
-	rm -f $(OBJS) *.o */*.o */*/*.o
-	rm -f $(OBJS:.o=.d) *.d */*.d */*/*.d
+	rm -f $(BUILD_DIR)/$(KERNEL_BIN)
+	rm -f $(OBJS_DIR)/$(OBJS)
 
-
+# Todo
 #
 # To view commands use: make V=1
 #
