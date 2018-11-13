@@ -36,9 +36,12 @@ LIBS = $(BUILD_DIR)/lib/libfemto.a
 
 #
 # Import specific architecture  parameters :
-# cros-compile tools, CFlags, LDFlags and objects
 #
 
+# Import cros-compile tools, CFlags and  LDFlags
+include ../arch_config/$(HOSTARCH)/make.config
+
+# Import arch objects
 include $(ARCH_DIR)/make.config
 
 #
@@ -107,7 +110,7 @@ $(KERNEL_BIN): $(OBJS) $(LD_SCRIPT) $(LIBS)
 	$(CC) -c $< -o $(OBJS_DIR)/$@ $(CFLAGS) $(addprefix -I,$(INCLUDE_DIRS))
 
 clean:
-	rm -f $(BUILD_DIR)/$(KERNEL_BIN)
+	rm -f $(KERNEL_BIN)
 	rm -f $(OBJS_DIR)/$(OBJS)
 
 # Todo
