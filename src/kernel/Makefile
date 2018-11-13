@@ -59,7 +59,7 @@ CFLAGS += \
 	-nostdinc \
 
 # Add specific arch options (Fetched into arch/xxx/make.config)
-CFLAGS += $(KERNEL_ARCH_CFLAGS)
+CFLAGS += $(ARCH_CFLAGS)
 
 #
 # LDFLAGS
@@ -75,7 +75,7 @@ LDFLAGS = \
 	-Wl,--gc-sections \
 
 # Add specific arch LD options
-LDFLAGS += $(KERNEL_ARCH_LDFLAGS)
+LDFLAGS += $(ARCH_LDFLAGS)
 
 LD_SCRIPT ?= $(MACHINE_DIR)/default.lds
 

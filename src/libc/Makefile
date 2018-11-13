@@ -1,93 +1,103 @@
-DEFAULT_HOST!=../default-host.sh
-HOST?=DEFAULT_HOST
-HOSTARCH!=../target-triplet-to-arch.sh $(HOST)
+#
+# See LICENSE for license details.
+# 
+# Maintainer : Mathieu Barbe <mathieu.barbe@grenoble-inp.org>
+#
 
-CFLAGS?=-O2 -g
-CPPFLAGS?=
-LDFLAGS?=
-LIBS?=
+LIB_NAME ?= libc
+BUILD_DIR ?= ../build/lib
+OBJS_DIR = $(BUILD_DIR)/obj
+LIBC ?= $(BUILD_DIR)/$(LIB_NAME).a
 
-DESTDIR?=
-PREFIX?=/usr/local
-EXEC_PREFIX?=$(PREFIX)
-INCLUDEDIR?=$(PREFIX)/include
-LIBDIR?=$(EXEC_PREFIX)/lib
+all: $(LIBC)
 
-CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra
-CPPFLAGS:=$(CPPFLAGS) -D__is_libc -Iinclude
-LIBK_CFLAGS:=$(CFLAGS)
-LIBK_CPPFLAGS:=$(CPPFLAGS) -D__is_libk
+#
+# Architecture and hardware selection
+#
 
-ARCHDIR=arch/$(HOSTARCH)
+DEFAULT_HOSTARCH = rv64
+HOSTARCH ?= $(DEFAULT_HOSTARCH)
+ARCH_DIR = arch/$(HOSTARCH)
 
-include $(ARCHDIR)/make.config
+#
+# Import cros-compile tools, CFlags and  LDFlags
+#
+include ../arch_config/$(HOSTARCH)/make.config
 
-CFLAGS:=$(CFLAGS) $(ARCH_CFLAGS)
-CPPFLAGS:=$(CPPFLAGS) $(ARCH_CPPFLAGS)
-LIBK_CFLAGS:=$(LIBK_CFLAGS) $(KERNEL_ARCH_CFLAGS)
-LIBK_CPPFLAGS:=$(LIBK_CPPFLAGS) $(KERNEL_ARCH_CPPFLAGS)
+#
+# Headers and objects
+#
 
-FREEOBJS=\
-$(ARCH_FREEOBJS) \
-stdio/printf.o \
-stdio/putchar.o \
-stdio/puts.o \
-stdlib/abort.o \
-string/memcmp.o \
-string/memcpy.o \
-string/memmove.o \
-string/memset.o \
-string/strlen.o \
+INCLUDE_DIRS = include include/$(ARCH_DIR)
 
-HOSTEDOBJS=\
-$(ARCH_HOSTEDOBJS) \
+LIB_DIRS = stdin stdlib stdio string drivers $(ARCH_DIR)
+LIB_SRC = $(sort $(foreach d, $(LIB_DIRS), $(wildcard $(d)/*.c)))
+LIB_ASM = $(sort $(foreach d, $(LIB_DIRS), $(wildcard $(d)/*.s)))
+OBJS = $(LIB_SRC:.c=.o) $(LIB_ASM:.s=.o)
 
-OBJS=\
-$(FREEOBJS) \
-$(HOSTEDOBJS) \
+#
+# CFlags
+#
 
-LIBK_OBJS=$(FREEOBJS:.o=.libk.o)
+# Default optim and debug options
+CFLAGS ?= -O0 -g
 
-#BINARIES=libc.a libk.a # Not ready for libc yet.
-BINARIES=libk.a
+# common  arch options
+CFLAGS += \
+	-mcmodel=medany \
+	-ffunction-sections \
+	-fdata-sections \
+	-nostdinc \
 
-.PHONY: all clean install install-headers install-libs
-.SUFFIXES: .o .libk.o .c .S
+# Add specific arch C flags (../arch_config/xxx/make.config)
+CFLAGS += $(ARCH_CFLAGS)
 
-all: $(BINARIES)
+#
+# LDFLAGS
+#
 
-libc.a: $(OBJS)
-	$(AR) rcs $@ $(OBJS)
+# common architecture option
+LDFLAGS = \
+	-nostdlib \
+	-nostartfiles \
+	-static \
+	-lgcc \
+	-Wl,--nmagic \
+	-Wl,--gc-sections \
 
-libk.a: $(LIBK_OBJS)
-	$(AR) rcs $@ $(LIBK_OBJS)
+# Add specific arch LD options
+LDFLAGS += $(ARCH_LDFLAGS)
+
+#
+# Targets
+#
+
+.PHONY: clean
+.SUFFIXES: .o .c .s
+
+$(LIBC): $(OBJS)
+	$(AR) cr $@ $(addprefix $(OBJS_DIR)/, $(OBJS))
 
 .c.o:
-	$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS) $(CPPFLAGS)
+	mkdir -p $(OBJS_DIR)/$(dir $@)
+	$(CC) -c $< -o $(OBJS_DIR)/$@ $(CFLAGS) $(addprefix -I,$(INCLUDE_DIRS))
 
-.c.S:
-	$(CC) -MD -c $< -o $@ $(CFLAGS) $(CPPFLAGS)
-
-.c.libk.o:
-	$(CC) -MD -c $< -o $@ -std=gnu11 $(LIBK_CFLAGS) $(LIBK_CPPFLAGS)
-
-.S.libk.o:
-	$(CC) -MD -c $< -o $@ $(LIBK_CFLAGS) $(LIBK_CPPFLAGS)
+.s.o:
+	mkdir -p $(OBJS_DIR)/$(dir $@)
+	$(CC) -c $< -o $(OBJS_DIR)/$@ $(CFLAGS) $(addprefix -I,$(INCLUDE_DIRS))
 
 clean:
-	rm -f $(BINARIES) *.a
-	rm -f $(OBJS) $(LIBK_OBJS) *.o */*.o */*/*.o
-	rm -f $(OBJS:.o=.d) $(LIBK_OBJS:.o=.d) *.d */*.d */*/*.d
+	rm -f $(LIBC)
+	rm -f $(OBJS_DIR)/$(OBJS)
 
-install: install-headers install-libs
+# Todo
+#
+# To view commands use: make V=1
+#
 
-install-headers:
-	mkdir -p $(DESTDIR)$(INCLUDEDIR)
-	cp -R --preserve=timestamps include/. $(DESTDIR)$(INCLUDEDIR)/.
+ifdef V
+cmd = @mkdir -p $2 ; echo "$3"; $3
+else
+cmd = @echo "$1"; mkdir -p $2 ; $3
+endif
 
-install-libs: $(BINARIES)
-	mkdir -p $(DESTDIR)$(LIBDIR)
-	cp $(BINARIES) $(DESTDIR)$(LIBDIR)
-
--include $(OBJS:.o=.d)
--include $(LIBK_OBJS:.o=.d)

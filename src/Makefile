@@ -25,6 +25,8 @@ DK_SHARE_DIR = $(PWD)
 # Targets
 #
 
+.PHONY: clean $(KERNEL_BIN)
+
 all:$(KERNEL_BIN)
 
 clean:
