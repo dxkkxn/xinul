@@ -5,11 +5,11 @@
 #
 
 LIB_NAME ?= libc
-BUILD_DIR ?= ../build/lib
+BUILD_DIR ?= ../build/$(LIB_NAME)
 OBJS_DIR = $(BUILD_DIR)/obj
-LIBC ?= $(BUILD_DIR)/$(LIB_NAME).a
+LIB ?= $(BUILD_DIR)/$(LIB_NAME).a
 
-all: $(LIBC)
+all: $(LIB)
 
 #
 # Architecture and hardware selection
@@ -75,7 +75,7 @@ LDFLAGS += $(ARCH_LDFLAGS)
 .PHONY: clean
 .SUFFIXES: .o .c .s
 
-$(LIBC): $(OBJS)
+$(LIB): $(OBJS)
 	$(AR) cr $@ $(addprefix $(OBJS_DIR)/, $(OBJS))
 
 .c.o:
@@ -87,7 +87,7 @@ $(LIBC): $(OBJS)
 	$(CC) -c $< -o $(OBJS_DIR)/$@ $(CFLAGS) $(addprefix -I,$(INCLUDE_DIRS))
 
 clean:
-	rm -f $(LIBC)
+	rm -f $(LIB)
 	rm -f $(OBJS_DIR)/$(OBJS)
 
 # Todo

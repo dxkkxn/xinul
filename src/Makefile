@@ -1,7 +1,9 @@
 
 KERNEL_NAME = kernel.bin
+LIBC_NAME = libc
 BUILD_DIR = build
-KERNEL_BIN = $(BUILD_DIR)/$(KERNEL_NAME)
+KERNEL_BIN = $(BUILD_DIR)/kernel/$(KERNEL_NAME)
+LIBC = $(BUILD_DIR)/$(LIBC_NAME)/$(LIBC_NAME).a
 
 # Qemu
 # Qemu environement machine : spike_v1.10
@@ -25,15 +27,18 @@ DK_SHARE_DIR = $(PWD)
 # Targets
 #
 
-.PHONY: clean $(KERNEL_BIN)
+.PHONY: clean $(KERNEL_BIN) $(LIBC)
 
 all:$(KERNEL_BIN)
 
+$(KERNEL_BIN): $(LIBC)
+	make -C kernel/ all	
+
+$(LIBC):
+	make -C $(LIBC_NAME)
+
 clean:
 	rm -rf $(BUILD_DIR)
-
-$(KERNEL_BIN):
-	make -C kernel/ all	
 
 # Lance l'OS dans un terminal et attend gdb.
 run: all

@@ -5,9 +5,9 @@
 #
 
 KERNEL_NAME ?= kernel.bin
-BUILD_DIR ?= ../build
-OBJS_DIR = $(BUILD_DIR)/obj
-KERNEL_BIN ?= $(BUILD_DIR)/$(KERNEL_NAME)
+BUILD_DIR ?= ../build/
+OBJS_DIR = $(BUILD_DIR)/kernel/obj
+KERNEL_BIN ?= $(BUILD_DIR)/kernel/$(KERNEL_NAME)
 
 all: $(KERNEL_BIN)
 
@@ -27,12 +27,18 @@ MACHINE_DIR = $(ARCH_DIR)/$(MACHINE)
 # Librairies configuration
 #
 
+LIBC_NAME ?= libc
+LIBC_INCLUDE ?= ../$(LIBC_NAME)/include
+LIBC ?= $(BUILD_DIR)/$(LIBC_NAME)/$(LIBC_NAME).a
+
+LIBS = $(LIBC)
+
 INCLUDE_DIRS = \
-	../libfemto/include \
+	$(LIBC_INCLUDE) \
 	$(ARCH_DIR)/common \
 	$(MACHINE_DIR)
 
-LIBS = $(BUILD_DIR)/lib/libfemto.a
+
 
 #
 # Import specific architecture  parameters :
@@ -98,7 +104,7 @@ OBJS = $(KERNEL_ARCH_OBJS) $(KERNEL_OBJS)
 .PHONY: clean
 .SUFFIXES: .o .c .s
 
-$(KERNEL_BIN): $(OBJS) $(LD_SCRIPT) $(LIBS)
+$(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT) 
 	$(CC) $(CFLAGS) $(LDFLAGS) -T $(LD_SCRIPT) $(addprefix $(OBJS_DIR)/, $(OBJS)) $(LIBS) -o $@
 
 .c.o:
