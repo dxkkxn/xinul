@@ -34,6 +34,7 @@ LIBC ?= $(BUILD_DIR)/$(LIBC_NAME)/$(LIBC_NAME).a
 LIBS = $(LIBC)
 
 INCLUDE_DIRS = \
+	include \
 	$(LIBC_INCLUDE) \
 	$(ARCH_DIR)/common \
 	$(MACHINE_DIR)
