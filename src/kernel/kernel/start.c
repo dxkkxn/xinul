@@ -28,8 +28,7 @@ int main(int argc, char **argv)
 			i++;
 	}
 
-	// Malloc does not work.
-	//create_kernel_process(hello, "Hello", 100, 0);
+	create_kernel_process(hello, "Hello", 100, 0);
 	idle();
 
 	return 0;

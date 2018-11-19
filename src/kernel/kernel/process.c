@@ -4,7 +4,7 @@
 *  Created on 15 novembre 2018
 */
 
-#include "stdlib.h"
+#include "alloca.h"
 #include "string.h"
 #include "stdio.h"
 
@@ -24,9 +24,9 @@ static process_t process_alive = NULL;
 void init_process(void)
 {
  // init idle process
-	process_t idle = malloc(sizeof( *idle));
+	process_t idle = alloca(sizeof( *idle));
 	memset(idle, 0, sizeof(*idle));
-	idle->name = malloc(strlen("idle")+1);
+	idle->name = alloca(strlen("idle")+1);
 	strncpy(idle->name, "idle", MAX_LENGTH_process_NAME);
 	idle->pid = 0;
 	idle->priority = MAXPRIO_KERNEL-1;
@@ -57,20 +57,20 @@ process_t create_generic_process(const char *name, int priority)
 		if (pid == NBPROC) pid = 1;
 	}
  
-	process_t new = malloc(sizeof( *new));
+	process_t new = alloca(sizeof( *new));
 	if (new == NULL) return NULL;
 	memset(new, 0, sizeof( *new));
 	uint8_t name_length = strlen(name);
 	if (name_length > MAX_LENGTH_process_NAME) {
 	 name_length = MAX_LENGTH_process_NAME;
 	}
-	new->name = malloc(name_length + 1);
+	new->name = alloca(name_length + 1);
 	if (new->name == NULL) return NULL;
 	strncpy(new->name, name, name_length);
 	new->name[name_length] = 0;
 
 	// Kernel stack init
-	new->kernel_stack = malloc(STACK_SIZE);
+	new->kernel_stack = alloca(STACK_SIZE);
 	if (new->kernel_stack == NULL) return NULL;
 	new->cpu_state.SP = (uint64_t) &new->kernel_stack[STACK_SIZE-1];
  
