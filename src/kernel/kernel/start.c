@@ -24,11 +24,11 @@ int main(int argc, char **argv)
 	
 
 
-	printf("mtime=%d\n", *mtime);
 	// enable machine timer interrupt (MTIP field)
 	csr_write(mie, 0x80);
 	// enable machine interruption (MIE field)
 	csr_write(mstatus, 0x08);
+
 	*timecmp = *mtime + (10000);
 	printf("mtime=%d\n", *mtime);
 	reg = csr_read(mcycle);
