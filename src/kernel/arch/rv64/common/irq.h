@@ -43,24 +43,24 @@
 #define disable_machine_timer_irq() csr_clear(mie, MIX_MTI)
 
 // mie configuration: external interruption
-#define enable_user_timer_irq() csr_set(mie, MIX_UEI)
-#define disable_user_timer_irq() csr_clear(mie, MIX_UEI)
-#define enable_supervisor_timer_irq() csr_set(mie, MIX_SEI)
-#define disable_supervisor_timer_irq() csr_clear(mie, MIX_SEI)
-#define enable_hypervisor_timer_irq() csr_set(mie, MIX_HEI)
-#define disable_hypervisor_timer_irq() csr_clear(mie, MIX_HEI)
-#define enable_machine_timer_irq() csr_set(mie, MIX_MEI)
-#define disable_machine_timer_irq() csr_clear(mie, MIX_MEI)
+#define enable_user_external_irq() csr_set(mie, MIX_UEI)
+#define disable_user_external_irq() csr_clear(mie, MIX_UEI)
+#define enable_supervisor_external_irq() csr_set(mie, MIX_SEI)
+#define disable_supervisor_external_irq() csr_clear(mie, MIX_SEI)
+#define enable_hypervisor_external_irq() csr_set(mie, MIX_HEI)
+#define disable_hypervisor_external_irq() csr_clear(mie, MIX_HEI)
+#define enable_machine_external_irq() csr_set(mie, MIX_MEI)
+#define disable_machine_external_irq() csr_clear(mie, MIX_MEI)
 
 // mie configuration: software interruption
-#define enable_user_timer_irq() csr_set(mie, MIX_USI)
-#define disable_user_timer_irq() csr_clear(mie, MIX_USI)
-#define enable_supervisor_timer_irq() csr_set(mie, MIX_SSI)
-#define disable_supervisor_timer_irq() csr_clear(mie, MIX_SSI)
-#define enable_hypervisor_timer_irq() csr_set(mie, MIX_HSI)
-#define disable_hypervisor_timer_irq() csr_clear(mie, MIX_HSI)
-#define enable_machine_timer_irq() csr_set(mie, MIX_MSI)
-#define disable_machine_timer_irq() csr_clear(mie, MIX_MSI)
+#define enable_user_software_irq() csr_set(mie, MIX_USI)
+#define disable_user_software_irq() csr_clear(mie, MIX_USI)
+#define enable_supervisor_software_irq() csr_set(mie, MIX_SSI)
+#define disable_supervisor_software_irq() csr_clear(mie, MIX_SSI)
+#define enable_hypervisor_software_irq() csr_set(mie, MIX_HSI)
+#define disable_hypervisor_software_irq() csr_clear(mie, MIX_HSI)
+#define enable_machine_software_irq() csr_set(mie, MIX_MSI)
+#define disable_machine_software_irq() csr_clear(mie, MIX_MSI)
 
 
 #endif /* ARCH_RISCV_IRQ_H */
