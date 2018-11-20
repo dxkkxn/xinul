@@ -58,7 +58,7 @@ trap_vector:
     mv      a0, sp
     csrr    a1, mcause
     csrr    a2, mepc
-#    jal     trap_handler
+    jal     trap_handler
 
     # Restore registers.
     lxsp    ra, 0

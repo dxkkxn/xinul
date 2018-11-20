@@ -2,7 +2,7 @@
 
 #include "femto.h"
 #include "arch/riscv/encoding.h"
-#include "arch/riscv/machine.h"
+#include "machine.h"
 
 extern char _bss_end;
 extern char _memory_end;

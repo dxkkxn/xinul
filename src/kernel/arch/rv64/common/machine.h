@@ -2,12 +2,10 @@
 
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
 #include <stddef.h>
+#include <arch/riscv/encoding.h>
+#include "femto.h"
 
 void arch_setup();
 void exit(int status) __attribute__((noreturn));
@@ -37,12 +35,12 @@ void exit(int status) __attribute__((noreturn));
 
 static inline uintptr_t get_field(uintptr_t reg, uintptr_t mask)
 {
-    return ((reg & mask) / (mask & ~(mask << 1)));
+	return ((reg & mask) / (mask & ~(mask << 1)));
 }
 
 static inline uintptr_t set_field(uintptr_t reg, uintptr_t mask, uintptr_t val)
 {
-    return ((reg & ~mask) | ((val * (mask & ~(mask << 1))) & mask));
+	return ((reg & ~mask) | ((val * (mask & ~(mask << 1))) & mask));
 }
 
 static inline unsigned long rdtime() { return read_csr(time); }
@@ -55,8 +53,8 @@ static inline void wfi() { asm volatile ("wfi" ::: "memory"); }
 
 __attribute__((noreturn)) static inline void mret()
 {
-    asm volatile ("mret");
-    __builtin_unreachable();
+	asm volatile ("mret");
+	__builtin_unreachable();
 }
 
 
@@ -68,8 +66,8 @@ __attribute__((noreturn)) static inline void mret()
 
 typedef struct memory_info
 {
-    uintptr_t start;
-    uintptr_t end;
+	uintptr_t start;
+	uintptr_t end;
 } memory_info_t;
 
 
@@ -95,9 +93,9 @@ uintptr_t memory_probe_range(uintptr_t start, uintptr_t end);
 
 typedef struct pmp_info
 {
-    int width;
-    int granularity;
-    int count;
+	int width;
+	int granularity;
+	int count;
 } pmp_info_t;
 
 /*
@@ -133,7 +131,7 @@ void pmp_allow_all();
 /*
  * pmp_entry_set - set one PMP entry
  *
- * - n    : pmp entry number
+ * - n	: pmp entry number
  * - prot : protection (PMP_R | PMP_W | PMP_X)
  * - addr : start address
  * - len  : power of two length
@@ -153,10 +151,10 @@ int pmp_entry_set(unsigned n, uint8_t prot, uint64_t addr, uint64_t len);
  */
 static inline void mode_set_and_jump(unsigned mode, void (*fn)(void))
 {
-    assert(mode <= PRV_U);
-    write_csr(mstatus, set_field(read_csr(mstatus), MSTATUS_MPP, mode));
-    write_csr(mepc, fn);
-    mret();
+	assert(mode <= PRV_U);
+	write_csr(mstatus, set_field(read_csr(mstatus), MSTATUS_MPP, mode));
+	write_csr(mepc, fn);
+	mret();
 }
 
 /*
@@ -167,17 +165,13 @@ static inline void mode_set_and_jump(unsigned mode, void (*fn)(void))
  */
 static inline void mode_set_and_continue(unsigned mode)
 {
-    assert(mode <= PRV_U);
-    write_csr(mstatus, set_field(read_csr(mstatus), MSTATUS_MPP, mode));
-    asm volatile (
-        "lla t0, 1f\n"
-        "csrw mepc, t0\n"
-        "mret\n"
-        "1:"
-        ::: "t0"
-    );
+	assert(mode <= PRV_U);
+	write_csr(mstatus, set_field(read_csr(mstatus), MSTATUS_MPP, mode));
+	asm volatile (
+		"lla t0, 1f\n"
+		"csrw mepc, t0\n"
+		"mret\n"
+		"1:"
+		::: "t0"
+	);
 }
-
-#ifdef __cplusplus
-}
-#endif
