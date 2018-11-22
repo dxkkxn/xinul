@@ -4,16 +4,12 @@
 #include "arch/riscv/encoding.h"
 #include "machine.h"
 
-extern char _bss_end;
-extern char _memory_end;
-
 int main(int argc, char **argv);
 
 __attribute__((noreturn)) void boot_riscv()
 {
 	char *argv[] = { "femto", NULL };
 	arch_setup();
-	_malloc_addblock(&_bss_end, &_memory_end - &_bss_end);
 	exit(main(1, argv));
 	__builtin_unreachable();
 }

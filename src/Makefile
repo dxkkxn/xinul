@@ -10,7 +10,7 @@ LIBC = $(BUILD_DIR)/$(LIBC_NAME)/$(LIBC_NAME).a
 QEMU_MACHINE = spike_v1.10
 
 QEMU = qemu-system-riscv64
-QEMU_OPTS = -machine $(QEMU_MACHINE) -kernel $(KERNEL_BIN) -rtc base=localtime -k fr 
+QEMU_OPTS = -machine $(QEMU_MACHINE) -kernel $(KERNEL_BIN) -rtc base=localtime -k fr -m 256M
 QEMU_GDB_OPTS = -s -S
 # Pour afficher l'affichage VGA en console, marche à travers ssh
 QEMU_NO_GRAPH_OPTS = -nographic

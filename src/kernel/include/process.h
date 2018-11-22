@@ -40,7 +40,33 @@ enum state_e {
 };
 
 struct cpu_state {
-	uint64_t SP;
+	void* sp;
+	void* s0;
+	void* s1;
+	void* s2;
+	void* s3;
+	void* s4;
+	void* s5;
+	void* s6;
+	void* s7;
+	void* s8;
+	void* s9;
+	void* s10;
+	void* s11;
+	void* fs0;
+	void* fs1;
+	void* fs2;
+	void* fs3;
+	void* fs4;
+	void* fs5;
+	void* fs6;
+	void* fs7;
+	void* fs8;
+	void* fs9;
+	void* fs10;
+	void* fs11;
+	void* ra;
+	void* a0;
 };
 
 struct desc_proc {
@@ -66,29 +92,4 @@ struct desc_proc {
 void init_process();
 process_t create_kernel_process(int (*code)(void *), const char *name, int priority, void *arg);
 int getpid();
-
-/**
-void ps();
-
-int start(int (*pt_func)(void*), unsigned long ssize, int prio, const char *name, void *arg);
-int start_in_user(const char *process_name, unsigned long ssize, int prio, void *arg);
-int start_in_kernel(int (*pt_func)(void*), const char *name, int prio, void *arg);
-process_t creer_process_user(const char *code_name, const char *nom, int priority, int stack_size, void *arg);
-
-
-int waitpid(int pid, int *retvalp);
-void exit(int retval);
-int kill(int pid);
-void kill_current();
-
-char *mon_nom(void);
-uint16_t mon_pid(void);
-size_t get_nbproc();
-
-int getpid();
-int getprio(int pid);
-int chprio(int pid, int newprio);
-process_t getproc(int pid);
-process_t get_process_actif();
-*/
-
+process_t get_process(int pid);

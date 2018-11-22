@@ -4,9 +4,9 @@
 *  Created on 15 novembre 2018
 */
 
-#include "alloca.h"
 #include "string.h"
 #include "stdio.h"
+#include "stdlib.h"
 
 #include "process.h"
 
@@ -24,21 +24,20 @@ static process_t process_alive = NULL;
 void init_process(void)
 {
  // init idle process
-	process_t idle = alloca(sizeof( *idle));
+	process_t idle = malloc(sizeof( *idle));
 	memset(idle, 0, sizeof(*idle));
-	idle->name = alloca(strlen("idle")+1);
+	idle->name = malloc(strlen("idle")+1);
 	strncpy(idle->name, "idle", MAX_LENGTH_process_NAME);
 	idle->pid = 0;
 	idle->priority = MAXPRIO_KERNEL-1;
 	idle->state = RUN;
 	table_process[0] = idle;
-	
 	process_alive = idle;
 	nbproc = 1;
 }
 
 
-void proc_exit()
+void process_exit()
 {
  printf("handler exit todo\n");
 }
@@ -57,22 +56,22 @@ process_t create_generic_process(const char *name, int priority)
 		if (pid == NBPROC) pid = 1;
 	}
  
-	process_t new = alloca(sizeof( *new));
+	process_t new = malloc(sizeof( *new));
 	if (new == NULL) return NULL;
 	memset(new, 0, sizeof( *new));
 	uint8_t name_length = strlen(name);
 	if (name_length > MAX_LENGTH_process_NAME) {
 	 name_length = MAX_LENGTH_process_NAME;
 	}
-	new->name = alloca(name_length + 1);
+	new->name = malloc(name_length + 1);
 	if (new->name == NULL) return NULL;
 	strncpy(new->name, name, name_length);
 	new->name[name_length] = 0;
 
 	// Kernel stack init
-	new->kernel_stack = alloca(STACK_SIZE);
+	new->kernel_stack = malloc(STACK_SIZE);
 	if (new->kernel_stack == NULL) return NULL;
-	new->cpu_state.SP = (uint64_t) &new->kernel_stack[STACK_SIZE-1];
+	new->cpu_state.sp = (void*) &new->kernel_stack[STACK_SIZE-1];
  
 	new->pid = pid;
 	new->priority = priority;
@@ -110,18 +109,19 @@ process_t create_kernel_process(int (*code)(void *), const char *name, int prior
  
  process_t new = create_generic_process(name, priority);
 	if (new == NULL) return NULL;
-	// Enregistrement du pointeur de pile après remplissage manuel
-	new->cpu_state.SP = (uint64_t) &new->kernel_stack[STACK_SIZE-3];
-	// passage arg sur la pile
-	new->kernel_stack[STACK_SIZE-1] = (uint64_t) arg;
-	// On fait poiter le haut de la pile vers la fonction qui gère la fin des process.
-	new->kernel_stack[STACK_SIZE-2] = (uint64_t) proc_exit;
-	// On fait pointer le nom de la fonction à exécuter
-	new->kernel_stack[STACK_SIZE-3] = (uint64_t)code;
+	new->cpu_state.ra = (void*) code;
+	new->cpu_state.a0 = arg;
 	return new;
 }
 
 int getpid()
 {
  return process_alive->pid;
+}
+
+process_t get_process(int pid)
+{
+ if (pid<0 || pid>=NBPROC )
+  return NULL;
+ return table_process[pid];
 }

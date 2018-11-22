@@ -27,11 +27,7 @@ CC_rv64imac        = $(CROSS_COMPILE)gcc
 CFLAGS_rv64imac    = -g -O0 -march=rv64imac -mabi=lp64  -Ienv/common/rv64
 LDFLAGS_rv64imac   =
 
-targets            = rv64imac:default \
-                     rv64imac:spike \
-                     rv64imac:virt \
-                     rv64imac:qemu-sifive_e \
-                     rv64imac:qemu-sifive_u
+targets            = rv64imac:spike
 
 #
 # make rules
