@@ -17,8 +17,16 @@ void idle()
 	ctx_sw(&idle->cpu_state, &hello->cpu_state);
 	printf("Encore une fois dans le idle\n");
 	ctx_sw(&idle->cpu_state, &hello->cpu_state);
+	
 	printf("On entre dans la boucle infinie du idle\n");
-	while(1);
+	unsigned int reg, i;
+	i=0;
+	while(i < 10) {
+		printf("timer interrupt n°%d\n", i);
+		__asm__("wfi");
+		i++;
+	}
+	printf("On sort de la boucle infinie pour éviter de faire un make kill\n");
 }
 
 int main(int argc, char **argv)
@@ -27,16 +35,7 @@ int main(int argc, char **argv)
 	init_process();
 	init_machine_clock();
 	
-	unsigned int reg, i;
-
-	i=0;
-	while(1) {
-			printf("timer interrupt n°%d\n\n", i);
-			__asm__("wfi");
-			i++;
-	}
-
-	create_kernel_process(hello, "Hello", 100, 42);
+	create_kernel_process(hello, "Hello", 100, (void*) 42);
 	idle();
 
 	return 0;
