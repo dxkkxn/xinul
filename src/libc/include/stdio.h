@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdarg.h>
 #include <stddef.h>
 
@@ -15,6 +11,4 @@ int snprintf(char *, size_t, const char *, ...);
 int vprintf(const char *, va_list);
 int vsnprintf(char *, size_t, const char *, va_list);
 
-#ifdef __cplusplus
-}
-#endif
+#define fprintf(f, ...) printf(__VA_ARGS__)
