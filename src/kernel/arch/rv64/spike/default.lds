@@ -45,8 +45,10 @@ SECTIONS
     PROVIDE(_bss_start = .);
     *(.sbss .sbss.*) *(.bss .bss.*)
     PROVIDE(_bss_end = .);
+    PROVIDE(_heap_start = .);
   } >ram AT>ram :bss
 
   PROVIDE(_memory_start = ORIGIN(ram));
   PROVIDE(_memory_end = ORIGIN(ram) + LENGTH(ram));
+  PROVIDE(_heap_end = _memory_end);
 }
