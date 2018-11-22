@@ -1,7 +1,8 @@
 // See LICENSE for license details.
 
 #include <stdio.h>
-#include <alloca.h>
+
+#define alloca(sz) __builtin_alloca(sz)
 
 int vprintf(const char* s, va_list vl)
 {
