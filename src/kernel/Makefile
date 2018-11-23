@@ -5,8 +5,8 @@
 #
 
 KERNEL_NAME ?= kernel.bin
-BUILD_DIR ?= ../build/
-OBJS_DIR = $(BUILD_DIR)/kernel/obj
+BUILD_DIR ?= ../build
+OBJ_DIR = $(BUILD_DIR)/kernel/obj
 KERNEL_BIN ?= $(BUILD_DIR)/kernel/$(KERNEL_NAME)
 
 all: $(KERNEL_BIN)
@@ -95,30 +95,29 @@ KERNEL_SRC = $(wildcard kernel/*.c)
 KERNEL_ASM = $(wildcard kernel/*.s)
 KERNEL_OBJS = $(sort $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.s=.o))
 
-# KERNEL_ARCH_OBJS extrated from./arch/xxx/make.config
-OBJS = $(KERNEL_ARCH_OBJS) $(KERNEL_OBJS)
+OBJS = $(KERNEL_ARCH_OBJS) $(KERNEL_OBJS) # KERNEL_ARCH_OBJS extrated from./arch/xxx/make.config
+OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 
 #
 # Targets
 #
 
 .PHONY: clean
-.SUFFIXES: .o .c .s
 
-$(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT) 
-	$(CC) $(CFLAGS) $(LDFLAGS) -T $(LD_SCRIPT) $(addprefix $(OBJS_DIR)/, $(OBJS)) $(LIBS) -o $@
+$(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT)
+	$(CC) $(CFLAGS) $(LDFLAGS) -T $(LD_SCRIPT) $(OBJS) $(LIBS) -o $@
 
-.c.o:
-	mkdir -p $(OBJS_DIR)/$(dir $@)
-	$(CC) -c $< -o $(OBJS_DIR)/$@ $(CFLAGS) $(addprefix -I,$(INCLUDE_DIRS))
+$(OBJ_DIR)/%.o: %.s
+	mkdir -p $(dir $@)
+	$(CC) -c $< -o $@ $(CFLAGS) $(addprefix -I, $(INCLUDE_DIRS))
 
-.s.o:
-	mkdir -p $(OBJS_DIR)/$(dir $@)
-	$(CC) -c $< -o $(OBJS_DIR)/$@ $(CFLAGS) $(addprefix -I,$(INCLUDE_DIRS))
+$(OBJ_DIR)/%.o: %.c
+	mkdir -p $(dir $@)
+	$(CC) -c $< -o $@ $(CFLAGS) $(addprefix -I, $(INCLUDE_DIRS))
 
 clean:
 	rm -f $(KERNEL_BIN)
-	rm -f $(OBJS_DIR)/$(OBJS)
+	rm -f $(OBJ_DIR)
 
 # Todo
 #
