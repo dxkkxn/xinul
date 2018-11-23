@@ -1,6 +1,7 @@
 // See LICENSE for license details.
 
-#include "femto.h"
+#include "device.h"
+#include "stddef.h"
 
 void register_console(console_device_t *dev)
 {
