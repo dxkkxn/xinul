@@ -84,7 +84,7 @@ $(OBJ_DIR)/%.o: %.c
 
 clean:
 	rm -f $(LIB)
-	rm -f $(OBJS)
+	rm -rf $(OBJ_DIR)
 
 # Todo
 #
