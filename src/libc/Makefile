@@ -6,7 +6,7 @@
 
 LIB_NAME ?= libc
 BUILD_DIR ?= ../build/$(LIB_NAME)
-OBJS_DIR = $(BUILD_DIR)/obj
+OBJ_DIR = $(BUILD_DIR)/obj
 LIB ?= $(BUILD_DIR)/$(LIB_NAME).a
 
 all: $(LIB)
@@ -34,6 +34,7 @@ LIB_DIRS = stdin stdlib stdio string drivers $(ARCH_DIR)
 LIB_SRC = $(sort $(foreach d, $(LIB_DIRS), $(wildcard $(d)/*.c)))
 LIB_ASM = $(sort $(foreach d, $(LIB_DIRS), $(wildcard $(d)/*.s)))
 OBJS = $(LIB_SRC:.c=.o) $(LIB_ASM:.s=.o)
+OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 
 #
 # CFlags
@@ -73,22 +74,17 @@ LDFLAGS += $(ARCH_LDFLAGS)
 #
 
 .PHONY: clean
-.SUFFIXES: .o .c .s
 
 $(LIB): $(OBJS)
-	$(AR) cr $@ $(addprefix $(OBJS_DIR)/, $(OBJS))
+	$(AR) cr $@ $(OBJS)
 
-.c.o:
-	mkdir -p $(OBJS_DIR)/$(dir $@)
-	$(CC) -c $< -o $(OBJS_DIR)/$@ $(CFLAGS) $(addprefix -I,$(INCLUDE_DIRS))
-
-.s.o:
-	mkdir -p $(OBJS_DIR)/$(dir $@)
-	$(CC) -c $< -o $(OBJS_DIR)/$@ $(CFLAGS) $(addprefix -I,$(INCLUDE_DIRS))
+$(OBJ_DIR)/%.o: %.c
+	mkdir -p $(dir $@)
+	$(CC) -c -o $@ $< $(CFLAGS) $(addprefix -I, $(INCLUDE_DIRS))
 
 clean:
 	rm -f $(LIB)
-	rm -f $(OBJS_DIR)/$(OBJS)
+	rm -f $(OBJS)
 
 # Todo
 #
