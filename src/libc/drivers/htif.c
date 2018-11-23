@@ -2,7 +2,9 @@
 
 #ifdef __riscv
 
-#include "femto.h"
+#include "stddef.h"
+#include "stdint.h"
+#include "device.h"
 #include "arch/riscv/atomic.h"
 
 volatile uint64_t tohost __attribute__((section(".htif")));

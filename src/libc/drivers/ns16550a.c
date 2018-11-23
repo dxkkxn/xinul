@@ -1,6 +1,8 @@
 // See LICENSE for license details.
 
-#include "femto.h"
+#include "stdint.h"
+#include "device.h"
+#include "auxval.h"
 
 enum {
     UART_RBR      = 0x00,  /* Receive Buffer Register */

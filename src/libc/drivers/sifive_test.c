@@ -1,6 +1,8 @@
 // See LICENSE for license details.
 
-#include "femto.h"
+#include "device.h"
+#include "stdint.h"
+#include "auxval.h"
 
 enum {
 	SIFIVE_TEST_FAIL = 0x3333,

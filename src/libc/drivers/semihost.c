@@ -2,7 +2,8 @@
 
 #ifdef __riscv
 
-#include "femto.h"
+#include "device.h"
+#include "stddef.h"
 
 enum {
     SBI_CONSOLE_PUTCHAR = 1,

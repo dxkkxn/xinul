@@ -1,6 +1,8 @@
 // See LICENSE for license details.
 
-#include "femto.h"
+#include "stdint.h"
+#include "auxval.h"
+#include "device.h"
 
 enum {
     /* UART Registers */
