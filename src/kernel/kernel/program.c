@@ -14,6 +14,5 @@ process_t hello = get_process(1);
 	printf("Hello words! My pid is %d and my arg is %d\n", getpid(), arg);
 	ctx_sw(&hello->cpu_state, &idle->cpu_state);
 	printf("Je suis à la fin du programme hello\n");
-	ctx_sw(&hello->cpu_state, &idle->cpu_state);
 	return 0;
 }
