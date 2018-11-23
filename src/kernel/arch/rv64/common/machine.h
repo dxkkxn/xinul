@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <arch/riscv/encoding.h>
-#include "femto.h"
 
 void arch_setup();
 void exit(int status) __attribute__((noreturn));

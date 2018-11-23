@@ -1,6 +1,5 @@
 // See LICENSE for license details.
 
-#include "femto.h"
 #include "arch/riscv/encoding.h"
 #include "machine.h"
 
