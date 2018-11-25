@@ -1,6 +1,8 @@
 
 
 #include "stdio.h"
+#include "stddef.h"
+#include "stdlib.h"
 
 #include "process.h"
 #include "program.h"
@@ -31,11 +33,15 @@ void idle()
 
 int main(int argc, char **argv)
 {
-	printf("OSON Initialization.\n");
+	printf("\n= OSON Initialization =\n");
 	init_process();
 	init_machine_clock();
 	
-	create_kernel_process(hello, "Hello", 100, (void*) 42);
+	if ( (create_kernel_process(hello, "Hello", 100, (void*) 42)) != NULL)
+	{
+		printf("Process error: unable to create process hello. exit.\n");
+		exit(-1);
+	}
 	idle();
 
 	return 0;
