@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 	init_process();
 	init_machine_clock();
 	
-	if ( (create_kernel_process(hello, "Hello", 100, (void*) 42)) != NULL)
+	if ( (create_kernel_process(hello, "Hello", 100, (void*) 42)) == NULL)
 	{
 		printf("Process error: unable to create process hello. exit.\n");
 		exit(-1);
