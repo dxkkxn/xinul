@@ -4,6 +4,7 @@
 # Maintainer : Mathieu Barbe <mathieu.barbe@grenoble-inp.org>
 #
 
+SHELL = /bin/sh
 KERNEL_NAME ?= kernel.bin
 BUILD_DIR ?= ../build
 OBJ_DIR = $(BUILD_DIR)/kernel/obj
@@ -29,7 +30,7 @@ MACHINE_DIR = $(ARCH_DIR)/$(MACHINE)
 
 LIBC_NAME ?= libc
 LIBC_INCLUDE ?= ../$(LIBC_NAME)/include
-LIBC ?= $(BUILD_DIR)/$(LIBC_NAME)/$(LIBC_NAME).a
+LIBC ?= $(BUILD_DIR)/$(LIBC_NAME).a
 
 LIBS = $(LIBC)
 
@@ -102,6 +103,9 @@ OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 # Targets
 #
 
+# Remove every implicite rules
+.suffixe:
+
 .PHONY: clean
 
 $(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT)
@@ -117,7 +121,7 @@ $(OBJ_DIR)/%.o: %.c
 
 clean:
 	rm -f $(KERNEL_BIN)
-	rm -f $(OBJ_DIR)
+	rm -rf $(OBJ_DIR)
 
 # Todo
 #
