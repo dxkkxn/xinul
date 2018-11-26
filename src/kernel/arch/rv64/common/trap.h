@@ -7,21 +7,21 @@ const char * riscv_excp_names[16];
 const char * riscv_intr_names[16];
 
 enum exception_cause_flag {
-	cause_misaligned_fetch		= 0,
-	cause_fault_fetch			= 1,
-	cause_illegal_instruction	= 2,
-	cause_breakpoint			= 3,
-	cause_misaligned_load		= 4,
-	cause_fault_load			= 5,
-	cause_misaligned_store		= 6,
-	cause_fault_store			= 7,
-	cause_user_ecall			= 8,
-	cause_supervisor_ecall		= 9,
-	cause_hypervisor_ecall		= 10,
-	cause_machine_ecall			= 11,
-	cause_exec_page_fault		= 12,
-	cause_load_page_fault		= 13,
-	cause_store_page_fault		= 15
+	cause_instruction_address_misaligned	= 0,
+	cause_instruction_access_fault			= 1,
+	cause_illegal_instruction				= 2,
+	cause_breakpoint						= 3,
+	cause_load_address_misaligned			= 4,
+	cause_load_access_fault					= 5,
+	cause_store_address_misaligned			= 6,
+	cause_store_access_fault				= 7,
+	cause_user_ecall						= 8,
+	cause_supervisor_ecall					= 9,
+	cause_hypervisor_ecall					= 10,
+	cause_machine_ecall						= 11,
+	cause_instruction_page_fault			= 12,
+	cause_load_page_fault					= 13,
+	cause_store_page_fault					= 15
 };
 
 enum interruption_cause_flag {
