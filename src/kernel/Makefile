@@ -58,6 +58,7 @@ CFLAGS += \
 	-ffunction-sections \
 	-fdata-sections \
 	-nostdinc \
+	$(addprefix -I, $(INCLUDE_DIRS)) \
 
 # Add specific arch options (Fetched into arch/xxx/make.config)
 CFLAGS += $(ARCH_CFLAGS)
@@ -84,13 +85,14 @@ LD_SCRIPT ?= boot/$(MACHINE)/default.lds
 # Kernel sources files
 #
 
-# Fetch boot objects in BOOT_OBJS
+# Fetch boot objects from make.config to BOOT_OBJS
 include boot/make.config
 
 KERNEL_SRC = $(wildcard *.c)
 KERNEL_ASM = $(wildcard *.s)
 OBJS = $(sort $(BOOT_OBJS) $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.s=.o))
 OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
+DEPFILES = $(OBJS:.o=.d)
 
 #
 # Targets
@@ -101,6 +103,11 @@ OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 
 .PHONY: clean
 
+
+# Include object dependencies generated previously by gcc
+-include $(DEPFILES)
+
+
 test:
 	echo $(OBJS)
 
@@ -110,11 +117,12 @@ $(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT)
 
 $(OBJ_DIR)/%.o: %.s Makefile
 	$(call cmd, CC $< -> $@, $(dir $@), \
-	$(CC) -c $< -o $@ $(CFLAGS) $(addprefix -I, $(INCLUDE_DIRS)))
+	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
+
 
 $(OBJ_DIR)/%.o: %.c Makefile
 	$(call cmd, CC $< -> $@, $(dir $@), \
-	$(CC) -c $< -o $@ $(CFLAGS) $(addprefix -I, $(INCLUDE_DIRS)))
+	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
 
 clean:
 	rm -f $(KERNEL_BIN)
