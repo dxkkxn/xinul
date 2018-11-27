@@ -7,8 +7,8 @@
 SHELL = /bin/sh
 KERNEL_NAME ?= kernel.bin
 BUILD_DIR ?= ../build
-OBJ_DIR = $(BUILD_DIR)/kernel/obj
-KERNEL_BIN ?= $(BUILD_DIR)/kernel/$(KERNEL_NAME)
+OBJ_DIR = $(BUILD_DIR)/kernel_objs
+KERNEL_BIN ?= $(BUILD_DIR)/$(KERNEL_NAME)
 
 all: $(KERNEL_BIN)
 
@@ -21,9 +21,6 @@ HOSTARCH ?= $(DEFAULT_HOSTARCH)
 DEFAULT_MACHINE = spike
 MACHINE ?= $(DEFAULT_MACHINE)
 
-ARCH_DIR = arch/$(HOSTARCH)
-MACHINE_DIR = $(ARCH_DIR)/$(MACHINE)
-
 #
 # Librairies configuration
 #
@@ -35,11 +32,10 @@ LIBC ?= $(BUILD_DIR)/$(LIBC_NAME).a
 LIBS = $(LIBC)
 
 INCLUDE_DIRS = \
-	include \
+	. \
 	$(LIBC_INCLUDE) \
-	$(ARCH_DIR)/common \
-	$(MACHINE_DIR)
-
+	boot/common \
+	boot/$(MACHINE)
 
 
 #
@@ -48,9 +44,6 @@ INCLUDE_DIRS = \
 
 # Import cros-compile tools, CFlags and  LDFlags
 include ../arch_config/$(HOSTARCH)/make.config
-
-# Import arch objects
-include $(ARCH_DIR)/make.config
 
 #
 # CFlags
@@ -85,18 +78,18 @@ LDFLAGS = \
 # Add specific arch LD options
 LDFLAGS += $(ARCH_LDFLAGS)
 
-LD_SCRIPT ?= $(MACHINE_DIR)/default.lds
+LD_SCRIPT ?= boot/$(MACHINE)/default.lds
 
 #
 # Kernel sources files
 #
 
-# ./kernel/ *.c & *.s
-KERNEL_SRC = $(wildcard kernel/*.c)
-KERNEL_ASM = $(wildcard kernel/*.s)
-KERNEL_OBJS = $(sort $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.s=.o))
+# Fetch boot objects in BOOT_OBJS
+include boot/make.config
 
-OBJS = $(KERNEL_ARCH_OBJS) $(KERNEL_OBJS) # KERNEL_ARCH_OBJS extrated from./arch/xxx/make.config
+KERNEL_SRC = $(wildcard *.c)
+KERNEL_ASM = $(wildcard *.s)
+OBJS = $(sort $(BOOT_OBJS) $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.s=.o))
 OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 
 #
@@ -108,22 +101,25 @@ OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 
 .PHONY: clean
 
+test:
+	echo $(OBJS)
+
 $(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT)
-	$(CC) $(CFLAGS) $(LDFLAGS) -T $(LD_SCRIPT) $(OBJS) $(LIBS) -o $@
+	$(call cmd, LD $@, $(dir $@), \
+	$(CC) $(CFLAGS) $(LDFLAGS) -T $(LD_SCRIPT) $(OBJS) $(LIBS) -o $@)
 
-$(OBJ_DIR)/%.o: %.s
-	mkdir -p $(dir $@)
-	$(CC) -c $< -o $@ $(CFLAGS) $(addprefix -I, $(INCLUDE_DIRS))
+$(OBJ_DIR)/%.o: %.s Makefile
+	$(call cmd, CC $< -> $@, $(dir $@), \
+	$(CC) -c $< -o $@ $(CFLAGS) $(addprefix -I, $(INCLUDE_DIRS)))
 
-$(OBJ_DIR)/%.o: %.c
-	mkdir -p $(dir $@)
-	$(CC) -c $< -o $@ $(CFLAGS) $(addprefix -I, $(INCLUDE_DIRS))
+$(OBJ_DIR)/%.o: %.c Makefile
+	$(call cmd, CC $< -> $@, $(dir $@), \
+	$(CC) -c $< -o $@ $(CFLAGS) $(addprefix -I, $(INCLUDE_DIRS)))
 
 clean:
 	rm -f $(KERNEL_BIN)
 	rm -rf $(OBJ_DIR)
 
-# Todo
 #
 # To view commands use: make V=1
 #
@@ -133,4 +129,3 @@ cmd = @mkdir -p $2 ; echo "$3"; $3
 else
 cmd = @echo "$1"; mkdir -p $2 ; $3
 endif
-

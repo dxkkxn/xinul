@@ -2,7 +2,7 @@
 KERNEL_NAME = kernel.bin
 LIBC_NAME = libc
 BUILD_DIR = build
-KERNEL_BIN = $(BUILD_DIR)/kernel/$(KERNEL_NAME)
+KERNEL_BIN = $(BUILD_DIR)/$(KERNEL_NAME)
 LIBC = $(BUILD_DIR)/$(LIBC_NAME)/$(LIBC_NAME).a
 
 # Qemu
