@@ -42,8 +42,8 @@ INCLUDE_DIRS = \
 # Import specific architecture  parameters :
 #
 
-# Import cros-compile tools, CFlags and  LDFlags
-include ../arch_config/$(HOSTARCH)/make.config
+# Import common cros-compile tools, CFlags and  LDFlags
+include ../riscv_flags.config
 
 #
 # CFlags
@@ -52,32 +52,21 @@ include ../arch_config/$(HOSTARCH)/make.config
 # Default optim and debug options
 CFLAGS ?= -O0 -g
 
-# common  arch options
-CFLAGS += \
-	-mcmodel=medany \
-	-ffunction-sections \
-	-fdata-sections \
-	-nostdinc \
-	$(addprefix -I, $(INCLUDE_DIRS)) \
-
-# Add specific arch options (Fetched into arch/xxx/make.config)
+# common architecture option fetched from ../riscv_flags.config
 CFLAGS += $(ARCH_CFLAGS)
+
+# Add specific kernel options
+CFLAGS += $(addprefix -I, $(INCLUDE_DIRS)) \
 
 #
 # LDFLAGS
 #
 
-# common architecture option
-LDFLAGS = \
-	-nostdlib \
-	-nostartfiles \
-	-static \
-	-lgcc \
-	-Wl,--nmagic \
-	-Wl,--gc-sections \
+# common architecture option fetched from ../riscv_flags.config
+LDFLAGS = $(ARCH_LDFLAGS)
 
-# Add specific arch LD options
-LDFLAGS += $(ARCH_LDFLAGS)
+# Add specific kernel LD options
+LDFLAGS += 
 
 LD_SCRIPT ?= boot/$(MACHINE)/default.lds
 
@@ -88,8 +77,9 @@ LD_SCRIPT ?= boot/$(MACHINE)/default.lds
 # Fetch boot objects from make.config to BOOT_OBJS
 include boot/make.config
 
-KERNEL_SRC = $(wildcard *.c)
-KERNEL_ASM = $(wildcard *.s)
+SRC_DIRS = .
+KERNEL_SRC = $(foreach d, $(SRC_DIRS), $(wildcard $(d)/*.c))
+KERNEL_ASM = $(foreach d, $(SRC_DIRS), $(wildcard $(d)/*.s))
 OBJS = $(sort $(BOOT_OBJS) $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.s=.o))
 OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 DEPFILES = $(OBJS:.o=.d)

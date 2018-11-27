@@ -13,29 +13,20 @@ LIB ?= $(BUILD_DIR)/$(LIB_NAME).a
 all: $(LIB)
 
 #
-# Architecture and hardware selection
+# Import common cros-compile properties : tools, CFlags and  LDFlags
 #
 
-DEFAULT_HOSTARCH = rv64
-HOSTARCH ?= $(DEFAULT_HOSTARCH)
-ARCH_DIR = arch/$(HOSTARCH)
+include ../riscv_flags.config
 
 #
-# Import cros-compile properties : tools, CFlags and  LDFlags
+# Include headers directories
 #
 
-include ../arch_config/$(HOSTARCH)/make.config
+INCLUDE_DIRS = include include/arch/riscv
 
-#
-# Headers and objects
-#
-
-INCLUDE_DIRS = include include/$(ARCH_DIR)
-
-LIB_DIRS = stdin stdlib stdio string drivers $(ARCH_DIR)
-LIB_SRC = $(sort $(foreach d, $(LIB_DIRS), $(wildcard $(d)/*.c)))
-LIB_ASM = $(sort $(foreach d, $(LIB_DIRS), $(wildcard $(d)/*.s)))
-OBJS = $(LIB_SRC:.c=.o) $(LIB_ASM:.s=.o)
+LIB_DIRS = stdin stdlib stdio string drivers arch/rv64
+LIB_SRC = $(foreach d, $(LIB_DIRS), $(wildcard $(d)/*.c))
+OBJS = $(sort $(LIB_SRC:.c=.o))
 OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 DEPFILES = $(OBJS:.o=.d)
 
@@ -46,34 +37,21 @@ DEPFILES = $(OBJS:.o=.d)
 # Default optim and debug options
 CFLAGS ?= -O0 -g
 
-# common  arch options
-CFLAGS += \
-	-mcmodel=medany \
-	-ffunction-sections \
-	-fdata-sections \
-	-nostdinc \
-
-# Add specific arch C flags (../arch_config/xxx/make.config)
+# common  arch options fetched from ../riscv_flags.config
 CFLAGS += $(ARCH_CFLAGS)
 
-# Includes directories
+# Add specific libc C flags
 CFLAGS += $(addprefix -I, $(INCLUDE_DIRS))
 
 #
 # LDFLAGS
 #
 
-# common architecture option
-LDFLAGS = \
-	-nostdlib \
-	-nostartfiles \
-	-static \
-	-lgcc \
-	-Wl,--nmagic \
-	-Wl,--gc-sections \
+# common architecture options fetched from ../riscv_flags.config
+LDFLAGS = $(ARCH_LDFLAGS)
 
-# Add specific arch LD options
-LDFLAGS += $(ARCH_LDFLAGS)
+# Add specific libc LD options
+LDFLAGS += 
 
 #
 # Targets
@@ -92,9 +70,8 @@ $(LIB): $(OBJS)
 	$(AR) cr $@ $(OBJS))
 
 $(OBJ_DIR)/%.o: %.c Makefile
-	$(call cmd,CC $<, $(dir $@), \
+	$(call cmd,CC $< -> $@, $(dir $@), \
 	$(CC) -c -o $@ $< -MMD -MP $(CFLAGS))
-
 
 clean:
 	rm -f $(LIB)
