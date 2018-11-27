@@ -2,9 +2,6 @@
 
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct console_device {
     void (*init)();
@@ -34,6 +31,3 @@ extern poweroff_device_t poweroff_htif;
 extern poweroff_device_t poweroff_sifive_test;
 extern poweroff_device_t poweroff_semihost;
 
-#ifdef __cplusplus
-}
-#endif
