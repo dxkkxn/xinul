@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <arch/riscv/encoding.h>
+#include <stdio.h>
 
 void arch_setup();
 void exit(int status) __attribute__((noreturn));
