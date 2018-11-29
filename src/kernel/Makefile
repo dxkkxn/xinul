@@ -16,8 +16,6 @@ all: $(KERNEL_BIN)
 # Architecture and hardware selection
 #
 
-DEFAULT_HOSTARCH = rv64
-HOSTARCH ?= $(DEFAULT_HOSTARCH)
 DEFAULT_MACHINE = spike
 MACHINE ?= $(DEFAULT_MACHINE)
 
@@ -32,17 +30,16 @@ LIBC ?= $(BUILD_DIR)/$(LIBC_NAME).a
 LIBS = $(LIBC)
 
 INCLUDE_DIRS = \
-	. \
 	$(LIBC_INCLUDE) \
+	include \
+	asm_include \
 	boot/common \
-	boot/$(MACHINE)
 
 
 #
 # Import specific architecture  parameters :
 #
 
-# Import common cros-compile tools, CFlags and  LDFlags
 include ../riscv_flags.config
 
 #
@@ -74,15 +71,19 @@ LD_SCRIPT ?= boot/$(MACHINE)/default.lds
 # Kernel sources files
 #
 
-# Fetch boot objects from make.config to BOOT_OBJS
-include boot/make.config
+SRC_DIRS = \
+. \
+boot/common \
+boot/$(MACHINE) \
 
-SRC_DIRS = .
 KERNEL_SRC = $(foreach d, $(SRC_DIRS), $(wildcard $(d)/*.c))
 KERNEL_ASM = $(foreach d, $(SRC_DIRS), $(wildcard $(d)/*.s))
-OBJS = $(sort $(BOOT_OBJS) $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.s=.o))
+OBJS = $(sort $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.s=.o))
 OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 DEPFILES = $(OBJS:.o=.d)
+
+# Import .s dependencies (-mdp does not work with .s files)
+include boot/make.config
 
 #
 # Targets
@@ -93,13 +94,9 @@ DEPFILES = $(OBJS:.o=.d)
 
 .PHONY: clean
 
-
 # Include object dependencies generated previously by gcc
 -include $(DEPFILES)
 
-
-test:
-	echo $(OBJS)
 
 $(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT)
 	$(call cmd, LD $@, $(dir $@), \

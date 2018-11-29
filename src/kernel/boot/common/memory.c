@@ -1,8 +1,7 @@
 // See LICENSE for license details.
 
-#include "femto.h"
-#include "arch/riscv/trap.h"
-#include "arch/riscv/encoding.h"
+#include "trap.h"
+#include "encoding.h"
 #include "machine.h"
 
 extern char _memory_start;

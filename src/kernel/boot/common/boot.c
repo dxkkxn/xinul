@@ -1,6 +1,6 @@
 // See LICENSE for license details.
 
-#include "arch/riscv/encoding.h"
+#include "encoding.h"
 #include "machine.h"
 #include "csr.h"
 
