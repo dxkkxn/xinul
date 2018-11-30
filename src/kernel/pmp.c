@@ -1,9 +1,8 @@
 // See LICENSE for license details.
 
-#include "femto.h"
 #include "csr.h"
-#include "arch/riscv/trap.h"
-#include "arch/riscv/encoding.h"
+#include "trap.h"
+#include "encoding.h"
 #include "machine.h"
 
 static pmp_info_t pmp_info = {
