@@ -72,18 +72,16 @@ LD_SCRIPT ?= boot/$(MACHINE)/default.lds
 #
 
 SRC_DIRS = \
-. \
-boot/common \
-boot/$(MACHINE) \
+	. \
+	asm_src \
 
 KERNEL_SRC = $(foreach d, $(SRC_DIRS), $(wildcard $(d)/*.c))
 KERNEL_ASM = $(foreach d, $(SRC_DIRS), $(wildcard $(d)/*.s))
 OBJS = $(sort $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.s=.o))
+include boot/make.config # Fetch BOOT_OBJS and them dependencies.
+OBJS += $(BOOT_OBJS)
 OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 DEPFILES = $(OBJS:.o=.d)
-
-# Import .s dependencies (-mdp does not work with .s files)
-include boot/make.config
 
 #
 # Targets
