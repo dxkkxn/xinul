@@ -26,9 +26,9 @@ int8_t init_virtual_memory()
  gigapage->U = 0;
  gigapage->G = 1;
  gigapage->RSW = 0;
- gigapage->PPN0 = 2;
+ gigapage->PPN0 = 0;
  gigapage->PPN1 = 0;
- gigapage->PPN2 = 0;
+ gigapage->PPN2 = 2;
  gigapage->RSSV = 0;
  
  struct satp_csr satp;
@@ -36,7 +36,7 @@ int8_t init_virtual_memory()
  satp.ASID = 0;
  satp.PPN = (uint64_t)root_pt >> 12;
 
- //write_csr(satp, satp);
+ write_csr(satp, satp);
  
  return 0;
 }
