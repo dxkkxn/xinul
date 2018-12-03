@@ -1,18 +1,17 @@
 #include "stdio.h"
 #include "stddef.h"
 #include "stdlib.h"
+#include "stdint.h"
 
 #include "process.h"
 #include "program.h"
 #include "clock.h"
-
+#include "virtual_memory.h"
 #include "csr.h"
-#include "stdint.h"
 #include "trap.h"
 #include "irq.h"
 
-
-void extern ctx_sw(struct cpu_state *, struct cpu_state *);
+void ctx_sw(struct cpu_state *, struct cpu_state *);
 
 #define MSTATUS_MPP_MASK_S 0x800 /* bit 12-11 = 01 */
 #define MSTATUS_MPIE_MASK 0x80 /* bit 7 = 1 */
@@ -87,8 +86,7 @@ void idle()
 	ctx_sw(&idle->cpu_state, &hello->cpu_state);
 	
 	printf("On entre dans la boucle infinie du idle\n");
-	unsigned int reg, i;
-	i=0;
+	unsigned int i = 0;
 	while(i < 10) {
 		printf("timer interrupt n°%d\n", i);
 		__asm__("wfi");
@@ -97,16 +95,19 @@ void idle()
 	printf("On sort de la boucle infinie pour éviter de faire un make kill\n");
 }
 
-int main(int argc, char **argv)
+int main()
 {
-	printf("\n= OSON Initialization =\n");
+	printf("\n# OSON Initialization #\n");
 	initialize_mstatus();
 
 	init_machine_clock();
 
 	delegate_traps();
 	enter_supervisor_mode();
+	
 	init_process();
+	
+	init_virtual_memory();
 
 
 	if ( (create_kernel_process(hello, "Hello", 100, (void*) 42)) == NULL)
