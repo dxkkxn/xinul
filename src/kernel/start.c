@@ -11,6 +11,7 @@
 #include "stdint.h"
 #include "trap.h"
 #include "irq.h"
+#include "sbi.h"
 
 
 void extern ctx_sw(struct cpu_state *, struct cpu_state *);
@@ -27,12 +28,23 @@ void initialize_mstatus()
 	csr_write(mie, MIX_MSI);
 }
 
+int set_next_timer_event()
+{
+	uint64_t delta = 1000000;
+	// set the new mtimecmp value and activate the machine timer interruptions
+	sbi_call_set_timer(delta);
+}
+
 void strap_handler(uintptr_t* regs, uintptr_t scause, uintptr_t sepc)
 {
 	if (scause & INTERRUPT_CAUSE_FLAG) {
 		switch (scause & ~INTERRUPT_CAUSE_FLAG) {
 		case intr_s_timer:
-			csr_clear(sip, 0x20);
+			// Set a new timer interrupt
+			set_next_timer_event();
+			// Clear the interrupt flag so that the processor does not take
+			// this trap again after return from interrupt
+			csr_clear(sip, MIX_STI);
 			break;
 		default:
 			die("supervisor mode: unhandable interrupt %d @ %p", scause, sepc);
@@ -124,7 +136,7 @@ int main(int argc, char **argv)
 
 	delegate_traps();
 	enter_supervisor_mode();
-
+	
 	init_process();
 
 	//csr_read(mstatus);

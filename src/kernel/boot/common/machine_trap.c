@@ -1,6 +1,7 @@
 #include <machine.h>
 #include "trap.h"
 #include "handlers.h"
+#include "csr.h"
 
 
 const char * riscv_excp_names[16] = {
@@ -54,6 +55,14 @@ void trap_handler(uintptr_t* regs, uintptr_t mcause, uintptr_t mepc)
 			break;
 		}
 	} else {
-		die("machine mode: unhandlable trap %d @ %p", mcause, mepc);
+		switch (mcause) {
+		case cause_supervisor_ecall:
+			// call the function with the saved registers a7, a0, a1 and a2
+			handle_sbi_call(regs[8], regs[1], regs[2], regs[3]);
+			break;
+		default:
+			die("machine mode: unhandlable trap %d @ %p", mcause, mepc);
+			break;
+		}
 	}
 }
