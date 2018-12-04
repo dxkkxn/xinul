@@ -2,6 +2,7 @@
 #define ARCH_RISCV_IRQ_H
 
 #include "csr.h"
+#include "machine.h"
 
 // MIX = mie or mip
 #define MIX_USI 0x001
@@ -16,11 +17,6 @@
 #define MIX_SEI 0x200
 #define MIX_HEI 0x400
 #define MIX_MEI 0x800
-
-#define MSTATUS_UIE 0x1
-#define MSTATUS_SIE 0x2
-#define MSTATUS_HIE 0x4
-#define MSTATUS_MIE 0x8
 
 // mstatus configuration: interruptions
 #define enable_user_irq() csr_set(mstatus, MSTATUS_UIE)

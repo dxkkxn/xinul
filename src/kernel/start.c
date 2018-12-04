@@ -6,6 +6,7 @@
 #include "program.h"
 #include "clock.h"
 
+#include  "machine.h"
 #include "csr.h"
 #include "stdint.h"
 #include "trap.h"
@@ -13,33 +14,33 @@
 
 
 void extern ctx_sw(struct cpu_state *, struct cpu_state *);
+void extern strap_entry();
 
 #define MSTATUS_MPP_MASK_S 0x800 /* bit 12-11 = 01 */
 #define MSTATUS_MPIE_MASK 0x80 /* bit 7 = 1 */
-
-#define PMP_NAPOT 0x18
-#define PMP_R 0x1
-#define PMP_W 0x2
-#define PMP_X 0x4
-#define PMP_A 0x18
-#define PMP_L 0x80
-#define PMP_SHIFT 0x2
-#define PMP_TOR 0x8
-#define PMP_NA4 0x10
+#define MSTATUS_SPIE_MASK 0x20 /* bit 5 = 1 */
 
 
 void initialize_mstatus()
 {
-	// potentially enable FPU, potentially enable user use of counters
-
-	// Enable supervisor use of counters
-	csr_write(scounteren, -1);
-
-	// Enable software interrupt
+	// Enable machine software interrupt
 	csr_write(mie, MIX_MSI);
+}
 
-	// Disable paging (bare memory)
-	csr_write(satp, 0);
+void strap_handler(uintptr_t* regs, uintptr_t scause, uintptr_t sepc)
+{
+	if (scause & INTERRUPT_CAUSE_FLAG) {
+		switch (scause & ~INTERRUPT_CAUSE_FLAG) {
+		case intr_s_timer:
+			csr_clear(sip, 0x20);
+			break;
+		default:
+			die("supervisor mode: unhandable interrupt %d @ %p", scause, sepc);
+			break;
+		}
+	} else {
+		die("supervisor mode: unhandable exception %d @ %p", scause, sepc);
+	}
 }
 
 void delegate_traps()
@@ -50,6 +51,7 @@ void delegate_traps()
 		uint64_t exceptions =
 			(1U << cause_instruction_address_misaligned)	|
 			(1U << cause_breakpoint)						|
+			(1U << cause_illegal_instruction)				|
 			(1U << cause_instruction_page_fault)			|
 			(1U << cause_load_page_fault)					|
 			(1U << cause_store_page_fault)					|
@@ -63,10 +65,26 @@ void enter_supervisor_mode()
 {
 	uint64_t pmpcfg = PMP_NAPOT | PMP_R | PMP_W | PMP_X;
 	uint64_t pmpaddr = ((uint64_t)1U << 53)-1;
-	csr_set(mstatus, MSTATUS_MPP_MASK_S);
-	csr_clear(mstatus, MSTATUS_MPIE_MASK);
+
+	// allow access to all of the memory for everyone
 	csr_write(pmpaddr0, pmpaddr);
 	csr_write(pmpcfg0, pmpcfg);
+
+	// Enable supervisor use of counters
+	csr_write(scounteren, -1);
+
+	// Disable paging (bare memory)
+	csr_write(satp, 0);
+
+	// set the previous context in mstatus
+	csr_set(mstatus, MSTATUS_MPP_MASK_S);
+
+	// Set the trap vector (direct mode) and enable interrupts for the
+	// supervisor mode
+	csr_write(stvec, (unsigned long)strap_entry | 0UL);
+	csr_set(mstatus, MSTATUS_SIE);
+	// Enable timer interrupt
+	csr_set(mie, MIX_STI);
 
 	__asm__ __volatile__ (
 			"la t0, 1f\n"
@@ -106,7 +124,10 @@ int main(int argc, char **argv)
 
 	delegate_traps();
 	enter_supervisor_mode();
+
 	init_process();
+
+	//csr_read(mstatus);
 
 
 	if ( (create_kernel_process(hello, "Hello", 100, (void*) 42)) == NULL)

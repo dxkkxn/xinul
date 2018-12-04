@@ -2,7 +2,6 @@
 #include "trap.h"
 #include "handlers.h"
 
-#define INTERRUPT_CAUSE_FLAG (1UL << 63)
 
 const char * riscv_excp_names[16] = {
 	"misaligned_fetch",
@@ -54,8 +53,7 @@ void trap_handler(uintptr_t* regs, uintptr_t mcause, uintptr_t mepc)
 			die("machine mode: unhandlable trap %d @ %p", mcause, mepc);
 			break;
 		}
-	}
-	else {
+	} else {
 		die("machine mode: unhandlable trap %d @ %p", mcause, mepc);
 	}
 }

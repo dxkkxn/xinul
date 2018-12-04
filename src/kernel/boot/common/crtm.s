@@ -12,7 +12,7 @@
 
 _start:
     # setup default trap vector
-    la      t0, trap_vector
+    la      t0, mtrap_vector
     csrw    mtvec, t0
 
     # set up stack pointer based on hartid
@@ -34,7 +34,7 @@ park:
     j       park
 
     .align 2
-trap_vector:
+mtrap_vector:
     # Save registers.
     addi    sp, sp, -CONTEXT_SIZE
     sxsp    ra, 0
