@@ -76,8 +76,8 @@ SRC_DIRS = \
 	asm_src \
 
 KERNEL_SRC = $(foreach d, $(SRC_DIRS), $(wildcard $(d)/*.c))
-KERNEL_ASM = $(foreach d, $(SRC_DIRS), $(wildcard $(d)/*.s))
-OBJS = $(sort $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.s=.o))
+KERNEL_ASM = $(foreach d, $(SRC_DIRS), $(wildcard $(d)/*.S))
+OBJS = $(sort $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.S=.o))
 include boot/make.config # Fetch BOOT_OBJS and them dependencies.
 OBJS += $(BOOT_OBJS)
 OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
@@ -95,15 +95,13 @@ DEPFILES = $(OBJS:.o=.d)
 # Include object dependencies generated previously by gcc
 -include $(DEPFILES)
 
-
 $(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT)
 	$(call cmd, LD $@, $(dir $@), \
 	$(CC) $(CFLAGS) $(LDFLAGS) -T $(LD_SCRIPT) $(OBJS) $(LIBS) -o $@)
 
-$(OBJ_DIR)/%.o: %.s Makefile
+$(OBJ_DIR)/%.o: %.S Makefile
 	$(call cmd, CC $< -> $@, $(dir $@), \
 	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
-
 
 $(OBJ_DIR)/%.o: %.c Makefile
 	$(call cmd, CC $< -> $@, $(dir $@), \
