@@ -13,7 +13,7 @@
 // crt_process usefull to start process after context switch.
 extern void crt_process(void);
 // A sup
-void extern ctx_sw(struct cpu_state *, struct cpu_state *);
+void extern ctx_sw(struct context*, struct context*);
 
 // Process table
 static process_t table_process[NBPROC];
@@ -47,7 +47,7 @@ void process_exit()
  printf("handler exit, je redonne la main à idle\n");
  process_t idle = get_process(0);
  process_t cur = get_process(1);
- ctx_sw(&cur->cpu_state, &idle->cpu_state);
+ ctx_sw(&cur->context, &idle->context);
 }
 
 process_t create_generic_process(const char *name, int priority)
@@ -79,7 +79,7 @@ process_t create_generic_process(const char *name, int priority)
 	// Kernel stack init
 	new->kernel_stack = malloc(STACK_SIZE);
 	if (new->kernel_stack == NULL) return NULL;
-	new->cpu_state.sp = (void*) &new->kernel_stack[STACK_SIZE-1];
+	new->context.sp = (void*) &new->kernel_stack[STACK_SIZE-1];
  
 	new->pid = pid;
 	new->priority = priority;
@@ -117,10 +117,10 @@ process_t create_kernel_process(int (*code)(void *), const char *name, int prior
  
  process_t new = create_generic_process(name, priority);
 	if (new == NULL) return NULL;
-	new->cpu_state.ra = (void*) crt_process;
-	new->cpu_state.s0 = process_exit;
-	new->cpu_state.s1 = arg;
-	new->cpu_state.s2 = code;
+	new->context.ra = (void*) crt_process;
+	new->context.s0 = process_exit;
+	new->context.s1 = arg;
+	new->context.s2 = code;
 	return new;
 }
 

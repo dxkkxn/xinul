@@ -11,7 +11,7 @@
 #include "trap.h"
 #include "irq.h"
 
-void ctx_sw(struct cpu_state *, struct cpu_state *);
+void ctx_sw(struct context *, struct context *);
 
 #define MSTATUS_MPP_MASK_S 0x800 /* bit 12-11 = 01 */
 #define MSTATUS_MPIE_MASK 0x80 /* bit 7 = 1 */
@@ -81,9 +81,9 @@ void idle()
 	printf("Je suis idle\n");
 	process_t idle = get_process(0);
 	process_t hello = get_process(1);
-	ctx_sw(&idle->cpu_state, &hello->cpu_state);
+	ctx_sw(&idle->context, &hello->context);
 	printf("Encore une fois dans le idle\n");
-	ctx_sw(&idle->cpu_state, &hello->cpu_state);
+	ctx_sw(&idle->context, &hello->context);
 	
 	printf("On entre dans la boucle infinie du idle\n");
 	unsigned int i = 0;

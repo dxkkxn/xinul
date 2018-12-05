@@ -39,8 +39,9 @@ enum state_e {
 	WAIT_INTR
 };
 
-struct cpu_state {
+struct context {
 	void* sp;
+	void* ra;
 	void* s0;
 	void* s1;
 	void* s2;
@@ -53,20 +54,7 @@ struct cpu_state {
 	void* s9;
 	void* s10;
 	void* s11;
-	void* fs0;
-	void* fs1;
-	void* fs2;
-	void* fs3;
-	void* fs4;
-	void* fs5;
-	void* fs6;
-	void* fs7;
-	void* fs8;
-	void* fs9;
-	void* fs10;
-	void* fs11;
-	void* ra;
-	void* a0;
+	void* satp;
 };
 
 struct desc_proc {
@@ -82,7 +70,7 @@ struct desc_proc {
 	uint32_t wakeup;
 	int waitting_for;
 	int children_return_value;
-	struct cpu_state cpu_state;
+	struct context context;
 	uint32_t user_stack_size;
 	kernel_stack_t kernel_stack;
 };
