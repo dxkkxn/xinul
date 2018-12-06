@@ -6,7 +6,8 @@
 
 #pragma once
 
-#include <stdint.h>
+#include "stdint.h"
+#include "context.h"
 
 // Structure d'un process.
 typedef struct desc_proc * process_t;
@@ -39,24 +40,6 @@ enum state_e {
 	WAIT_INTR
 };
 
-struct context {
-	void* sp;
-	void* ra;
-	void* s0;
-	void* s1;
-	void* s2;
-	void* s3;
-	void* s4;
-	void* s5;
-	void* s6;
-	void* s7;
-	void* s8;
-	void* s9;
-	void* s10;
-	void* s11;
-	void* satp;
-};
-
 struct desc_proc {
 	int pid;
 	int priority;
@@ -79,5 +62,6 @@ struct desc_proc {
 
 void init_process();
 process_t create_kernel_process(int (*code)(void *), const char *name, int priority, void *arg);
+process_t create_user_process(const char *code_name, const char *nom, int priority, int stack_size, void *arg);
 int getpid();
 process_t get_process(int pid);

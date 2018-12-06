@@ -11,11 +11,15 @@
 //typedef void* ppn_t;
 
 // CSR
-struct satp_csr {
-	uint64_t PPN:44;
-	uint64_t ASID:16;
-	uint64_t MODE:4;
+union satp {
+	void* reg;
+	struct {
+		uint64_t PPN:44;
+		uint64_t ASID:16;
+		uint64_t MODE:4;
+	} field;
 };
+typedef union satp satp_csr;
 
 #define SATP_MODE_OFF  0
 #define SATP_MODE_SV32 1
@@ -46,3 +50,7 @@ typedef struct pte * pagetable_t;
 
 // Prototype
 int8_t init_virtual_memory();
+satp_csr get_kernel_satp();
+satp_csr init_user_virtual_memory(uint16_t asid);
+void free_user_virtual_memory(satp_csr satp);
+

@@ -8,12 +8,12 @@
 #include "stdio.h"
 #include "stdlib.h"
 
+#include "virtual_memory.h"
+#include "program.h"
+#include "context.h"
+#include "crt_process.h"
 #include "process.h"
 
-// crt_process usefull to start process after context switch.
-extern void crt_process(void);
-// A sup
-void extern ctx_sw(struct context*, struct context*);
 
 // Process table
 static process_t table_process[NBPROC];
@@ -48,6 +48,11 @@ void process_exit()
  process_t idle = get_process(0);
  process_t cur = get_process(1);
  ctx_sw(&cur->context, &idle->context);
+}
+
+void process_user_exit()
+{
+ process_exit();
 }
 
 process_t create_generic_process(const char *name, int priority)
@@ -117,10 +122,67 @@ process_t create_kernel_process(int (*code)(void *), const char *name, int prior
  
  process_t new = create_generic_process(name, priority);
 	if (new == NULL) return NULL;
+	new->context.satp = get_kernel_satp().reg;
 	new->context.ra = (void*) crt_process;
 	new->context.s0 = process_exit;
 	new->context.s1 = arg;
 	new->context.s2 = code;
+	return new;
+}
+
+
+process_t create_user_process(const char *code_name, const char *nom, int priority, int stack_size, void *arg)
+{
+	if (priority < 1 || priority > MAXPRIO) {
+		return NULL;
+	}
+
+	if (stack_size < 0
+			|| stack_size > STACK_SIZE_MAX) {
+		return NULL;
+	}
+	// On place une taille de stack min à 100 TODO demander au prof
+	if (stack_size < 100) {
+		stack_size = 100;
+	}
+
+	// On recherche le code du programme
+	void* code = hello_user;
+	//const struct uapps *app = NULL;
+	//app = symbol_map_get(code_name, NULL);
+	//if (app == NULL) {
+//		return NULL;
+//	}
+
+	process_t new = create_generic_process(nom, priority);
+	if (new == NULL) return NULL;
+
+	// Mise en place de la mémoire virtuelle
+	new->context.satp = init_user_virtual_memory(new->pid).reg;
+	
+	//HEAP
+	//Tas User
+	//if (alloc_region(pagedir, MEM_USER_HEAP, MEM_USER_HEAP + 4*HEAP_USER_SIZE, PAGE_TABLE_USER_RW) == -1){
+		//return NULL;
+	//}
+
+	// STACK
+	// Stack user
+	new->user_stack_size = stack_size;
+	// on alloue la pile
+	void* user_stack = calloc(1, new->user_stack_size);
+	if (user_stack == NULL) {
+ 	return NULL;
+	}
+
+ new->context.sp = user_stack;
+ new->context.ra = (void*) crt_user_process;
+	new->context.s0 = process_user_exit;
+	new->context.s1 = arg;
+	new->context.s2 = code;
+
+	// Copie du programme pour le processus
+	//alloc_and_copy_program(pagedir, app->start, app->end);
 	return new;
 }
 

@@ -81,9 +81,12 @@ void idle()
 	printf("Je suis idle\n");
 	process_t idle = get_process(0);
 	process_t hello = get_process(1);
+	process_t hello_user = get_process(2);
 	ctx_sw(&idle->context, &hello->context);
 	printf("Encore une fois dans le idle\n");
 	ctx_sw(&idle->context, &hello->context);
+	printf("on refait un tour dans idle et on lance hello_user\n");
+	ctx_sw(&idle->context, &hello_user->context);
 	
 	printf("On entre dans la boucle infinie du idle\n");
 	unsigned int i = 0;
@@ -115,7 +118,16 @@ int main()
 		printf("Process error: unable to create process hello. exit.\n");
 		exit(-1);
 	}
+	
+	process_t hello_user_process = create_user_process("hello_user", "Hello_user", 100, 0, (void*) 42);
+	if (hello_user_process == NULL)
+		{
+			printf("Process error: unable to create user process hello_user. exit.\n");
+			exit(-1);
+		}
+		
 	idle();
 
 	return 0;
 }
+

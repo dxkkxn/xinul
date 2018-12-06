@@ -5,7 +5,11 @@
 #include "process.h"
 #include "program.h"
 
-void extern ctx_sw(struct context *, struct context *);
+int hello_user(int arg)
+{
+	printf("Programme user hello\n");
+	return 0;
+}
 
 int hello(int arg)
 {
