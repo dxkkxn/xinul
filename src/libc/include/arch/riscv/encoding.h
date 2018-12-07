@@ -197,4 +197,6 @@
 
 #endif
 
+#define SPIKE_CLOCK_FREQUENCY 10000000
+
 #endif  /* _LIBC_RISCV_ENCODING_H_ */

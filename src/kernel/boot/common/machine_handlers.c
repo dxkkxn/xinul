@@ -4,7 +4,6 @@
 #include "csr.h"
 #include "machine.h"
 
-#define CLOCK_FREQUENCY 10000000
 
 void handle_mtimer_interrupt() {
 	// trigger a supervisor timer interrupt
@@ -20,7 +19,7 @@ uint64_t handle_sbi_call(
 	csr_write(mepc, csr_read(mepc)+4);
 	switch(call_no) {
 		case SBI_SET_TIMER:
-			set_mtimecmp(get_mtime() + arg0 * (CLOCK_FREQUENCY / 1000));
+			set_mtimecmp(get_mtime() + arg0 * (SPIKE_CLOCK_FREQUENCY / 1000));
 			csr_set(mie, MIP_MTIP);
 			break;
 		default:

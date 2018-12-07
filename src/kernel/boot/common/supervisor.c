@@ -5,11 +5,11 @@
 #include "machine.h"
 #include "encoding.h"
 
-void extern strap_entry();
+extern void strap_entry();
 
 int set_next_timer_event()
 {
-	uint64_t delta = 100; // 1s
+	uint64_t delta = 1000; // ms
 	// set the new mtimecmp value and activate the machine timer interruptions
 	sbi_call_set_timer(delta);
 }
@@ -74,8 +74,9 @@ void enter_supervisor_mode()
 	// supervisor mode
 	csr_write(stvec, (unsigned long)strap_entry | 0UL);
 	csr_set(mstatus, MSTATUS_SIE);
-	// Enable timer interrupt
-	csr_set(mie, MIP_STIP);
+	// Enable timer interrupt at a machine level to be able to catch it in
+	// supervisor mode
+	csr_set(mie, MIP_MTIP);
 
 	__asm__ __volatile__ (
 			"la t0, 1f\n"
@@ -83,4 +84,7 @@ void enter_supervisor_mode()
 			"mret\n"
 			"1:" ::: "t0"
 	);
+
+	// Enable interruption in supervisor mode
+	csr_set(sstatus, MSTATUS_SIE);
 }

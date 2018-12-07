@@ -4,7 +4,6 @@
 
 #include "process.h"
 #include "program.h"
-#include "clock.h"
 
 #include "machine.h"
 #include "csr.h"
@@ -13,6 +12,8 @@
 #include "sbi.h"
 #include "encoding.h"
 #include "supervisor.h"
+
+#include "interrupts.h"
 
 
 void extern ctx_sw(struct cpu_state *, struct cpu_state *);
@@ -41,14 +42,8 @@ int main(int argc, char **argv)
 {
 	printf("\n= OSON Initialization =\n");
 
-	init_machine_clock();
-
-	delegate_traps();
-	enter_supervisor_mode();
-	
+	setup_clock_interrupts();
 	init_process();
-
-	//csr_read(mstatus);
 
 
 	if ( (create_kernel_process(hello, "Hello", 100, (void*) 42)) == NULL)
