@@ -6,10 +6,10 @@
 #include "program.h"
 #include "clock.h"
 
-#include  "machine.h"
+#include "machine.h"
 #include "csr.h"
 #include "stdint.h"
-#include "trap.h"
+#include "machine_trap.h"
 #include "sbi.h"
 #include "encoding.h"
 #include "supervisor.h"

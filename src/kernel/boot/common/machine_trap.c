@@ -1,6 +1,6 @@
 #include <machine.h>
-#include "trap.h"
-#include "handlers.h"
+#include "machine_trap.h"
+#include "machine_handlers.h"
 #include "csr.h"
 
 

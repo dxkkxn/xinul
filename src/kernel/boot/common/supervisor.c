@@ -1,7 +1,7 @@
 #include "supervisor.h"
 
 #include "csr.h"
-#include "trap.h"
+#include "machine_trap.h"
 #include "machine.h"
 #include "encoding.h"
 
