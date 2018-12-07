@@ -16,9 +16,9 @@ void setup_clock_interrupts() {
 	set_mtimecmp(get_mtime() + 100 *(SPIKE_CLOCK_FREQUENCY/1000));
 }
 
-int set_next_timer_event()
+void set_next_timer_event()
 {
-	uint64_t delta = 1000; // ms
+	uint64_t delta = 100; // ms
 	// set the new mtimecmp value and activate the machine timer interruptions
 	sbi_call_set_timer(delta);
 }
@@ -35,10 +35,16 @@ void strap_handler(uintptr_t* regs, uintptr_t scause, uintptr_t sepc)
 			csr_clear(sip, MIP_STIP);
 			break;
 		default:
-			die("supervisor mode: unhandable interrupt %d @ %p", scause, sepc);
+			die(
+					"supervisor mode: unhandable interrupt %ld @ %p", 
+					(uint64_t) scause, (void *) sepc
+			);
 			break;
 		}
 	} else {
-		die("supervisor mode: unhandable exception %d @ %p", scause, sepc);
+		die(
+				"supervisor mode: unhandable exception %ld @ %p",
+				(uint64_t) scause, (void *) sepc
+		);
 	}
 }

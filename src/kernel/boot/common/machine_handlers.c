@@ -1,6 +1,6 @@
 #include "machine_handlers.h"
 #include "encoding.h"
-#include "sbi.h"
+#include "sbi_no.h"
 #include "csr.h"
 #include "machine.h"
 
@@ -23,7 +23,7 @@ uint64_t handle_sbi_call(
 			csr_set(mie, MIP_MTIP);
 			break;
 		default:
-			die("machine mode: sbi call %d\n", call_no);
+			die("machine mode: sbi call %ld\n", call_no);
 			break;
 	}
 

@@ -2,10 +2,6 @@
 
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 enum {
     HART0_CLOCK_FREQ           = 0x00010000,
     UART0_CLOCK_FREQ           = 0x00011000,
@@ -29,6 +25,3 @@ extern auxval_t __auxv[];
 
 unsigned long getauxval(unsigned long key);
 
-#ifdef __cplusplus
-}
-#endif

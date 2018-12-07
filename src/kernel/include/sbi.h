@@ -3,9 +3,6 @@
 
 #include "stdint.h"
 
-#define SBI_SET_TIMER 0
-#define SBI_CONFIGURE_TIMER 1
-
 #define SBI_CALL(call_no, arg0, arg1, arg2) ({					\
 	register uintptr_t a0 __asm__ ("a0") = (uintptr_t)(arg0);	\
 	register uintptr_t a1 __asm__ ("a1") = (uintptr_t)(arg1);	\

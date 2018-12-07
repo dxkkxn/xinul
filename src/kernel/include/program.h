@@ -7,4 +7,5 @@
 #include "stdint.h"
 
 int hello();
+int hello_user();
 

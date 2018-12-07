@@ -51,7 +51,10 @@ void trap_handler(uintptr_t* regs, uintptr_t mcause, uintptr_t mepc)
 			handle_mtimer_interrupt();
 			break;
 		default:
-			die("machine mode: unhandlable trap %d @ %p", mcause, mepc);
+			die(
+					"machine mode: unhandlable trap %ld @ %p", 
+					(uint64_t) mcause, (void *) mepc
+			);
 			break;
 		}
 	} else {
@@ -61,7 +64,10 @@ void trap_handler(uintptr_t* regs, uintptr_t mcause, uintptr_t mepc)
 			handle_sbi_call(regs[8], regs[1], regs[2], regs[3]);
 			break;
 		default:
-			die("machine mode: unhandlable trap %d @ %p", mcause, mepc);
+			die(
+					"machine mode: unhandlable trap %ld @ %p", 
+					(uint64_t) mcause, (void *) mepc
+			);
 			break;
 		}
 	}

@@ -13,8 +13,6 @@ all: $(KERNEL_BIN)
 # Architecture and hardware selection
 #
 
-DEFAULT_HOSTARCH = rv64
-HOSTARCH ?= $(DEFAULT_HOSTARCH)
 DEFAULT_MACHINE = spike
 MACHINE ?= $(DEFAULT_MACHINE)
 
@@ -30,18 +28,17 @@ LIBC ?= $(BUILD_DIR)/$(LIBC_NAME).a
 LIBS = $(LIBC)
 
 INCLUDE_DIRS = \
-	. \
 	$(LIBC_INCLUDE) \
 	$(LIBC_ARCH_INCLUDE) \
+	include \
+	asm_include \
 	boot/common \
-	boot/$(MACHINE)
 
 
 #
 # Import specific architecture  parameters :
 #
 
-# Import common cros-compile tools, CFlags and  LDFlags
 include ../riscv_flags.config
 
 #
@@ -73,13 +70,15 @@ LD_SCRIPT ?= boot/$(MACHINE)/default.lds
 # Kernel sources files
 #
 
-# Fetch boot objects from make.config to BOOT_OBJS
-include boot/make.config
+SRC_DIRS = \
+	. \
+	asm_src \
 
-SRC_DIRS = .
 KERNEL_SRC = $(foreach d, $(SRC_DIRS), $(wildcard $(d)/*.c))
-KERNEL_ASM = $(foreach d, $(SRC_DIRS), $(wildcard $(d)/*.s))
-OBJS = $(sort $(BOOT_OBJS) $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.s=.o))
+KERNEL_ASM = $(foreach d, $(SRC_DIRS), $(wildcard $(d)/*.S))
+OBJS = $(sort $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.S=.o))
+include boot/make.config # Fetch BOOT_OBJS and them dependencies.
+OBJS += $(BOOT_OBJS)
 OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 DEPFILES = $(OBJS:.o=.d)
 
@@ -92,22 +91,16 @@ DEPFILES = $(OBJS:.o=.d)
 
 .PHONY: clean
 
-
 # Include object dependencies generated previously by gcc
 -include $(DEPFILES)
-
-
-test:
-	echo $(OBJS)
 
 $(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT)
 	$(call cmd, LD $@, $(dir $@), \
 	$(CC) $(CFLAGS) $(LDFLAGS) -T $(LD_SCRIPT) $(OBJS) $(LIBS) -o $@)
 
-$(OBJ_DIR)/%.o: %.s Makefile
+$(OBJ_DIR)/%.o: %.S Makefile
 	$(call cmd, CC $< -> $@, $(dir $@), \
 	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
-
 
 $(OBJ_DIR)/%.o: %.c Makefile
 	$(call cmd, CC $< -> $@, $(dir $@), \

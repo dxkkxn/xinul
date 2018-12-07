@@ -56,7 +56,7 @@ static int htif_getchar()
 {
     int ch;
     spinlock_lock(&htif_lock);
-    if (ch = htif_get_fromhost(1, 0) & 0xff) {
+    if ((ch = htif_get_fromhost(1, 0)) & 0xff) {
         htif_set_tohost(1, 0, 0);
     }
     spinlock_unlock(&htif_lock);

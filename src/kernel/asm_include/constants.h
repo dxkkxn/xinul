@@ -1,4 +1,5 @@
 # See LICENSE for license details.
+#pragma once
 
 .equ MAX_HARTS,    4
 .equ SAVE_REGS,    16

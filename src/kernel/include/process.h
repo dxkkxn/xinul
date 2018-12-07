@@ -6,7 +6,8 @@
 
 #pragma once
 
-#include <stdint.h>
+#include "stdint.h"
+#include "context.h"
 
 // Structure d'un process.
 typedef struct desc_proc * process_t;
@@ -39,36 +40,6 @@ enum state_e {
 	WAIT_INTR
 };
 
-struct cpu_state {
-	void* sp;
-	void* s0;
-	void* s1;
-	void* s2;
-	void* s3;
-	void* s4;
-	void* s5;
-	void* s6;
-	void* s7;
-	void* s8;
-	void* s9;
-	void* s10;
-	void* s11;
-	void* fs0;
-	void* fs1;
-	void* fs2;
-	void* fs3;
-	void* fs4;
-	void* fs5;
-	void* fs6;
-	void* fs7;
-	void* fs8;
-	void* fs9;
-	void* fs10;
-	void* fs11;
-	void* ra;
-	void* a0;
-};
-
 struct desc_proc {
 	int pid;
 	int priority;
@@ -82,7 +53,7 @@ struct desc_proc {
 	uint32_t wakeup;
 	int waitting_for;
 	int children_return_value;
-	struct cpu_state cpu_state;
+	struct context context;
 	uint32_t user_stack_size;
 	kernel_stack_t kernel_stack;
 };
@@ -91,5 +62,6 @@ struct desc_proc {
 
 void init_process();
 process_t create_kernel_process(int (*code)(void *), const char *name, int priority, void *arg);
+process_t create_user_process(const char *code_name, const char *nom, int priority, int stack_size, void *arg);
 int getpid();
 process_t get_process(int pid);

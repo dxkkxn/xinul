@@ -32,12 +32,12 @@ static inline long semihost_call1(long n, long a)
 
 static int semihost_getchar()
 {
-    semihost_call0(SBI_CONSOLE_GETCHAR);
+    return semihost_call0(SBI_CONSOLE_GETCHAR);
 }
 
 static int semihost_putchar(int ch)
 {
-    semihost_call1(SBI_CONSOLE_PUTCHAR, ch);
+    return semihost_call1(SBI_CONSOLE_PUTCHAR, ch);
 }
 
 static void semihost_poweroff(int status)
