@@ -1,10 +1,5 @@
-// See LICENSE for license details.
-
-#pragma once
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef _LIBC_RISCV_ENCODING_H_
+#define _LIBC_RISCV_ENCODING_H_
 
 #define MSTATUS_UIE         0x00000001
 #define MSTATUS_SIE         0x00000002
@@ -27,6 +22,10 @@ extern "C" {
 #define MSTATUS_TSR         0x00400000
 #define MSTATUS32_SD        0x80000000
 #define MSTATUS64_SD        0x8000000000000000
+
+#define MSTATUS_MPP_M       0x00001800
+#define MSTATUS_MPP_S       0x00000800
+#define MSTATUS_MPP_U       0x00000000
 
 #define SSTATUS_UIE         0x00000001
 #define SSTATUS_SIE         0x00000002
@@ -95,12 +94,15 @@ extern "C" {
 #define MCONTROL_MATCH_MASK_LOW  4
 #define MCONTROL_MATCH_MASK_HIGH 5
 
+#define MIP_USIP            (1 << IRQ_U_SOFT)
 #define MIP_SSIP            (1 << IRQ_S_SOFT)
 #define MIP_HSIP            (1 << IRQ_H_SOFT)
 #define MIP_MSIP            (1 << IRQ_M_SOFT)
+#define MIP_UTIP            (1 << IRQ_U_TIMER)
 #define MIP_STIP            (1 << IRQ_S_TIMER)
 #define MIP_HTIP            (1 << IRQ_H_TIMER)
 #define MIP_MTIP            (1 << IRQ_M_TIMER)
+#define MIP_UEIP            (1 << IRQ_U_EXT)
 #define MIP_SEIP            (1 << IRQ_S_EXT)
 #define MIP_HEIP            (1 << IRQ_H_EXT)
 #define MIP_MEIP            (1 << IRQ_M_EXT)
@@ -141,12 +143,15 @@ extern "C" {
 #define PMP_NA4   0x10
 #define PMP_NAPOT 0x18
 
+#define IRQ_U_SOFT   0
 #define IRQ_S_SOFT   1
 #define IRQ_H_SOFT   2
 #define IRQ_M_SOFT   3
+#define IRQ_U_TIMER  4
 #define IRQ_S_TIMER  5
 #define IRQ_H_TIMER  6
 #define IRQ_M_TIMER  7
+#define IRQ_U_EXT	 8
 #define IRQ_S_EXT    9
 #define IRQ_H_EXT    10
 #define IRQ_M_EXT    11
@@ -192,6 +197,4 @@ extern "C" {
 
 #endif
 
-#ifdef __cplusplus
-}
-#endif
+#endif  /* _LIBC_RISCV_ENCODING_H_ */

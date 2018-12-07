@@ -1,10 +1,11 @@
 #include "clock.h"
-#include "irq.h"
+
+#include "encoding.h"
 #include "csr.h"
 
 void init_machine_clock() {
-	enable_machine_irq();
-	enable_machine_timer_irq();
+	csr_set(mstatus, MSTATUS_MIE);
+	csr_set(mie, MIP_MTIP);
 
 	set_mtimecmp(100000);
 }

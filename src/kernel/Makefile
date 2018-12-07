@@ -1,7 +1,4 @@
-#
-# See LICENSE for license details.
-# 
-# Maintainer : Mathieu Barbe <mathieu.barbe@grenoble-inp.org>
+# # See LICENSE for license details.  # # Maintainer : Mathieu Barbe <mathieu.barbe@grenoble-inp.org>
 #
 
 SHELL = /bin/sh
@@ -27,6 +24,7 @@ MACHINE ?= $(DEFAULT_MACHINE)
 
 LIBC_NAME ?= libc
 LIBC_INCLUDE ?= ../$(LIBC_NAME)/include
+LIBC_ARCH_INCLUDE ?= ../$(LIBC_NAME)/include/arch/riscv
 LIBC ?= $(BUILD_DIR)/$(LIBC_NAME).a
 
 LIBS = $(LIBC)
@@ -34,6 +32,7 @@ LIBS = $(LIBC)
 INCLUDE_DIRS = \
 	. \
 	$(LIBC_INCLUDE) \
+	$(LIBC_ARCH_INCLUDE) \
 	boot/common \
 	boot/$(MACHINE)
 

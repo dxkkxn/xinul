@@ -4,6 +4,7 @@
 #include "stdint.h"
 
 #define SBI_SET_TIMER 0
+#define SBI_CONFIGURE_TIMER 1
 
 #define SBI_CALL(call_no, arg0, arg1, arg2) ({					\
 	register uintptr_t a0 __asm__ ("a0") = (uintptr_t)(arg0);	\
@@ -23,6 +24,8 @@
 #define SBI_CALL_3(call_no, arg0, arg1, arg2) \
 	SBI_CALL(call_no, arg0, arg1, arg2)
 
+// value is given in ms
 void sbi_call_set_timer(uint64_t value);
+
 
 #endif /* _KERNEL_SBI_H_ */
