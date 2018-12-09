@@ -13,10 +13,12 @@ int hello_user(int arg)
 
 int hello(int arg)
 {
-process_t idle = get_process(0);
-process_t hello = get_process(1);
+//process_t idle = get_process(0);
+//process_t hello = get_process(1);
 	printf("Hello words! My pid is %d and my arg is %d\n", getpid(), arg);
-	ctx_sw(&hello->context, &idle->context);
-	printf("Je suis à la fin du programme hello\n");
+	for (size_t i = 0; i < 100000; i++) {
+
+	}
+	printf("Je suis à la fin du programme hello pid: %d\n", getpid());
 	return 0;
 }

@@ -5,7 +5,8 @@
 #include "machine_trap.h"
 #include "machine.h"
 #include "sbi.h"
-
+#include "scheduler.h"
+int i = 0;
 
 
 
@@ -32,11 +33,16 @@ void strap_handler(uintptr_t* regs, uintptr_t scause, uintptr_t sepc)
 			set_next_timer_event();
 			// Clear the interrupt flag so that the processor does not take
 			// this trap again after return from interrupt
+			i++;
+			//if ((i % 3) == 0)
+			schedule();
+
+
 			csr_clear(sip, MIP_STIP);
 			break;
 		default:
 			die(
-					"supervisor mode: unhandable interrupt %ld @ %p", 
+					"supervisor mode: unhandable interrupt %ld @ %p",
 					(uint64_t) scause, (void *) sepc
 			);
 			break;

@@ -21,7 +21,7 @@ static process_t table_process[NBPROC];
 // number of active process
 static size_t nbproc;
 // Current process
-static process_t process_alive = NULL;
+process_t process_alive = NULL;
 
 /**
  * Process initialization
@@ -34,20 +34,21 @@ void init_process(void)
 	idle->name = malloc(strlen("idle")+1);
 	strncpy(idle->name, "idle", MAX_LENGTH_process_NAME);
 	idle->pid = 0;
-	idle->priority = MAXPRIO_KERNEL-1;
-	idle->state = RUN;
+	idle->prio = 0;
+	idle->state = ACTIVE;
 	table_process[0] = idle;
 	process_alive = idle;
 	nbproc = 1;
 }
 
 
-void process_exit()
+void process_exit() //TODO appeler l'ordonnanceur mettre le processus sur la file de destruction.
 {
- printf("handler exit, je redonne la main à idle\n");
+ printf("handler exit, je redonne la main...\n");
  process_t idle = get_process(0);
  process_t cur = get_process(1);
  ctx_sw(&cur->context, &idle->context);
+
 }
 
 void process_user_exit()
@@ -60,7 +61,7 @@ process_t create_generic_process(const char *name, int priority)
 	// pid counter  (start at 1, idlepid is 0)
 	static int pid = 1;
 
- // Is full? 
+ // Is full?
 	if (nbproc == NBPROC) return NULL;
 
 	// Search free pid
@@ -68,7 +69,7 @@ process_t create_generic_process(const char *name, int priority)
 	    pid++;
 		if (pid == NBPROC) pid = 1;
 	}
- 
+
 	process_t new = malloc(sizeof( *new));
 	if (new == NULL) return NULL;
 	memset(new, 0, sizeof( *new));
@@ -85,10 +86,10 @@ process_t create_generic_process(const char *name, int priority)
 	new->kernel_stack = malloc(STACK_SIZE);
 	if (new->kernel_stack == NULL) return NULL;
 	new->context.sp = (void*) &new->kernel_stack[STACK_SIZE-1];
- 
+
 	new->pid = pid;
-	new->priority = priority;
- 
+	new->prio = priority;
+
 	// Gestion du parent
 	new->parent = process_alive;
 	// Ajout du nouveau process à la liste des fils du parent
@@ -99,8 +100,8 @@ process_t create_generic_process(const char *name, int priority)
 	//new->list_shared_zone.prev = &(new->list_shared_zone);
 
 	// Attribution de l'état ready pour le process
-	new->state = READY;
- 
+	new->state = ACTIVABLE;
+
 	nbproc++;
 	// Ajout du process à la table
 	table_process[pid] = new;
@@ -119,7 +120,7 @@ process_t create_kernel_process(int (*code)(void *), const char *name, int prior
 	if (priority < 1 || priority > MAXPRIO_KERNEL) {
 		return NULL;
 	}
- 
+
  process_t new = create_generic_process(name, priority);
 	if (new == NULL) return NULL;
 	new->context.satp = get_kernel_satp().reg;
@@ -159,7 +160,7 @@ process_t create_user_process(const char *code_name, const char *nom, int priori
 
 	// Mise en place de la mémoire virtuelle
 	new->context.satp = init_user_virtual_memory(new->pid).reg;
-	
+
 	//HEAP
 	//Tas User
 	//if (alloc_region(pagedir, MEM_USER_HEAP, MEM_USER_HEAP + 4*HEAP_USER_SIZE, PAGE_TABLE_USER_RW) == -1){

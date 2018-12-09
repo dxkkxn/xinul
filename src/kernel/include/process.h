@@ -8,12 +8,14 @@
 
 #include "stdint.h"
 #include "context.h"
+#include "queue.h"
 
 // Structure d'un process.
 typedef struct desc_proc * process_t;
 typedef uint64_t * kernel_stack_t;
 typedef uint64_t * user_stack_t;
-
+typedef struct list_head list_process_t;
+extern process_t process_alive;
 // Nombre max de process
 #define NBPROC 100
 #define MAX_LENGTH_process_NAME 20
@@ -27,25 +29,28 @@ typedef uint64_t * user_stack_t;
 #define HEAP_USER_SIZE 4096
 
 enum state_e {
-	RUN,
-	READY,
-	SLEEP,
-	WAIT_PID,
+	/* Processus en cours d'exécution */
+	ACTIVE = -1,
+
+	/* États gérés par l'ordonnanceur */
+	ACTIVABLE = 0,
 	ZOMBIE,
-	DEAD,
-	SYSTEM,
-	WAIT_MSG,
-	WAIT_READ,
-	WAIT_SEM,
-	WAIT_INTR
+	BLOCKED_ON_WSON,
+	NB_SCHED_STATES,
+
+	/* Autres états*/
+	BLOCKED_ON_MSG = NB_SCHED_STATES,
+	BLOCKED_ON_IO,
+	BLOCKED_ON_CLOCK,
+	NB_STATES
 };
 
 struct desc_proc {
 	int pid;
-	int priority;
+	int prio;
 	int zero; // utilisé comme prio pour prendre la queu pour une fifo (toujours à zéro
 	process_t parent;
-	//list_process_t childrens;
+	link children;
 	char *name;
 	enum state_e state;
 	int return_value;
@@ -56,6 +61,12 @@ struct desc_proc {
 	struct context context;
 	uint32_t user_stack_size;
 	kernel_stack_t kernel_stack;
+	//scheduler variables
+	long info;
+  int error;
+	link *current_queue;
+  link status_link;
+  link family_link;
 };
 
 // process API
