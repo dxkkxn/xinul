@@ -69,7 +69,7 @@ $(LIB): $(OBJS)
 	$(call cmd,LD $@, $(dir $@), \
 	$(AR) cr $@ $(OBJS))
 
-$(OBJ_DIR)/%.o: %.c Makefile
+$(OBJ_DIR)/%.o: %.c Makefile ../riscv_flags.config
 	$(call cmd,CC $< -> $@, $(dir $@), \
 	$(CC) -c -o $@ $< -MMD -MP $(CFLAGS))
 

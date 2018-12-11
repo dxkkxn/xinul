@@ -98,11 +98,11 @@ $(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT)
 	$(call cmd, LD $@, $(dir $@), \
 	$(CC) $(CFLAGS) $(LDFLAGS) -T $(LD_SCRIPT) $(OBJS) $(LIBS) -o $@)
 
-$(OBJ_DIR)/%.o: %.S Makefile
+$(OBJ_DIR)/%.o: %.S Makefile ../riscv_flags.config
 	$(call cmd, CC $< -> $@, $(dir $@), \
 	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
 
-$(OBJ_DIR)/%.o: %.c Makefile
+$(OBJ_DIR)/%.o: %.c Makefile ../riscv_flags.config
 	$(call cmd, CC $< -> $@, $(dir $@), \
 	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
 
