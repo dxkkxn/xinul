@@ -20,20 +20,20 @@ MACHINE ?= $(DEFAULT_MACHINE)
 # Librairies configuration
 #
 
-LIBC_NAME ?= libc
-LIBC_INCLUDE ?= ../$(LIBC_NAME)/include
-LIBC_ARCH_INCLUDE ?= ../$(LIBC_NAME)/include/arch/riscv
-LIBC ?= $(BUILD_DIR)/$(LIBC_NAME).a
+STDLIB_NAME ?= libc
+STDLIB_INCLUDE ?= \
+	../$(STDLIB_NAME)/include \
+	../$(STDLIB_NAME)/include/arch/riscv
 
-LIBS = $(LIBC)
+STDLIB ?= $(BUILD_DIR)/$(STDLIB_NAME).a
+
+LIBS = $(STDLIB)
 
 INCLUDE_DIRS = \
-	$(LIBC_INCLUDE) \
-	$(LIBC_ARCH_INCLUDE) \
+	$(STDLIB_INCLUDE) \
 	include \
 	asm_include \
 	boot/common \
-
 
 #
 # Import specific architecture  parameters :
@@ -62,9 +62,8 @@ CFLAGS += $(addprefix -I, $(INCLUDE_DIRS)) \
 LDFLAGS = $(ARCH_LDFLAGS)
 
 # Add specific kernel LD options
-LDFLAGS += 
-
 LD_SCRIPT ?= boot/$(MACHINE)/default.lds
+LDFLAGS += -T $(LD_SCRIPT)
 
 #
 # Kernel sources files
@@ -89,14 +88,11 @@ DEPFILES = $(OBJS:.o=.d)
 # Remove every implicite rules
 .suffixe:
 
-.PHONY: clean
-
-# Include object dependencies generated previously by gcc
--include $(DEPFILES)
+.PHONY: clean $(LIBS)
 
 $(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT)
 	$(call cmd, LD $@, $(dir $@), \
-	$(CC) $(CFLAGS) $(LDFLAGS) -T $(LD_SCRIPT) $(OBJS) $(LIBS) -o $@)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -o $@)
 
 $(OBJ_DIR)/%.o: %.S Makefile ../riscv_flags.config
 	$(call cmd, CC $< -> $@, $(dir $@), \
@@ -105,6 +101,12 @@ $(OBJ_DIR)/%.o: %.S Makefile ../riscv_flags.config
 $(OBJ_DIR)/%.o: %.c Makefile ../riscv_flags.config
 	$(call cmd, CC $< -> $@, $(dir $@), \
 	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
+
+# Include object dependencies generated previously by gcc
+-include $(DEPFILES)
+ 
+$(STDLIB):
+	make -C ../$(STDLIB_NAME)
 
 clean:
 	rm -f $(KERNEL_BIN)
