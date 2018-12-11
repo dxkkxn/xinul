@@ -17,6 +17,7 @@ struct context {
 	void* s10;
 	void* s11;
 	void* satp;
+	void* sepc;
 };
 
 

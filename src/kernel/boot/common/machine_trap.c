@@ -65,8 +65,8 @@ void trap_handler(uintptr_t* regs, uintptr_t mcause, uintptr_t mepc)
 			break;
 		default:
 			die(
-					"machine mode: unhandlable trap %ld @ %p", 
-					(uint64_t) mcause, (void *) mepc
+					"machine mode: unhandlable trap %ld @ %lx", 
+					(uint64_t) mcause, mepc
 			);
 			break;
 		}

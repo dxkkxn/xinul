@@ -19,6 +19,8 @@ ctx_sw:
 	sd s11, 104(a0)
 	csrr t0, satp
 	sd t0, 112(a0)
+	csrr t0, sepc
+	sd t0, 120(a0)
 	
 	# Restauration du contexte
 	ld sp, 0(a1)
@@ -36,7 +38,9 @@ ctx_sw:
 	ld s10, 96(a1)
 	ld s11, 104(a1)
 	ld t0, 112(a1)
-	csrw satp, t0
+	# csrw satp, t0
+	ld t0, 120(a1)
+	csrw sepc, t0
 	
 	# on passe la main au nouveau processus
 	ret

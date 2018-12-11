@@ -9,5 +9,8 @@ crt_process:
 	# On charge le paramètre arg du programme provisoirement placé dans s1.
 	mv a0, s1
 	# Lancement du programme, l'adresse est placé provisoirement dans s3
-	jalr x0, s2
+	# set previous mode to superviseur (SPP=1) and with interrupt (SPIE=1)
+	li t0, 0x120
+	csrs sstatus, t0
+	sret
 

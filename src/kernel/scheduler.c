@@ -1,5 +1,8 @@
 #include "scheduler.h"
 
+#include "stdio.h"
+#include "csr.h"
+
 static link processes[NB_SCHED_STATES]; /* Files de processus du scheduler */
 static link dustbin;
 static struct context dummy;
@@ -60,14 +63,14 @@ static void sched_zombify(process_t p)
 /* Fonction qui nettoye les processus finis*/
 void exit_scheduling()
 {
-  printf("exit scheduler -> donne la main\n");
-  process_t p = process_alive;
-  process_alive = NULL;
-  //p->info = retval;
-  p->error = 0;
-  sched_zombify(p);
-  schedule();
-  assert(0 && "Retour de sched_exit()");
+	printf("exit scheduler -> donne la main\n");
+	process_t p = process_alive;
+	process_alive = NULL;
+	//p->info = retval;
+	p->error = 0;
+	sched_zombify(p);
+	schedule();
+	assert(0 && "Retour de sched_exit()");
 }
 
 int sched_kstart(int (*run) (void *),

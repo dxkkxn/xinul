@@ -42,7 +42,7 @@ int main()
 
 	sched_init();//init_process() déjà inclu ici.
 
-	init_virtual_memory();
+	//init_virtual_memory();
 
 
 	if ( (sched_kstart(hello, 100, "Hello", (void*) 42)) < 0)

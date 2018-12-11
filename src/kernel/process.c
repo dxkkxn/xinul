@@ -44,16 +44,16 @@ void init_process(void)
 
 void process_exit() //TODO appeler l'ordonnanceur mettre le processus sur la file de destruction.
 {
- printf("handler exit, je redonne la main...\n");
- process_t idle = get_process(0);
- process_t cur = get_process(1);
- ctx_sw(&cur->context, &idle->context);
+	printf("handler exit, je redonne la main...\n");
+	process_t idle = get_process(0);
+	process_t cur = get_process(1);
+	ctx_sw(&cur->context, &idle->context);
 
 }
 
 void process_user_exit()
 {
- process_exit();
+	process_exit();
 }
 
 process_t create_generic_process(const char *name, int priority)
@@ -61,7 +61,7 @@ process_t create_generic_process(const char *name, int priority)
 	// pid counter  (start at 1, idlepid is 0)
 	static int pid = 1;
 
- // Is full?
+	// Is full?
 	if (nbproc == NBPROC) return NULL;
 
 	// Search free pid
@@ -121,13 +121,14 @@ process_t create_kernel_process(int (*code)(void *), const char *name, int prior
 		return NULL;
 	}
 
- process_t new = create_generic_process(name, priority);
+	process_t new = create_generic_process(name, priority);
 	if (new == NULL) return NULL;
 	new->context.satp = get_kernel_satp().reg;
 	new->context.ra = (void*) crt_process;
 	new->context.s0 = process_exit;
 	new->context.s1 = arg;
-	new->context.s2 = code;
+	new->context.sepc = code;
+
 	return new;
 }
 
