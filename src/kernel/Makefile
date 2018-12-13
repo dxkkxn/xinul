@@ -20,7 +20,7 @@ MACHINE ?= $(DEFAULT_MACHINE)
 # Librairies configuration
 #
 
-STDLIB_NAME ?= libc
+STDLIB_NAME ?= lib
 STDLIB_INCLUDE ?= \
 	../$(STDLIB_NAME)/include \
 	../$(STDLIB_NAME)/include/arch/riscv

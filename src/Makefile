@@ -1,6 +1,6 @@
 
 KERNEL_NAME = kernel.bin
-STDLIB_NAME = libc
+STDLIB_NAME = lib
 BUILD_DIR = build
 KERNEL_BIN = $(BUILD_DIR)/$(KERNEL_NAME)
 
