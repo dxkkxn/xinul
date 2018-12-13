@@ -1,4 +1,11 @@
-# # See LICENSE for license details.  # # Maintainer : Mathieu Barbe <mathieu.barbe@grenoble-inp.org>
+#
+# kernel Makefile
+#
+# See LICENSE for license details.
+# 
+# Maintainer : Mathieu Barbe <mathieu.barbe@grenoble-inp.org>
+#
+# To view commands use: make V=1
 #
 
 SHELL = /bin/sh
@@ -21,16 +28,11 @@ MACHINE ?= $(DEFAULT_MACHINE)
 #
 
 STDLIB_NAME ?= lib
-STDLIB_INCLUDE ?= \
-	../$(STDLIB_NAME)/include \
-	../$(STDLIB_NAME)/include/arch/riscv
-
-STDLIB ?= $(BUILD_DIR)/$(STDLIB_NAME).a
-
-LIBS = $(STDLIB)
+include ../$(STDLIB_NAME)/Makefile
+LIBS = $(LIB_TARGET)
 
 INCLUDE_DIRS = \
-	$(STDLIB_INCLUDE) \
+	$(LIB_INCLUDES) \
 	include \
 	asm_include \
 	boot/common \
@@ -69,15 +71,17 @@ LDFLAGS += -T $(LD_SCRIPT)
 # Kernel sources files
 #
 
-SRC_DIRS = \
+KERNEL_SRC_DIRS = \
 	. \
 	asm_src \
 
-KERNEL_SRC = $(foreach d, $(SRC_DIRS), $(wildcard $(d)/*.c))
-KERNEL_ASM = $(foreach d, $(SRC_DIRS), $(wildcard $(d)/*.S))
-OBJS = $(sort $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.S=.o))
-include boot/make.config # Fetch BOOT_OBJS and them dependencies.
-OBJS += $(BOOT_OBJS)
+# Fetch BOOT_OBJS
+include boot/boot.mk
+OBJS = $(BOOT_OBJS) # Fetched from boot/boot.mk
+
+KERNEL_SRC = $(foreach d, $(KERNEL_SRC_DIRS), $(wildcard $(d)/*.c))
+KERNEL_ASM = $(foreach d, $(KERNEL_SRC_DIRS), $(wildcard $(d)/*.S))
+OBJS += $(sort $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.S=.o))
 OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 DEPFILES = $(OBJS:.o=.d)
 
@@ -85,29 +89,27 @@ DEPFILES = $(OBJS:.o=.d)
 # Targets
 #
 
+CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config boot/boot.mk
+
 # Remove every implicite rules
 .suffixe:
 
-.PHONY: clean $(LIBS)
-
 $(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT)
 	$(call cmd, LD $@, $(dir $@), \
-	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -o $@)
+	$(LD) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -o $@)
 
-$(OBJ_DIR)/%.o: %.S Makefile ../riscv_flags.config
+$(OBJ_DIR)/%.o: %.S $(CONFIG_DEPENDENCIES)
 	$(call cmd, CC $< -> $@, $(dir $@), \
 	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
 
-$(OBJ_DIR)/%.o: %.c Makefile ../riscv_flags.config
+$(OBJ_DIR)/%.o: %.c $(CONFIG_DEPENDENCIES)
 	$(call cmd, CC $< -> $@, $(dir $@), \
 	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
 
 # Include object dependencies generated previously by gcc
 -include $(DEPFILES)
- 
-$(STDLIB):
-	make -C ../$(STDLIB_NAME)
 
+.PHONY: clean
 clean:
 	rm -f $(KERNEL_BIN)
 	rm -rf $(OBJ_DIR)
@@ -121,3 +123,7 @@ cmd = @mkdir -p $2 ; echo "$3"; $3
 else
 cmd = @echo "$1"; mkdir -p $2 ; $3
 endif
+
+test:
+	echo $(LIB_OBJS)
+	
