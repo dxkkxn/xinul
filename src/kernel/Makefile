@@ -3,7 +3,7 @@
 #
 # See LICENSE for license details.
 # 
-# Maintainer : Mathieu Barbe <mathieu.barbe@grenoble-inp.org>
+# Maintainer : Mathieu Barbe <mathieu.barbe@grenoble-inp.org> - 2018
 #
 # To view commands use: make V=1
 #
