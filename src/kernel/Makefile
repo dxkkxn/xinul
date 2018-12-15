@@ -99,8 +99,8 @@ $(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT)
 	$(LD) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -o $@)
 
 $(OBJ_DIR)/%.o: %.S $(CONFIG_DEPENDENCIES)
-	$(call cmd, CC $< -> $@, $(dir $@), \
-	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
+	$(call cmd, AS $< -> $@, $(dir $@), \
+	$(AS) -c $< -o $@ $(CFLAGS) -MMD -MP)
 
 $(OBJ_DIR)/%.o: %.c $(CONFIG_DEPENDENCIES)
 	$(call cmd, CC $< -> $@, $(dir $@), \
