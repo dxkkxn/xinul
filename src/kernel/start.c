@@ -10,9 +10,9 @@
 #include "virtual_memory.h"
 
 
-void ctx_sw(struct context *, struct context *);
+void ctx_sw(context_t *, context_t *);
 
-void idle()
+void idle_tmp()
 {
 	printf("Je suis idle\n");
 	//process_t idle = get_process(0);
@@ -27,8 +27,9 @@ void idle()
 	printf("On entre dans la boucle infinie du idle\n");
 	unsigned int i = 0;
 	while(i < 10) {
-		printf("timer interrupt n°%d\n", i);
+		printf("Waiting interrupt %d...\n", i);
 		__asm__("wfi");
+		printf("Return from interrupt %d\n", i);
 		i++;
 	}
 	printf("On sort de la boucle infinie pour éviter de faire un make kill\n");
@@ -38,9 +39,13 @@ int main()
 {
 	printf("\n= OSON Initialization =\n");
 
+	printf("Clock interruptions...");
 	setup_clock_interrupts();
+	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
+	printf("Scheduler initialization...");
 	sched_init();//init_process() déjà inclu ici.
+	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	//init_virtual_memory();
 
@@ -62,7 +67,7 @@ int main()
 			exit(-1);
 		}
 */
-	idle();
+	idle_tmp();
 
 	return 0;
 }

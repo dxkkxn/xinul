@@ -2,8 +2,32 @@
 #define SCHEDULER_H
 
 
+#include "queue.h"
 #include "process.h"
 #include "machine.h"
+
+
+#define PROCESS_QUEUE_TOP(head)		queue_top(head, process_t, status_link)
+#define PROCESS_QUEUE_BOTTOM(head)	queue_bottom(head, process_t, status_link)
+
+/* Possible states of the processes */
+enum p_status {
+	/* Executing */
+	ACTIVE = -1,
+
+	/* States handled by the scheduler */
+	ACTIVABLE = 0,
+	ZOMBIE,
+	BLOCKED_ON_WSON,
+	NB_SCHED_STATES,
+
+	/* Other states */
+	BLOCKED_ON_MSG = NB_SCHED_STATES,
+	BLOCKED_ON_IO,
+	BLOCKED_ON_CLOCK,
+	NB_STATES
+};
+
 /* Initialisation de l'ordonnanceur */
 void sched_init(void);
 
