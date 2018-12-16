@@ -35,6 +35,7 @@ INCLUDE_DIRS = \
 	$(LIB_INCLUDES) \
 	include \
 	asm_include \
+	tests \
 	boot/common \
 
 #
@@ -74,6 +75,7 @@ LDFLAGS += -T $(LD_SCRIPT)
 KERNEL_SRC_DIRS = \
 	. \
 	asm_src \
+	tests \
 
 # Fetch BOOT_OBJS
 include boot/boot.mk
