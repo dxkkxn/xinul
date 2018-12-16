@@ -37,4 +37,9 @@ int64_t test4(void* arg);
  */
 int64_t test5(void* arg);
 
+/*
+ * Semaphores or message queues test
+ */
+int64_t test10(void* arg);
+
 #endif /* _TESTS_H_ */

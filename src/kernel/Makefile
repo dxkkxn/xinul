@@ -14,6 +14,8 @@ BUILD_DIR ?= ../build
 OBJ_DIR = $(BUILD_DIR)/kernel_objs
 KERNEL_BIN ?= $(BUILD_DIR)/$(KERNEL_NAME)
 
+TESTS_OPTIONS ?= WITH_MSG
+
 all: $(KERNEL_BIN)
 
 #
@@ -56,6 +58,9 @@ CFLAGS += $(ARCH_CFLAGS)
 
 # Add specific kernel options
 CFLAGS += $(addprefix -I, $(INCLUDE_DIRS)) \
+
+# Add tests options
+CFLAGS += $(addprefix -D, $(TESTS_OPTIONS))
 
 #
 # LDFLAGS
