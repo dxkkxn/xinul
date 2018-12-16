@@ -52,7 +52,6 @@ void schedule(void)
 {
 	printf("scheduling...\n");
 
-	printf("active : %p\n", active);
 	process_t* old = active;
 	process_t* new = queue_top(
 		  &processes[ACTIVABLE], process_t, status_link
@@ -81,7 +80,6 @@ void schedule(void)
 	old_ctx = (old != NULL)? &old->context : &dummy;
 	new_ctx = &active->context;
 
-	printf("ctx_sw, old:%p, new:%p\n", old, new);
 
 	ctx_sw(old_ctx, new_ctx);
 
@@ -142,11 +140,14 @@ void sched_exit(int retval)
 	p->error = 0;
 
 	if (p->pid == 1) {
+		printf("TODO: reboot if process 1 dies\n");
 		// TODO
+		/*
 		assert(0 && "reboot dans scheduler.c");
 		//reboot();
 		printf("It is now safe to shutdown");
 		wfi();
+		*/
 	}
 
 	sched_zombify(p);

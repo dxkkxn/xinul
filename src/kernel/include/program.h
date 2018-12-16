@@ -6,6 +6,7 @@
 
 #include "stdint.h"
 
-int hello();
-int hello_user();
+int systemd(void* arg);
+int hello(void* arg);
+int hello_user(void* arg);
 
