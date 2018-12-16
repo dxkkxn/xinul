@@ -17,4 +17,14 @@ int64_t test1(void* arg);
  */
 int64_t test2(void* arg);
 
+/*
+ * Prioities and chprio
+ */
+int64_t test3(void* arg);
+
+/*
+ * shared time and active waiting
+ */
+int64_t test4(void* arg);
+
 #endif /* _TESTS_H_ */

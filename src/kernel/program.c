@@ -32,7 +32,13 @@ int64_t autotest(void* arg)
 	pid = sched_kstart(test1, 128, "test1", (void*) 0);
 	assert(pid > 0);
 	sched_waitpid(pid, NULL);
-	pid = sched_kstart(test2, 128, "test1", (void*) 0);
+	pid = sched_kstart(test2, 128, "test2", (void*) 0);
+	assert(pid > 0);
+	sched_waitpid(pid, NULL);
+	pid = sched_kstart(test3, 128, "test3", (void*) 0);
+	assert(pid > 0);
+	sched_waitpid(pid, NULL);
+	pid = sched_kstart(test4, 128, "test4", (void*) 0);
 	assert(pid > 0);
 	sched_waitpid(pid, NULL);
 	
@@ -42,6 +48,7 @@ int64_t autotest(void* arg)
 
 int64_t systemd(void* arg)
 {
+	uint64_t pid;
 	printf("Kernel systemd: when this process dies the OS is idle forever\n");
 
 	/*
@@ -54,19 +61,11 @@ int64_t systemd(void* arg)
 		exit(-1);
 	}
 	*/
-	if ((sched_kstart(autotest, 2, "autotest", (void*) 0)) < 0) {
-		printf("Process error: unable to create process autotest. exit.\n");
-		exit(-1);
-	}
+	pid = sched_kstart(autotest, 2, "autotest", (void*) 0);
+	assert(pid > 0);
+	sched_waitpid(pid, NULL);
 
-	printf("End of systemd, catching a few interrupts before sleeping\n");
+	printf("End of systemd\n");
 
-	unsigned int i = 0;
-	while (i < 10) {
-		printf("Waiting interrupt %d...\n", i);
-		__asm__("wfi");
-		printf("Return from interrupt %d\n", i);
-		i++;
-	}
 	return 0;
 }

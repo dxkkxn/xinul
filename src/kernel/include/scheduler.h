@@ -57,6 +57,9 @@ int sched_kill(int pid);
 /* Return the pid of the active process */
 int sched_get_active_pid(void);
 
+/* Return the prio of the active process */
+int sched_get_active_prio(void);
+
 /*
  * Bock a process in the given queue
  * info         : information to store in the process

@@ -321,7 +321,12 @@ int sched_kill(int pid)
 
 int sched_get_active_pid(void) 
 {
-        return active->pid;
+	return active->pid;
+}
+
+int sched_get_active_prio(void)
+{
+	return active->prio;
 }
 
 int sched_block(long info, link* queue, int new_status, int* error)
