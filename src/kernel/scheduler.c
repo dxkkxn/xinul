@@ -50,12 +50,13 @@ static context_t dummy;
 
 void schedule(void)
 {
-	printf("scheduling...\n");
+	printf("scheduling... ");
 
 	process_t* old = active;
 	process_t* new = queue_top(
 		  &processes[ACTIVABLE], process_t, status_link
 	);
+
 
 	context_t* old_ctx;
 	context_t* new_ctx;
@@ -80,6 +81,12 @@ void schedule(void)
 	old_ctx = (old != NULL)? &old->context : &dummy;
 	new_ctx = &active->context;
 
+	if (old) printf("%s [%d]", old->name, old->pid);
+	else printf("null proc");
+	printf(" -> ");
+	if (active) printf("%s [%d]", active->name, active->pid);
+	else printf("null proc");
+	printf("\n");
 
 	ctx_sw(old_ctx, new_ctx);
 
