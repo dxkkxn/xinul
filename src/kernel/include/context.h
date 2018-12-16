@@ -41,4 +41,7 @@ void ctx_sw(context_t *previous, context_t *next);
  * arg		: runf parameters
  */
 void context_kernelinit(
-		context_t *c, kernel_stack_t stack, int (*runf) (void *), void *arg);
+		context_t *c,
+		kernel_stack_t stack,
+		int64_t (*runf) (void *),
+		void *arg);

@@ -5,6 +5,7 @@
 #include "queue.h"
 #include "process.h"
 #include "machine.h"
+#include "stdint.h"
 
 
 #define PROCESS_QUEUE_TOP(head)		queue_top(head, process_t, status_link)
@@ -33,7 +34,7 @@ void sched_init(void);
 
 /* Start of a process: */
 /*  - kernel */
-int sched_kstart(int (*run) (void *),
+int sched_kstart(int64_t (*run) (void *),
                  int prio,
                  const char *name,
                  void *arg);
@@ -77,13 +78,13 @@ int sched_unblock(process_t *p);
  * pid :        pid of the son of the child (or -1 for the first to end)
  * retvalp:     pointer on the return value of the son
  */
-int sched_waitpid(int pid, int *retvalp);
+int sched_waitpid(int pid, int64_t *retvalp);
 
 /* Non blocking sched_waitpid()
  * pid :        pid of the son of the child (or -1 for the first to end)
  * retvalp:     pointer on the return value of the son
  */
-int sched_waitpid_nohang(int pid, int *retvalp);
+int sched_waitpid_nohang(int pid, int64_t *retvalp);
 
 /*
  * Change the priority of a process and signal if to the scheduler if it is

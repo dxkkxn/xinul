@@ -19,7 +19,7 @@ static void kernel_run(int (*runf) (void *), void arg, unsigned int magic)
 
 
 void context_kernelinit(
-		context_t *c, kernel_stack_t stack, int (*runf) (void *), void *arg)
+		context_t *c, kernel_stack_t stack, int64_t (*runf) (void *), void *arg)
 {
 	c->satp = get_kernel_satp().reg;
 	c->ra = (void*) crt_process;

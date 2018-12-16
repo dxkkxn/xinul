@@ -97,7 +97,7 @@ static void sched_zombify(process_t* p)
  * retvalp	: pointer on the return value of the child or NULL
  * nohang	: null if blocking function
  */
-static inline int sched_waitpid_full(int pid, int *retvalp, int nohang)
+static inline int sched_waitpid_full(int pid, int64_t *retvalp, int nohang)
 {
         process_t *child;
         int ret;
@@ -140,7 +140,7 @@ static inline int sched_waitpid_full(int pid, int *retvalp, int nohang)
 /* ====      Scheduler initialization      ==== */
 
 /* idle process */
-int idle(void *arg)
+int64_t idle(void *arg)
 {
 	(void) arg;
 	
@@ -169,7 +169,7 @@ void sched_init(){
 	STATUS_QUEUE_ADD((&kernel_idle), ACTIVABLE);
 }
 
-int sched_kstart(int (*run) (void *),
+int sched_kstart(int64_t (*run) (void *),
                  int prio,
                  const char *name,
                  void *arg)
@@ -365,12 +365,12 @@ int sched_unblock(process_t* p)
 	return active != NULL && p->prio > active->prio;
 }
 
-int sched_waitpid(int pid, int* retvalp)
+int sched_waitpid(int pid, int64_t* retvalp)
 {
 	return sched_waitpid_full(pid, retvalp, 0);
 }
 
-int sched_waitpid_nohand(int pid, int* retvalp)
+int sched_waitpid_nohand(int pid, int64_t* retvalp)
 {
 	process_t *p;
 

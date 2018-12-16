@@ -7,13 +7,13 @@
 #include "program.h"
 #include "tests.h"
 
-int hello_user(void* arg)
+int64_t hello_user(void* arg)
 {
 	printf("Programme user hello\n");
 	return 0;
 }
 
-int hello(void* arg)
+int64_t hello(void* arg)
 {
 	printf("Hello words! My pid is %d and my arg is %ld\n", sched_get_active_pid(), (uint64_t) arg);
 	for (size_t i = 0; i < 100000000; i++) {
@@ -23,7 +23,7 @@ int hello(void* arg)
 	return 0;
 }
 
-int autotest(void* arg)
+int64_t autotest(void* arg)
 {
 	int pid;
 
@@ -32,12 +32,15 @@ int autotest(void* arg)
 	pid = sched_kstart(test1, 128, "test1", (void*) 0);
 	assert(pid > 0);
 	sched_waitpid(pid, NULL);
+	pid = sched_kstart(test2, 128, "test1", (void*) 0);
+	assert(pid > 0);
+	sched_waitpid(pid, NULL);
 	
 	printf("[autotest] Done\n");
 	return 0;
 }
 
-int systemd(void* arg)
+int64_t systemd(void* arg)
 {
 	printf("Kernel systemd: when this process dies the OS is idle forever\n");
 

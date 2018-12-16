@@ -1,29 +1,28 @@
 #include "tests.h"
 
-#include <stdint.h>
 #include "scheduler.h"
 
-int dummy1(void* arg)
+int64_t dummy1(void* arg)
 {
 	printf("1");
-	assert((uint64_t) arg == DUMMY_VAL);
+	assert((int64_t) arg == DUMMY_VAL);
 
 	return 3;
 }
 
-int dummy2(void* arg)
+int64_t dummy2(void* arg)
 {
 	printf(" 5");
-	assert((uint64_t) arg == DUMMY_VAL + 1);
+	assert((int64_t) arg == DUMMY_VAL + 1);
 
 	return 4;
 }
 
-int test1(void* arg)
+int64_t test1(void* arg)
 {
-	int pid1;
-	int r;
-	int rval;
+	int64_t pid1;
+	int64_t r;
+	int64_t rval;
 
 	(void) arg;
 
