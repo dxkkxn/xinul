@@ -142,6 +142,6 @@
  * Libère la zone de données contenue dans buffer
  */
 #define buf_free_data(buf)                                              \
-        ( mem_free((buf)->start, (buf)->size * sizeof((buf)->start)) )
+        ( mem_free((buf)->start, (buf)->size * sizeof(*(buf)->start)) )
 #endif
 

@@ -55,6 +55,8 @@ int64_t test10(void *arg)
 
 	(void)arg;
 
+	printf("test10... ");
+
 	printf("1");
 	assert((fid = pcreate(5)) >= 0);
 	write(fid, str, len);
@@ -63,7 +65,10 @@ int64_t test10(void *arg)
 	buf[len] = 0;
 	assert(strcmp(str, buf) == 0);
 	assert(pdelete(fid) == 0);
-	printf(" 3.\n");
+	printf(" 3.");
+
+	printf("\r\t\t\t\t\t\t\t[OK]\n");
+
 	return 0;
 }
 

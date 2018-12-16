@@ -182,14 +182,14 @@ int pcreate(int count)
 
 int pdelete(int fid)
 {
-        msgqueue_t *mq = mq_get(fid);
-        if (mq == NULL)
-                return -1;
+	msgqueue_t *mq = mq_get(fid);
+	if (mq == NULL)
+		return -1;
 
-        buf_free_data(&mq->buf);
-        mq_free(fid);
-        msg_reset(mq);
-        return 0;
+	buf_free_data(&mq->buf);
+	mq_free(fid);
+	msg_reset(mq);
+	return 0;
 }
 
 int preceive(int fid, int *message)
