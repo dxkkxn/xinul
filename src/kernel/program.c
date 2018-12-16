@@ -29,6 +29,9 @@ int64_t autotest(void* arg)
 
 	printf("[autotest] Starting...\n");
 	
+	pid = sched_kstart(test0, 128, "test0", (void*) 0);
+	assert(pid > 0);
+	sched_waitpid(pid, NULL);
 	pid = sched_kstart(test1, 128, "test1", (void*) 0);
 	assert(pid > 0);
 	sched_waitpid(pid, NULL);

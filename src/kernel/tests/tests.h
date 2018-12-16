@@ -6,6 +6,11 @@
 #define DUMMY_VAL 0xDEADCAFE
 
 /*
+ * Start a simple process
+ */
+int64_t test0(void* arg);
+
+/*
  * Start a process with a parameter
  * End normally
  * Father wait for his child
