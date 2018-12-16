@@ -32,4 +32,9 @@ int64_t test3(void* arg);
  */
 int64_t test4(void* arg);
 
+/*
+ * Robustness of the scheduler
+ */
+int64_t test5(void* arg);
+
 #endif /* _TESTS_H_ */
