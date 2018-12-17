@@ -16,23 +16,8 @@
 SHELL = /bin/sh
 BUILD_DIR ?= ../build
 OUTPUT ?= $(BUILD_DIR)/user
-OUTPUT_OBJS = $(OUTPUT)/objs
 
 user_space: apps
-
-#
-# Common cflags and ldflags
-#
-
-# Default optim and debug options
-CFLAGS ?= -O0 -g
-
-# Import specific architecture  parameters :
-include ../riscv_flags.config
-CFLAGS += $(ARCH_CFLAGS)
-LDFLAGS = $(ARCH_LDFLAGS)
-LDFLAGS += $(BUILD_DIR)/user/ulib.a
-# todo remove previous lines
 
 # todo A sup
 # Include makefile utilities
@@ -46,28 +31,42 @@ STDLIB_NAME ?= lib
 include ../$(STDLIB_NAME)/Makefile
 
 #
-# ulib (User lib) configuration
+# User lib configuration
 #
 
-ULIB_NAME = ulib
-ULIB_DIR = $(ULIB_NAME)
-ULIB = $(OUTPUT)/$(ULIB_NAME).a
-
+ULIB_DIR = ulib
+ULIB = $(BUILD_DIR)/ulib.a
+OUTPUT_ULIB = $(BUILD_DIR)
 # ulib Sources files
 ULIB_SRC = $(wildcard $(ULIB_DIR)/*.c)
 ULIB_ASM = $(wildcard $(ULIB_DIR)/*.S)
 ULIB_OBJS = $(sort $(ULIB_SRC:.c=.o)) $(sort $(ULIB_ASM:.S=.o))
-ULIB_OBJS := $(addprefix $(OUTPUT_OBJS)/, $(ULIB_OBJS))
+ULIB_OBJS := $(addprefix $(OUTPUT_ULIB)/, $(ULIB_OBJS))
 ULIB_DEPFILES = $(ULIB_OBJS:.o=.d)
+
+#
+# Common cflags and ldflags
+#
+
+# Import specific architecture  parameters :
+include ../riscv_flags.config
+CFLAGS = $(ARCH_CFLAGS)
+USER_INCLUDES = $(LIB_INCLUDES) $(ULIB_DIR)
+CFLAGS += $(addprefix -I, $(USER_INCLUDES))
+LDFLAGS = $(CFLAGS) $(ARCH_LDFLAGS)
 
 #
 # Import userspace program build toolchain
 #
 
 APPS_NAMES      = hello
-APPS_STD_INC    = $(LIB_INCLUDES) # Fetched from ../lib/Makefile
+APP_CFLAGS := $(CFLAGS)
+APP_LDFLAGS := $(LDFLAGS) -T build/apps.lds
+# -Wl,--oformat=binary 
+
+APPS_STD_INC    = $(USER_INCLUDES)
 APPS_STD_LIB = $(BUILD_DIR)/$(STDLIB_NAME).a
-APPS_STD_TARGET := $(LIB_TARGET)
+APPS_STD_TARGET := $(LIB_TARGET) $(ULIB)
 include build/apps.mk
 
 #
@@ -79,17 +78,19 @@ include build/apps.mk
 
 CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config
 
-apps: $(APPS_TARGETS) $(ulib)
+apps: $(APPS_TARGETS)
+
+ulib: $(ULIB)
 
 $(ULIB): $(ULIB_OBJS)
 	$(call cmd, AR $@, $(dir $@), \
 	$(AR) cr $@ $^)
 
-$(OUTPUT_OBJS)/%.o: %.S $(CONFIG_DEPENDENCIES)
+$(OUTPUT_ULIB)/%.o: %.S $(CONFIG_DEPENDENCIES)
 	$(call cmd, CC $< -> $@, $(dir $@), \
 	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
 
-$(OUTPUT_OBJS)/%.o: %.c $(CONFIG_DEPENDENCIES)
+$(OUTPUT_ULIB)/%.o: %.c $(CONFIG_DEPENDENCIES)
 	$(call cmd, AS $< -> $@, $(dir $@), \
 	$(AS) -c $< -o $@ $(CFLAGS) -MMD -MP)
 

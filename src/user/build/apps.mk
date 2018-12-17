@@ -16,8 +16,6 @@
 # Parameters:
 #  APPS_NAMES: the list of the applications names. Each app content must be
 #  stored in a directory anmed as the application itself.
-#  APPS_STD_INC: a list of directory that contains includes for userspace
-#  standard library
 #  APPS_STD_LIB: path to the standard static library file
 #  APPS_STD_TARGET: the Makefile target we need to depends if we want a
 #  standard library file
@@ -39,13 +37,6 @@ ifndef APPS_NAMES
 else
 ifeq ("$(APPS_NAMES)", "")
 	$(error Applications names list undefined \(APPS_NAMES is empty\).)
-endif
-endif
-ifndef APPS_STD_INC
-	$(error Standard includes directories undefined \(APPS_STD_INC undefined\).)
-else
-ifeq ("$(APPS_STD_INC)", "")
-	$(error Standard includes directories undefined \(APPS_STD_INC is empty\).)
 endif
 endif
 ifndef APPS_STD_LIB
@@ -82,29 +73,24 @@ $(1)_SRC  := $$(call all-c-files-under, $$($(1)_DIR)) \
 
 $(1)_OBJS := $$(addprefix $(OUTPUT)/, $$(call objetize, $$($(1)_SRC)))
 $(1)_DEPS := $$(addprefix $(OUTPUT)/, $$(call generate-deps, $$($(1)_SRC)))
-$(1)_INC  := -I. $$(addprefix -I, $(APPS_STD_INC) $$($(1)_DIR))
 
 # Create final target and add it to the list of target to call
 $(1)_TARGET := $$(addprefix $(OUTPUT)/, $$(addsuffix .bin, $$($(1)_DIR)))
 
 # Include app dependency files if required
-ifneq "$$(MAKECMDGOALS)" "clean"
-    ifneq "$$(MAKECMDGOALS)" "$$(PLATFORM_TOOLS)"
+#ifneq "$$(MAKECMDGOALS)" "clean"
+#    ifneq "$$(MAKECMDGOALS)" "$$(PLATFORM_TOOLS)"
         -include $$($(1)_DEPS)
-    endif
-endif
+#    endif
+#endif
 
 # Compilation products depends on output directory
 $$($(1)_DEPS) $$($(1)_OBJS)): | $$($(1)_OUT)
 $$($(1)_OUT):
+	echo $@
 	mkdir -p $$@
 
-# Define compilation flags/includes for app targets
-$$($(1)_DEPS): APP_INC := $$($(1)_INC)
-$$($(1)_TARGET): APP_INC := $$($(1)_INC)
-$$($(1)_TARGET): APP_CFLAGS := $$(CFLAGS)
-$$($(1)_TARGET): APP_LDFLAGS := $$(LDFLAGS) -T build/apps.lds
-# -Wl,--oformat=binary 
+# Define for app targets
 
 $$($(1)_TARGET): $$(APPS_STD_TARGET) $$($(1)_OBJS) build/apps.mk
 	$$(LD) $$(APP_LDFLAGS) -o $$@ $$(filter-out build/apps.mk, $$(filter-out $$<, $$^)) $() $(APPS_STD_LIB)
@@ -119,7 +105,7 @@ endef
 ### Dependency generation targets ###
 $(OUTPUT)/%.d: %.c
 	@printf "$(@D)/" > $@
-	$(DEPS) $(CFLAGS) -MM $< $(APP_INC) >> $@
+	$(DEPS) $(CFLAGS) -MM $< >> $@
 
 $(OUTPUT)/%.d: %.S
 	@printf "$(@D)/" > $@
@@ -127,10 +113,11 @@ $(OUTPUT)/%.d: %.S
 
 ### Generic targets for compilation ###
 $(OUTPUT)/%.o: %.c
-	$(CC) $(APP_CFLAGS) $(APP_INC) -c $< -o $@
+	echo apps rules
+	$(CC) $(APP_CFLAGS) -c $< -o $@
 
 $(OUTPUT)/%.o: %.S
-	$(AS) $(APP_CFLAGS) $(APP_INC) -c $< -o $@
+	$(AS) $(APP_CFLAGS) -c $< -o $@
 
 ### Create targets for parent Makefile ###
 APPS_TARGETS := $(addprefix $(OUTPUT)/, $(addsuffix .bin, $(APPS_NAMES)))
