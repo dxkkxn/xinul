@@ -87,7 +87,6 @@ $(1)_TARGET := $$(addprefix $(OUTPUT)/, $$(addsuffix .bin, $$($(1)_DIR)))
 # Compilation products depends on output directory
 $$($(1)_DEPS) $$($(1)_OBJS)): | $$($(1)_OUT)
 $$($(1)_OUT):
-	echo $@
 	mkdir -p $$@
 
 # Define for app targets
@@ -113,11 +112,11 @@ $(OUTPUT)/%.d: %.S
 	$(DEPS) $(CFLAGS) -MM $< $(APP_INC) >> $@
 
 ### Generic targets for compilation ###
-$(OUTPUT)/%.o: %.c
+$(OUTPUT)/%.o: %.c $(CONFIG_DEPENDENCIES)
 	$(call cmd, CC APP $< -> $@, $(dir $@), \
 		$(CC) -c $< -o $@ $(APP_CFLAGS) -MMD -MP)
 
-$(OUTPUT)/%.o: %.S
+$(OUTPUT)/%.o: %.S $(CONFIG_DEPENDENCIES)
 	$(call cmd, AS APP $< -> $@, $(dir $@), \
 		$(AS) -c $< -o $@ $(APP_CFLAGS) -MMD -MP)
 

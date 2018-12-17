@@ -10,9 +10,9 @@
 
 SHELL = /bin/sh
 KERNEL_NAME ?= kernel.bin
-BUILD_DIR ?= ../build
-OBJ_DIR = $(BUILD_DIR)/kernel_objs
-KERNEL_BIN ?= $(BUILD_DIR)/$(KERNEL_NAME)
+OUTPUT ?= ../build
+OBJ_DIR = $(OUTPUT)/kernel/objs
+KERNEL_BIN ?= $(OUTPUT)/$(KERNEL_NAME)
 
 all: $(KERNEL_BIN)
 
@@ -86,6 +86,11 @@ OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 DEPFILES = $(OBJS:.o=.d)
 
 #
+# User apps
+#
+include build/apps-integration.mk
+
+#
 # Targets
 #
 
@@ -94,7 +99,7 @@ CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config boot/boot.mk
 # Remove every implicite rules
 .suffixe:
 
-$(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT)
+$(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT) $() $(APPS_OBJS) $(APPS_OUT)/apps.lds
 	$(call cmd, LD $@, $(dir $@), \
 	$(LD) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -o $@)
 

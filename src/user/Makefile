@@ -81,7 +81,6 @@ CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config
 apps: $(APPS_TARGETS)
 
 ulib: $(ULIB)
-
 $(ULIB): $(ULIB_OBJS)
 	$(call cmd, AR $@, $(dir $@), \
 	$(AR) cr $@ $^)
