@@ -93,7 +93,8 @@ $$($(1)_OUT):
 # Define for app targets
 
 $$($(1)_TARGET): $$(APPS_STD_TARGET) $$($(1)_OBJS) build/apps.mk
-	$$(LD) $$(APP_LDFLAGS) -o $$@ $$(filter-out build/apps.mk, $$(filter-out $$<, $$^)) $() $(APPS_STD_LIB)
+	$(call cmd, LD APP $$@, $$(dir $$@), \
+	$$(LD) $$(APP_LDFLAGS) -o $$@ $$(filter-out build/apps.mk, $$(filter-out $$<, $$^)) $() $(APPS_STD_LIB))
 
 endef
 
@@ -113,11 +114,12 @@ $(OUTPUT)/%.d: %.S
 
 ### Generic targets for compilation ###
 $(OUTPUT)/%.o: %.c
-	echo apps rules
-	$(CC) $(APP_CFLAGS) -c $< -o $@
+	$(call cmd, CC APP $< -> $@, $(dir $@), \
+		$(CC) -c $< -o $@ $(APP_CFLAGS) -MMD -MP)
 
 $(OUTPUT)/%.o: %.S
-	$(AS) $(APP_CFLAGS) -c $< -o $@
+	$(call cmd, AS APP $< -> $@, $(dir $@), \
+		$(AS) -c $< -o $@ $(APP_CFLAGS) -MMD -MP)
 
 ### Create targets for parent Makefile ###
 APPS_TARGETS := $(addprefix $(OUTPUT)/, $(addsuffix .bin, $(APPS_NAMES)))
