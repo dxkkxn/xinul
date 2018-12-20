@@ -10,6 +10,7 @@
 #
 # Dependencies:
 #  OUTPUT
+# BIN_DIR : Directory when user binaries is generated.
 # Provides:
 #  APPS_OBJS: The application object files
 
@@ -17,7 +18,8 @@
 GEN_SECTIONS := build/generate-link-sections.sh
 GEN_TABLE    := build/generate-symbols-table.sh
 
-APPS_BIN  := $(wildcard $(OUTPUT)/user/*.bin)
+
+APPS_BIN  := $(wildcard $(BIN_DIR)/*.bin)
 APPS_OUT  := $(OUTPUT)/kernel
 APPS_OBJS := $(addprefix $(APPS_OUT)/, $(notdir $(addsuffix .o, $(APPS_BIN))))
 APPS_OBJS  += $(APPS_OUT)/symbols-table.o

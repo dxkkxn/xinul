@@ -24,12 +24,24 @@ DEFAULT_MACHINE = spike
 MACHINE ?= $(DEFAULT_MACHINE)
 
 #
-# Librairies configuration
+# Standard librairies configuration
 #
 
 STDLIB_NAME ?= lib
 include ../$(STDLIB_NAME)/Makefile
-LIBS = $(LIB_TARGET)
+LIBS = $(LIB_TARGET) # Useful to compil stdlib from kernel Makefile
+
+
+#
+# User apps
+#
+
+BIN_DIR = $(OUTPUT)/user
+include build/apps-integration.mk
+
+#
+# Include headers directories
+#
 
 INCLUDE_DIRS = \
 	$(LIB_INCLUDES) \
@@ -64,8 +76,8 @@ CFLAGS += $(addprefix -I, $(INCLUDE_DIRS)) \
 LDFLAGS = $(ARCH_LDFLAGS)
 
 # Add specific kernel LD options
-LD_SCRIPT ?= boot/$(MACHINE)/default.lds
-LDFLAGS += -T $(LD_SCRIPT)
+LD_SCRIPTS = boot/$(MACHINE)/default.lds $(APPS_OUT)/apps.lds
+LDFLAGS += $(addprefix -T, $(LD_SCRIPTS))
 
 #
 # Kernel sources files
@@ -77,7 +89,7 @@ KERNEL_SRC_DIRS = \
 
 # Fetch BOOT_OBJS
 include boot/boot.mk
-OBJS = $(BOOT_OBJS) # Fetched from boot/boot.mk
+OBJS = $(BOOT_OBJS)
 
 KERNEL_SRC = $(foreach d, $(KERNEL_SRC_DIRS), $(wildcard $(d)/*.c))
 KERNEL_ASM = $(foreach d, $(KERNEL_SRC_DIRS), $(wildcard $(d)/*.S))
@@ -86,22 +98,17 @@ OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 DEPFILES = $(OBJS:.o=.d)
 
 #
-# User apps
-#
-include build/apps-integration.mk
-
-#
 # Targets
 #
 
-CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config boot/boot.mk
+CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config boot/boot.mk build/apps-integration.mk
 
 # Remove every implicite rules
 .suffixe:
 
-$(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT) $() $(APPS_OBJS) $(APPS_OUT)/apps.lds
+$(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPTS) $(APPS_OBJS)
 	$(call cmd, LD $@, $(dir $@), \
-	$(LD) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -o $@)
+	$(LD) $(CFLAGS) $(LDFLAGS) $(OBJS) $(APPS_OBJS) $(LIBS) -o $@)
 
 $(OBJ_DIR)/%.o: %.S $(CONFIG_DEPENDENCIES)
 	$(call cmd, AS $< -> $@, $(dir $@), \
