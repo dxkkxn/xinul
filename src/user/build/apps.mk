@@ -54,6 +54,12 @@ ifeq ("$(APPS_STD_TARGET)", "")
 endif
 endif
 
+#
+# Configuration dependencies overide
+#
+
+APPS_CONFIG_DEPENDENCIES = $(CONFIG_DEPENDENCIES) build/apps.mk
+
 ### Check that apps names fit directories ###
 $(foreach app, $(APPS_NAMES),													\
 	$(if $(wildcard $(app)),													\
@@ -92,8 +98,10 @@ $$($(1)_OUT):
 # Define for app targets
 
 $$($(1)_TARGET): $$(APPS_STD_TARGET) $$($(1)_OBJS) build/apps.mk
-	$(call cmd, LD APP $$@, $$(dir $$@), \
-	$$(LD) $$(APP_LDFLAGS) -o $$@ $$(filter-out build/apps.mk, $$(filter-out $$<, $$^)) $() $(APPS_STD_LIB))
+	$(call cmd, LD APP $$(@:%.bin=%.elf), $$(dir $$@), \
+	$$(LD) $$(APP_LDFLAGS) -o $$(@:%.bin=%.elf) $$(filter-out build/apps.mk, $$(filter-out $$<, $$^)) $() $(APPS_STD_LIB))
+	$(call cmd, OBJCOPY APP $$@, $$(dir $$@), \
+	$(OBJCOPY) -O binary $$(@:%.bin=%.elf) $$@ )
 
 endef
 
@@ -112,11 +120,11 @@ $(OUTPUT)/%.d: %.S
 	$(DEPS) $(CFLAGS) -MM $< $(APP_INC) >> $@
 
 ### Generic targets for compilation ###
-$(OUTPUT)/%.o: %.c $(CONFIG_DEPENDENCIES)
+$(OUTPUT)/%.o: %.c $(APPS_CONFIG_DEPENDENCIES)
 	$(call cmd, CC APP $< -> $@, $(dir $@), \
 		$(CC) -c $< -o $@ $(APP_CFLAGS) -MMD -MP)
 
-$(OUTPUT)/%.o: %.S $(CONFIG_DEPENDENCIES)
+$(OUTPUT)/%.o: %.S $(APPS_CONFIG_DEPENDENCIES)
 	$(call cmd, AS APP $< -> $@, $(dir $@), \
 		$(AS) -c $< -o $@ $(APP_CFLAGS) -MMD -MP)
 
@@ -126,3 +134,6 @@ APPS_TARGETS := $(addprefix $(OUTPUT)/, $(addsuffix .bin, $(APPS_NAMES)))
 ### Apply compile environment to each app ###
 $(foreach app, $(APPS_NAMES), $(eval $(call APP_BUILD,$(app))))
 
+
+aa:
+	echo $(APPS_CONFIG_DEPENDENCIES)

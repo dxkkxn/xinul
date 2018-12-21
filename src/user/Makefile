@@ -16,6 +16,7 @@
 SHELL = /bin/sh
 BUILD_DIR ?= ../build
 OUTPUT ?= $(BUILD_DIR)/user
+#CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config
 
 user_space: apps
 
@@ -75,8 +76,6 @@ include build/apps.mk
 
 # Remove every implicite rules
 .suffixe:
-
-CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config
 
 apps: $(APPS_TARGETS)
 
