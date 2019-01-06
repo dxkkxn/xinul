@@ -36,13 +36,19 @@ void idle()
 extern char _hello_start[];
 extern char _hello_end[];
 
+#include "userspace_apps.h"
+
 int main()
 {
 	printf("\n= OSON Initialization =\n");
 	
-	printf("hello start %p\n", _hello_start);
-	printf("hello end %p\n", _hello_end);
-	int64_t size = (int64_t)(_hello_end) - (uint64_t)(_hello_start);
+	const struct uapps *apps = symbols_table;
+	printf("adresse de la table des apps %p\n", apps);
+	printf("Nom du premier programme user '%s'\n", apps->name);
+	printf("symbole _hello_start %p\n", _hello_start);
+	printf("hello start %p\n", apps->start);
+	printf("hello end %p\n", apps->end);
+	int64_t size = (int64_t)(apps->end) - (uint64_t)(apps->start);
 	printf("hello size %d\n", (int)size);
 	exit(0);
 	
