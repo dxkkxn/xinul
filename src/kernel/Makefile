@@ -73,10 +73,10 @@ CFLAGS += $(addprefix -I, $(INCLUDE_DIRS)) \
 #
 
 # common architecture option fetched from ../riscv_flags.config
-LDFLAGS = $(ARCH_LDFLAGS)
+LDFLAGS += $(ARCH_LDFLAGS)
 
 # Add specific kernel LD options
-LD_SCRIPTS = boot/$(MACHINE)/default.lds $(APPS_OUT)/apps.lds
+LD_SCRIPTS = boot/$(MACHINE)/default.lds
 LDFLAGS += $(addprefix -T, $(LD_SCRIPTS))
 
 #

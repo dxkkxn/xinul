@@ -33,10 +33,19 @@ void idle()
 	}
 	printf("On sort de la boucle infinie pour éviter de faire un make kill\n");
 }
+extern char _hello_start[];
+extern char _hello_end[];
 
 int main()
 {
 	printf("\n= OSON Initialization =\n");
+	
+	printf("hello start %p\n", _hello_start);
+	printf("hello end %p\n", _hello_end);
+	int64_t size = (int64_t)(_hello_end) - (uint64_t)(_hello_start);
+	printf("hello size %d\n", (int)size);
+	exit(0);
+	
 
 	setup_clock_interrupts();
 	init_process();
