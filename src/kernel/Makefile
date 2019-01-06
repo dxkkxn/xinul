@@ -106,7 +106,7 @@ CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config boot/boot.mk build/apps-int
 # Remove every implicite rules
 .suffixe:
 
-$(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPTS) $(APPS_OBJS)
+$(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPTS) $(APPS_OBJS) $(APPS_OUT)/apps.lds
 	$(call cmd, LD $@, $(dir $@), \
 	$(LD) $(CFLAGS) $(LDFLAGS) $(OBJS) $(APPS_OBJS) $(LIBS) -o $@)
 
