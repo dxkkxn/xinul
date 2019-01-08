@@ -20,7 +20,7 @@ static void sifive_test_poweroff(int status)
 {
     *test = SIFIVE_TEST_PASS;
     while (1) {
-        asm volatile("");
+        __asm__ __volatile__("");
     }
 }
 

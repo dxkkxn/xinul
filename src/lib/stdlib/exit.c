@@ -7,6 +7,6 @@
 void exit(int status)
 {
     poweroff_dev->poweroff(status);
-    asm volatile("1: j 1b");
+    __asm__ __volatile__("1: j 1b");
     __builtin_unreachable();
 }

@@ -2,10 +2,6 @@
 
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // Currently, interrupts are always disabled in M-mode.
 #define disable_irqsave() (0)
 #define enable_irqrestore(flags) ((void) (flags))
@@ -13,9 +9,9 @@ extern "C" {
 typedef struct { int lock; } spinlock_t;
 #define SPINLOCK_INIT {0}
 
-#define mb() asm volatile ("fence" ::: "memory")
-#define atomic_set(ptr, val) (*(volatile typeof(*(ptr)) *)(ptr) = val)
-#define atomic_read(ptr) (*(volatile typeof(*(ptr)) *)(ptr))
+#define mb() __asm__ __volatile__ ("fence" ::: "memory")
+#define atomic_set(ptr, val) (*(volatile __typeof__(*(ptr)) *)(ptr) = val)
+#define atomic_read(ptr) (*(volatile __typeof__(*(ptr)) *)(ptr))
 
 #ifdef __riscv_atomic
 # define atomic_add(ptr, inc) __sync_fetch_and_add(ptr, inc)
@@ -25,7 +21,7 @@ typedef struct { int lock; } spinlock_t;
 #else
 # define atomic_binop(ptr, inc, op) ({ \
   long flags = disable_irqsave(); \
-  typeof(*(ptr)) res = atomic_read(ptr); \
+  __typeof__(*(ptr)) res = atomic_read(ptr); \
   atomic_set(ptr, op); \
   enable_irqrestore(flags); \
   res; })
@@ -34,8 +30,8 @@ typedef struct { int lock; } spinlock_t;
 # define atomic_swap(ptr, inc) atomic_binop(ptr, inc, (inc))
 # define atomic_cas(ptr, cmp, swp) ({ \
   long flags = disable_irqsave(); \
-  typeof(*(ptr)) res = *(volatile typeof(*(ptr)) *)(ptr); \
-  if (res == (cmp)) *(volatile typeof(ptr))(ptr) = (swp); \
+  __typeof__(*(ptr)) res = *(volatile __typeof__(*(ptr)) *)(ptr); \
+  if (res == (cmp)) *(volatile __typeof__(ptr))(ptr) = (swp); \
   enable_irqrestore(flags); \
   res; })
 #endif
@@ -74,7 +70,3 @@ static inline void spinlock_unlock_irqrestore(spinlock_t* lock, long flags)
   spinlock_unlock(lock);
   enable_irqrestore(flags);
 }
-
-#ifdef __cplusplus
-}
-#endif

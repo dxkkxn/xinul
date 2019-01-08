@@ -21,21 +21,21 @@ void register_poweroff(poweroff_device_t *dev)
 
 static int default_getchar()
 {
-    asm volatile("ebreak");
+    __asm__ __volatile__("ebreak");
     return 0;
 }
 
 static int default_putchar(int ch)
 {
-    asm volatile("ebreak");
+    __asm__ __volatile__("ebreak");
     return 0;
 }
 
 static void default_poweroff(int status)
 {
-    asm volatile("ebreak");
+    __asm__ __volatile__("ebreak");
     while (1) {
-        asm volatile("" : : : "memory");
+        __asm__ __volatile__("" : : : "memory");
     }
 }
 

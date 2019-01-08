@@ -46,8 +46,8 @@ static void htif_set_tohost(uint8_t dev, uint8_t cmd, int64_t data)
 {
     /* send data with specified device and command */
     while (tohost) {
-        asm volatile ("" : : "r" (((volatile uint32_t *)&fromhost)[0]));
-        asm volatile ("" : : "r" (((volatile uint32_t *)&fromhost)[1]));
+        __asm__ __volatile__ ("" : : "r" (((volatile uint32_t *)&fromhost)[0]));
+        __asm__ __volatile__ ("" : : "r" (((volatile uint32_t *)&fromhost)[1]));
     }
     htif_send(dev, cmd, data);
 }

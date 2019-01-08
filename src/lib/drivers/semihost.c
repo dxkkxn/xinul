@@ -12,7 +12,7 @@ enum {
 };
 
 #define __syscall(...) \
-    asm volatile ("ecall\n\t" : "+r"(a0) : __VA_ARGS__ : "memory")
+    __asm__ __volatile__ ("ecall\n\t" : "+r"(a0) : __VA_ARGS__ : "memory")
 
 static inline long semihost_call0(long n)
 {
