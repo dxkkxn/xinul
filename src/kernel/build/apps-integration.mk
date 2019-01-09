@@ -41,18 +41,17 @@ $(APPS_OUT):
 # at the end of the build. It ensures that the script is entirely
 # re-generated at each build.
 
-#.INTERMEDIATE: $(APPS_OUT)/symbols-table.o
 $(APPS_OUT)/symbols-table.o: $(APPS_OUT)/symbols-table.c | $(APPS_OUT)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+.PHONY: $(APPS_OUT)/symbols-table.c
 #.INTERMEDIATE: $(APPS_OUT)/symbols-table.c
 $(APPS_OUT)/symbols-table.c: | $(APPS_OUT)
 	$(GEN_TABLE) "$@" $(APPS_BIN)
 
-#.INTERMEDIATE: $(APPS_OUT)/apps.lds
+.PHONY: $(APPS_OUT)/apps.lds
 $(APPS_OUT)/apps.lds: | $(APPS_OUT)
 	$(GEN_SECTIONS) "$@" $(APPS_BIN)
-
 
 #.PHONY: build/kernel.lds
 #build/kernel.lds: $(APPS_OUT)/apps.lds

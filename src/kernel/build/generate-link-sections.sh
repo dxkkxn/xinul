@@ -25,13 +25,7 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-# Get output file name, if the file already exists, quit. The makefile must
-# have been cleaned it before calling us.
 OUTPUT=$1
-if [ -e $OUTPUT ]; then
-    echo "*** Error: output file '${OUTPUT}' already exists. Remove it before calling me."
-    exit 1
-fi
 shift
 
 # Get files list
