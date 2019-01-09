@@ -1,8 +1,13 @@
 #include "scheduler.h"
 
 #include "stdio.h"
+#include "stdlib.h"
 #include "csr.h"
 #include "machine.h"
+
+#include "virtual_memory.h"
+#include "program.h"
+#include "crt_process.h"
 
 
 
@@ -21,8 +26,6 @@ static process_t* active;				/* Executing process */
 static link processes[NB_SCHED_STATES]; /* scheduler's processes queue */
 static link dustbin;					/* processes to be deallocated */
 static context_t dummy;
-
-
 
 /* ====      Macros use to simplify the code      ==== */
 #define STATUS_QUEUE_ADD(ptr, new_status)									   \
@@ -203,12 +206,82 @@ int sched_kstart(int64_t (*run) (void *),
 	return ret_pid;
 }
 
+
+void sched_user_exit(int retval)
+{
+	// TODO free user stack and virtual memory 
+	sched_exit(retval);
+}
+
 int sched_ustart(const char *name,
                  unsigned long ssize,
                  int prio,
                  void *arg)
 {
-	assert(0 && "Not yet implemented");
+	if (prio < 1 || prio > MAXPRIO) {
+		return -1;
+	}
+
+	if (ssize < 0
+			|| ssize > STACK_SIZE_MAX) {
+		return NULL;
+	}
+	if (ssize < 100) {
+		ssize = 100;
+	}
+
+	// On recherche le code du programme
+	void* code = hello_user;
+	//const struct uapps *app = NULL;
+	//app = symbol_map_get(code_name, NULL);
+	//if (app == NULL) {
+//		return NULL;
+//	}
+
+
+	// Process initialization
+	process_t* p = process_create(name, 0, prio, active);
+	if (p == NULL) {
+		return -1;
+	}
+	
+	// Mise en place de la mémoire virtuelle
+	//p->context.satp = init_user_virtual_memory(p->pid).reg;
+	p->context.satp = get_kernel_satp().reg;
+
+	//HEAP
+	//Tas User
+	//if (alloc_region(pagedir, MEM_USER_HEAP, MEM_USER_HEAP + 4*HEAP_USER_SIZE, PAGE_TABLE_USER_RW) == -1){
+		//return NULL;
+	//}
+
+	// Stack user
+	p->user_stack_size = ssize;
+	// on alloue la pile
+	void* user_stack = calloc(1, p->user_stack_size);
+	if (user_stack == NULL) {
+ 	return NULL;
+	}
+	
+	// Context
+	p->context.sp = user_stack;
+	p->context.ra = (void*) crt_user_process;
+	p->context.s0 = sched_user_exit;
+	p->context.s1 = arg;
+	p->context.sepc = code;
+
+	// Copie du programme pour le processus
+	//alloc_and_copy_program(pagedir, app->start, app->end);
+
+	STATUS_QUEUE_ADD(p, ACTIVABLE);
+	if (active != NULL) {
+		FAMILY_QUEUE_ADD(p, active);
+	}
+	if (active == NULL || prio > active->prio) {
+		schedule();
+	}
+
+	return p->pid;
 }
 
 
@@ -281,7 +354,7 @@ void sched_exit(int retval)
 		wfi();
 		*/
 	}
-
+	
 	sched_zombify(p);
 	schedule();
 
