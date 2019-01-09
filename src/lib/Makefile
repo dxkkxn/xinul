@@ -11,7 +11,7 @@
 SHELL = /bin/sh
 LIB_NAME ?= lib
 BUILD_DIR ?= ../build
-LIB_OBJ_DIR = $(BUILD_DIR)/$(LIB_NAME)_obj
+LIB_OBJ_DIR = $(BUILD_DIR)/$(LIB_NAME)
 LIB_TARGET ?= $(BUILD_DIR)/$(LIB_NAME).a
 
 #
