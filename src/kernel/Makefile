@@ -3,16 +3,16 @@
 #
 # See LICENSE for license details.
 # 
-# Maintainer : Mathieu Barbe <mathieu.barbe@grenoble-inp.org>
+# Maintainer : Mathieu Barbe <mathieu.barbe@grenoble-inp.org> - 2018
 #
 # To view commands use: make V=1
 #
 
 SHELL = /bin/sh
 KERNEL_NAME ?= kernel.bin
-BUILD_DIR ?= ../build
-OBJ_DIR = $(BUILD_DIR)/kernel_objs
-KERNEL_BIN ?= $(BUILD_DIR)/$(KERNEL_NAME)
+OUTPUT ?= ../build
+OBJ_DIR = $(OUTPUT)/kernel/objs
+KERNEL_BIN ?= $(OUTPUT)/$(KERNEL_NAME)
 
 TESTS_OPTIONS ?= WITH_MSG
 
@@ -26,12 +26,24 @@ DEFAULT_MACHINE = spike
 MACHINE ?= $(DEFAULT_MACHINE)
 
 #
-# Librairies configuration
+# Standard librairies configuration
 #
 
 STDLIB_NAME ?= lib
 include ../$(STDLIB_NAME)/Makefile
-LIBS = $(LIB_TARGET)
+LIBS = $(LIB_TARGET) # Useful to compil stdlib from kernel Makefile
+
+
+#
+# User apps
+#
+
+BIN_DIR = $(OUTPUT)/user
+include build/apps-integration.mk
+
+#
+# Include headers directories
+#
 
 INCLUDE_DIRS = \
 	$(LIB_INCLUDES) \
@@ -67,11 +79,11 @@ CFLAGS += $(addprefix -D, $(TESTS_OPTIONS))
 #
 
 # common architecture option fetched from ../riscv_flags.config
-LDFLAGS = $(ARCH_LDFLAGS)
+LDFLAGS += $(ARCH_LDFLAGS)
 
 # Add specific kernel LD options
-LD_SCRIPT ?= boot/$(MACHINE)/default.lds
-LDFLAGS += -T $(LD_SCRIPT)
+LD_SCRIPTS = boot/$(MACHINE)/default.lds
+LDFLAGS += $(addprefix -T, $(LD_SCRIPTS))
 
 #
 # Kernel sources files
@@ -84,7 +96,7 @@ KERNEL_SRC_DIRS = \
 
 # Fetch BOOT_OBJS
 include boot/boot.mk
-OBJS = $(BOOT_OBJS) # Fetched from boot/boot.mk
+OBJS = $(BOOT_OBJS)
 
 KERNEL_SRC = $(foreach d, $(KERNEL_SRC_DIRS), $(wildcard $(d)/*.c))
 KERNEL_ASM = $(foreach d, $(KERNEL_SRC_DIRS), $(wildcard $(d)/*.S))
@@ -96,18 +108,18 @@ DEPFILES = $(OBJS:.o=.d)
 # Targets
 #
 
-CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config boot/boot.mk
+CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config boot/boot.mk build/apps-integration.mk
 
 # Remove every implicite rules
 .suffixe:
 
-$(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPT)
+$(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPTS) $(APPS_OBJS) $(APPS_OUT)/apps.lds
 	$(call cmd, LD $@, $(dir $@), \
-	$(LD) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -o $@)
+	$(LD) $(CFLAGS) $(LDFLAGS) $(OBJS) $(APPS_OBJS) $(LIBS) -o $@)
 
 $(OBJ_DIR)/%.o: %.S $(CONFIG_DEPENDENCIES)
-	$(call cmd, CC $< -> $@, $(dir $@), \
-	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
+	$(call cmd, AS $< -> $@, $(dir $@), \
+	$(AS) -c $< -o $@ $(CFLAGS) -MMD -MP)
 
 $(OBJ_DIR)/%.o: %.c $(CONFIG_DEPENDENCIES)
 	$(call cmd, CC $< -> $@, $(dir $@), \
