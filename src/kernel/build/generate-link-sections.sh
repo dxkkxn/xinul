@@ -19,7 +19,7 @@ function usage() {
 }
 
 # Check parameters requirements
-if [ $# -lt 2 ]; then
+if [ $# -lt 1 ]; then
     echo "*** Error: more arguments are required."
     usage
     exit 1

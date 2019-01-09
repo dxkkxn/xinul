@@ -33,8 +33,6 @@ void idle()
 	}
 	printf("On sort de la boucle infinie pour éviter de faire un make kill\n");
 }
-extern char _hello_start[];
-extern char _hello_end[];
 
 #include "userspace_apps.h"
 
@@ -44,8 +42,11 @@ int main()
 	
 	const struct uapps *apps = symbols_table;
 	printf("adresse de la table des apps %p\n", apps);
+	if (apps->name == 0) {
+		printf("Pas d'apps\n");
+		exit(-1);
+	}
 	printf("Nom du premier programme user '%s'\n", apps->name);
-	printf("symbole _hello_start %p\n", _hello_start);
 	printf("hello start %p\n", apps->start);
 	printf("hello end %p\n", apps->end);
 	int64_t size = (int64_t)(apps->end) - (uint64_t)(apps->start);
