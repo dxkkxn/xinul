@@ -5,11 +5,18 @@
 
 #include "scheduler.h"
 #include "program.h"
+#include "machine.h"
 #include "tests.h"
+#include "sbi.h"
 
 int64_t hello_user(void* arg)
 {
-	printf("Programme user hello\n");
+printf("test sys call\n");
+SBI_CALL_3(3, 4, 5, 6);
+printf("Programme user hello\nTentative de lire un registre interdit\n");
+	read_csr(sstatus);
+	printf("erreur, lecture possible\n");
+	
 	return 0;
 }
 

@@ -6,7 +6,7 @@
 #include "machine.h"
 #include "sbi.h"
 #include "scheduler.h"
-
+#include "syscall_handler.h"
 
 void setup_clock_interrupts() {
 	csr_set(sie, MIP_STIP);
@@ -22,7 +22,8 @@ void set_next_timer_event()
 	sbi_call_set_timer(delta);
 }
 
-void strap_handler(uintptr_t* regs, uintptr_t scause, uintptr_t sepc)
+void strap_handler(uintptr_t scause, uintptr_t sepc,
+	uint64_t syscall_no, void* arg0, void* arg1, void* arg2)
 {
 	if (scause & INTERRUPT_CAUSE_FLAG) {
 		switch (scause & ~INTERRUPT_CAUSE_FLAG) {
@@ -42,9 +43,18 @@ void strap_handler(uintptr_t* regs, uintptr_t scause, uintptr_t sepc)
 			break;
 		}
 	} else {
-		die(
+		switch (scause & ~INTERRUPT_CAUSE_FLAG) {
+		case cause_user_ecall :
+			syscall_handler(syscall_no, arg0, arg1, arg2);
+			die("die after syscall to test\n");
+			
+			break;
+		default:
+			die(
 				"supervisor mode: unhandable exception %ld @ %p",
 				(uint64_t) scause, (void *) sepc
-		);
+			);
+			break;
+		}
 	}
 }

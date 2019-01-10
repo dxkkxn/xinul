@@ -21,10 +21,14 @@ strap_entry:
 	sd		t4, 104(sp)
 	sd		t5, 112(sp)
 	sd		t6, 120(sp)
-
-	mv		a0, sp
-	csrr	a1, scause
-	csrr	a2, sepc
+	
+	mv a5, a2
+	mv a4, a1 
+	mv a3, a0
+	mv a2, a7
+	csrr	a0, scause
+	csrr	a1, sepc
+	
 	jal		strap_handler
 
 	# restore context
