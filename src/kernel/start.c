@@ -5,9 +5,9 @@
 
 #include "scheduler.h"
 #include "program.h"
-
 #include "interrupts.h"
 #include "virtual_memory.h"
+#include "hmm.h"
 
 
 int main()
@@ -22,11 +22,21 @@ int main()
 	sched_init();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
-	//init_virtual_memory();
-
-
-	if (sched_kstart(systemd, 1, "systemd", (void *) 0) < 0) {
-		assert(0 && "Unable to create systemd process");
+	printf("Virtual memory manager initialization...");
+	init_virtual_memory();
+	printf("\r\t\t\t\t\t\t\t[OK]\n");
+	
+	printf("Hardware memory manager initialization...");
+	extern char _free_memory_start[];
+	extern char _memory_end[];
+	hmm_init(_free_memory_start, _memory_end);
+	printf("\r\t\t\t\t\t\t\t[OK]\n");
+	
+	if (sched_ustart("user hello", 1024, 10, (void *) 0) < 0) {
+		assert(0 && "Unable to create programme hello userde test ");
 	}
+	//if (sched_kstart(systemd, 1, "systemd", (void *) 0) < 0) {
+//		assert(0 && "Unable to create systemd process");
+//	}
 	return 0;
 }
