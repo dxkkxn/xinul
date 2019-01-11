@@ -24,7 +24,7 @@ void hmm_init(void *start, void *end);
  *
  * @return a reference on the beggining of the free frame.
  */
-void* hmm_frame_retain(void);
+void *hmm_frame_retain(void);
 
 /**
  * Free a previously used frame.
@@ -54,4 +54,5 @@ unsigned int hmm_free_memory(void);
  * @return true if the frame is in our space.
  */
 int hmm_is_one_of_ours(void *frame);
+
 #endif /* _HMM_H_ */

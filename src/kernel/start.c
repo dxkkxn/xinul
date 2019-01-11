@@ -8,7 +8,7 @@
 #include "interrupts.h"
 #include "virtual_memory.h"
 #include "hmm.h"
-
+#include "mapper.h"
 
 int main()
 {
@@ -25,13 +25,22 @@ int main()
 	printf("Virtual memory manager initialization...");
 	init_virtual_memory();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
-	
+
 	printf("Hardware memory manager initialization...");
 	extern char _free_memory_start[];
 	extern char _memory_end[];
 	hmm_init(_free_memory_start, _memory_end);
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
-	
+
+	printf("test map\n");
+	void *frame = hmm_frame_retain();
+	printf("frame addr %p\n", frame);
+	char *test_42 = (char *) frame;
+	*test_42 = 42;
+	mapper_map(get_kernel_satp(), (void *) 0x40000000, frame, 1, 1, 1, 0);
+	printf("le chiffre est %d\n", *(char *) 0x40000000);
+	printf("test map end\n");
+
 	if (sched_ustart("user hello", 1024, 10, (void *) 0) < 0) {
 		assert(0 && "Unable to create programme hello userde test ");
 	}

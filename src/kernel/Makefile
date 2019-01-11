@@ -93,6 +93,7 @@ KERNEL_SRC_DIRS = \
 	. \
 	asm_src \
 	tests \
+	vmm \
 
 # Fetch BOOT_OBJS
 include boot/boot.mk

@@ -12,7 +12,7 @@
 
 // CSR
 union satp {
-	void* reg;
+	void *reg;
 	struct {
 		uint64_t PPN:44;
 		uint64_t ASID:16;
@@ -46,11 +46,25 @@ struct pte {
 	uint64_t RSSV:10;
 };
 
-typedef struct pte * pagetable_t;
+typedef struct pte *pagetable_t;
 
 // Prototype
 int8_t init_virtual_memory();
+
+void init_pagetable_entry(struct pte *pte, void *frame_addr, uint8_t readable, uint8_t writable, uint8_t executable,
+						  uint8_t user);
+
+void init_pagetable_entry_node(struct pte *entry, void *pagetable);
+
 satp_csr get_kernel_satp();
+
+pagetable_t get_directory(satp_csr satp);
+
+void *get_pagetable_entry_target_address(struct pte *pte);
+
+pagetable_t get_current_directory(void);
+
 satp_csr init_user_virtual_memory(uint16_t asid);
+
 void free_user_virtual_memory(satp_csr satp);
 

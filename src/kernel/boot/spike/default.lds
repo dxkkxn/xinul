@@ -4,7 +4,7 @@ ENTRY( _start )
 
 MEMORY
 {
-  ram   (wxa!ri) : ORIGIN = 0x80000000, LENGTH = 128M
+  ram   (wxa!ri) : ORIGIN = 0x80000000, LENGTH = 256M
 }
 
 PHDRS
@@ -53,10 +53,14 @@ SECTIONS
     PROVIDE(_bss_start = .);
     *(.sbss .sbss.*) *(.bss .bss.*)
     PROVIDE(_bss_end = .);
+    
+    . = ALIGN(4096);
     PROVIDE(_heap_start = .);
+    PROVIDE(_heap_end = _heap_start + 16M);
+    PROVIDE(_free_memory_start = _heap_end);
   } >ram AT>ram :bss
 
   PROVIDE(_memory_start = ORIGIN(ram));
   PROVIDE(_memory_end = ORIGIN(ram) + LENGTH(ram));
-  PROVIDE(_heap_end = _memory_end);
+  
 }
