@@ -7,6 +7,17 @@
 #define PAGE_SIZE 4096
 #define NBR_PAGE_ENTRIES 512;
 
+
+enum vmm_flag {
+	VMM_AREA_KERNEL = 0,
+	VMM_AREA_RX = VMM_AREA_KERNEL,
+	VMM_AREA_USER = 1,
+	VMM_AREA_RW = 1 << 1
+};
+
+/** Virtual area descriptor. */
+struct vmm_area;
+
 // Physical Page Number (Frame Number) 44 bits
 //typedef void* ppn_t;
 
@@ -64,7 +75,22 @@ void *get_pagetable_entry_target_address(struct pte *pte);
 
 pagetable_t get_current_directory(void);
 
-satp_csr init_user_virtual_memory(uint16_t asid);
+/**
+ * Create a mapped virtual area.
+ *
+ * @param base address of the beginning of the virtual area.
+ * @param size size of the virtual area.
+ * @param dir  directory where to do the mapping.
+ */
+struct vmm_area *vmm_area_create(void *base,
+								 unsigned long size,
+								 pagetable_t dir,
+								 int flags);
 
-void free_user_virtual_memory(satp_csr satp);
+/**
+ * Release a mapped virtual area.
+ *
+ * @param varea the descriptor of the virtual area to free.
+ */
+void vmm_area_free(struct vmm_area *varea);
 

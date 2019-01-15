@@ -15,17 +15,16 @@
 #include "mapper.h"
 
 
-void mapper_map(satp_csr satp, void *page, void *frame,
+void mapper_map(pagetable_t pdirectory, void *page, void *frame,
 				uint8_t readable, uint8_t writable, uint8_t executable, uint8_t user)
 {
-	pagetable_t pdirectory, pdirectory2, ptable;
+	pagetable_t pdirectory2, ptable;
 	uint16_t pdi, pd2i, pti;
 
 	// Check if virtual address is not under 1 and 2 GO
 	assert(!((uint64_t) page >= 0x80000000 && (uint64_t) page < 0x90000000));
-
-	pdirectory = get_directory(satp);
 	assert(pdirectory != NULL);
+
 	/* Set dir/table indexes */
 	pdi = (uint64_t) page >> 30;
 	pd2i = (uint64_t) page >> 21 & 0x1FF;;

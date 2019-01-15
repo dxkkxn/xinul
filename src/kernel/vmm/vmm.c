@@ -7,24 +7,33 @@
 
 #include "stdio.h"
 #include "stdlib.h"
+#include "mem.h"
 
 #include "machine.h"
 #include "virtual_memory.h"
+#include "hmm.h"
+#include "mapper.h"
 
-// kernel_satp_csr to store kernel pagetable root used by all kernel process.
+// The base kernel page directory, fetch pmm.c
+extern pagetable_t kernel_pgdir;
+extern struct pte kernel_gigapage;
+
 static satp_csr kernel_satp;
-static pagetable_t kernel_root_pagetable = NULL;
-static struct pte kernel_gigapage;
 
+
+struct vmm_area {
+	void *base;
+	unsigned int size;
+	pagetable_t directory;
+};
 
 /* init virtual memory
 * returns -1 if a error occurred.
 */
 int8_t init_virtual_memory()
 {
-	kernel_root_pagetable = memalign(PAGE_SIZE, PAGE_SIZE);
-	if (kernel_root_pagetable == NULL) return -1;
-	// TODO remplacer ça par une allocation de frame.
+	kernel_pgdir = hmm_frame_retain();
+	assert(kernel_pgdir != NULL);
 
 	// Création d'une feuille giga page pour maper tout le kernel d'un coup à 1Go
 	kernel_gigapage.V = 1;
@@ -40,13 +49,12 @@ int8_t init_virtual_memory()
 	kernel_gigapage.PPN1 = 0;
 	kernel_gigapage.PPN2 = 2;
 	kernel_gigapage.RSSV = 0;
-	kernel_root_pagetable[2] = kernel_gigapage;
-
+	kernel_pgdir[2] = kernel_gigapage;
 
 	// Configure satp csr
 	kernel_satp.field.MODE = SATP_MODE_SV39;
 	kernel_satp.field.ASID = 0;
-	kernel_satp.field.PPN = (uint64_t) kernel_root_pagetable >> 12;
+	kernel_satp.field.PPN = (uint64_t) kernel_pgdir >> 12;
 
 	write_csr(satp, kernel_satp.reg);
 
@@ -57,18 +65,6 @@ int8_t init_virtual_memory()
 satp_csr get_kernel_satp()
 {
 	return kernel_satp;
-}
-
-satp_csr init_user_virtual_memory(uint16_t asid)
-{
-
-	pagetable_t root_pagetable = memalign(PAGE_SIZE, PAGE_SIZE);
-	root_pagetable[2] = kernel_gigapage;
-	satp_csr satp;
-	satp.field.MODE = SATP_MODE_SV39;
-	satp.field.ASID = asid;
-	satp.field.PPN = (uint64_t) root_pagetable >> 12;
-	return satp;
 }
 
 
@@ -111,9 +107,58 @@ pagetable_t get_current_directory(void)
 	return get_directory(satp);
 }
 
-void free_user_virtual_memory(satp_csr satp)
+struct vmm_area *vmm_area_create(void *base,
+								 unsigned long size,
+								 pagetable_t dir,
+								 int flags)
 {
-	pagetable_t root = get_current_directory();
-	free((void *) root);
-	// todo a compléter avec les liens vers les autre table.
+	// todo fabriquer un système de flag avec des enum pour les droits contenu dans les entrées
+	struct vmm_area *varea;
+
+	assert(base != NULL);
+	assert(size != 0);
+	assert(dir != NULL);
+	assert(((uint64_t) base & 0xFFFFF000) == (uint64_t) base);
+	assert((size & 0xFFFFF000) == size);
+
+	uint8_t readable = 1;
+	uint8_t executable = 1;
+	uint8_t user = 0;
+	if ((flags & VMM_AREA_USER) == VMM_AREA_USER) {
+		user = 1;
+	}
+	uint8_t writable = 0;
+	if ((flags & VMM_AREA_RW) == VMM_AREA_RW) {
+		writable = 1;
+	}
+
+	for (uint64_t address = (uint64_t) base;
+		 address < (uint64_t) base + size;
+		 address += 4096) {
+		void *frame = hmm_frame_retain();
+		assert(frame != NULL);
+		mapper_map(dir, (void *) address, frame, readable, writable, executable, user);
+	}
+
+	varea = (struct vmm_area *) mem_alloc(sizeof(struct vmm_area));
+	assert(varea != NULL);
+	varea->base = base;
+	varea->size = size;
+	varea->directory = dir;
+
+	return varea;
 }
+
+void vmm_area_free(struct vmm_area *varea)
+{
+	assert(varea != NULL);
+
+	for (uint64_t address = (uint64_t) varea->base;
+		 address < (uint64_t) varea->base + varea->size;
+		 address += 4096) {
+		void *frame = (void *) mapper_unmap(varea->directory, (void *) address);
+		assert(frame != NULL);
+		hmm_frame_release(frame);
+	}
+}
+

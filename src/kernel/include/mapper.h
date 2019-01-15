@@ -20,7 +20,7 @@
  * @param frame the frame to map in linear space.
  * @param flags the flag used to tag the mapping.
  */
-void mapper_map(satp_csr satp, void *page, void *frame, uint8_t readable, uint8_t writable, uint8_t executable, uint8_t user);
+void mapper_map(pagetable_t pdirectory, void *page, void *frame, uint8_t readable, uint8_t writable, uint8_t executable, uint8_t user);
 
 /**
  * Unmap the specified virtual address.

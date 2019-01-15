@@ -15,40 +15,40 @@
 
 /* idle process */
 static process_t kernel_idle = {
-	.pid			= 0,
-	.name			= "kernel_idle",
-	.prio			= 0,
-	.parent			= NULL,
-	.status			= ACTIVE
+		.pid            = 0,
+		.name            = "kernel_idle",
+		.prio            = 0,
+		.parent            = NULL,
+		.status            = ACTIVE
 };
 
-static process_t* active;				/* Executing process */
+static process_t *active;                /* Executing process */
 static link processes[NB_SCHED_STATES]; /* scheduler's processes queue */
-static link dustbin;					/* processes to be deallocated */
+static link dustbin;                    /* processes to be deallocated */
 static context_t dummy;
 
 /* ====      Macros use to simplify the code      ==== */
-#define STATUS_QUEUE_ADD(ptr, new_status)									   \
-({																			   \
-	ptr->current_queue = &processes[new_status];							   \
-	ptr->status = new_status;												   \
-	queue_add(																   \
-			ptr, &processes[new_status], process_t, status_link, prio		   \
-	);																		   \
+#define STATUS_QUEUE_ADD(ptr, new_status)                                       \
+({                                                                               \
+    ptr->current_queue = &processes[new_status];                               \
+    ptr->status = new_status;                                                   \
+    queue_add(                                                                   \
+            ptr, &processes[new_status], process_t, status_link, prio           \
+    );                                                                           \
 })
 
 #define STATUS_QUEUE_DELETE(ptr)                                        \
-({																		\
+({                                                                        \
                 ptr->current_queue = NULL;                              \
                 queue_del(ptr, status_link);                            \
 })
 
 /* Process family handling */
-#define FAMILY_QUEUE_ADD(ptr, parent)									\
-	queue_add(ptr, &parent->children, process_t, family_link, prio)
+#define FAMILY_QUEUE_ADD(ptr, parent)                                    \
+    queue_add(ptr, &parent->children, process_t, family_link, prio)
 
-#define FAMILY_QUEUE_DELETE(ptr)										\
-	queue_del(ptr, family_link)
+#define FAMILY_QUEUE_DELETE(ptr)                                        \
+    queue_del(ptr, family_link)
 
 /* ====      Internal functions      ==== */
 
@@ -56,14 +56,14 @@ static context_t dummy;
  * Iterate of the process children and destroy the zombies, mark others as
  * orphans
  */
-static inline void sched_cleanup_children(process_t* p);
+static inline void sched_cleanup_children(process_t *p);
 
 /* Kill the process of make it a zomby if it has a father */
-static void sched_zombify(process_t* p);
+static void sched_zombify(process_t *p);
 
-static inline void sched_cleanup_children(process_t* p)
+static inline void sched_cleanup_children(process_t *p)
 {
-	process_t* child;
+	process_t *child;
 	while ((child = queue_out(&p->children, process_t, family_link))) {
 		if (child->status == ZOMBIE) {
 			STATUS_QUEUE_DELETE(child);
@@ -74,24 +74,24 @@ static inline void sched_cleanup_children(process_t* p)
 	}
 }
 
-static void sched_zombify(process_t* p)
+static void sched_zombify(process_t *p)
 {
-        process_t* parent = p->parent;
+	process_t *parent = p->parent;
 
-        sched_cleanup_children(p); //TODO implanter cette fonction
+	sched_cleanup_children(p); //TODO implanter cette fonction
 
-        if (parent == NULL) {
-                /* Mark the process */
-                queue_add(p, &dustbin, process_t, status_link, prio);
-                return;
-        }
+	if (parent == NULL) {
+		/* Mark the process */
+		queue_add(p, &dustbin, process_t, status_link, prio);
+		return;
+	}
 
-        /* Become a zomby and unblock the father */
-        STATUS_QUEUE_ADD(p, ZOMBIE);
-        if (parent->status == BLOCKED_ON_WSON &&
-                        (parent->info < 0 || p->pid == parent->info)) {
-                sched_unblock(parent);
-        }
+	/* Become a zomby and unblock the father */
+	STATUS_QUEUE_ADD(p, ZOMBIE);
+	if (parent->status == BLOCKED_ON_WSON &&
+		(parent->info < 0 || p->pid == parent->info)) {
+		sched_unblock(parent);
+	}
 }
 
 /*
@@ -102,40 +102,40 @@ static void sched_zombify(process_t* p)
  */
 static inline int sched_waitpid_full(int pid, int64_t *retvalp, int nohang)
 {
-        process_t *child;
-        int ret;
+	process_t *child;
+	int ret;
 
-        /* Si le processus n'existe pas */
-        if (pid == 0 || pid > NBPROC)
-                return -1;
+	/* Si le processus n'existe pas */
+	if (pid == 0 || pid > NBPROC)
+		return -1;
 
-        /* Récupérer le fils et vérifier qui est le pere ! */
-        child = (pid > 0)
-                ? process_get(pid)
-                : queue_top(&active->children, process_t, family_link);
+	/* Récupérer le fils et vérifier qui est le pere ! */
+	child = (pid > 0)
+			? process_get(pid)
+			: queue_top(&active->children, process_t, family_link);
 
-        if (child == NULL || child->parent != active)
-                return -1;
+	if (child == NULL || child->parent != active)
+		return -1;
 
-        /* Si le processus n'est pas zombie il faut l'attendre */
-        if (child->status != ZOMBIE) {
-                if (nohang)
-                        return -1;
-                sched_block(pid, &processes[BLOCKED_ON_WSON],
-                              BLOCKED_ON_WSON, NULL);
-        }
+	/* Si le processus n'est pas zombie il faut l'attendre */
+	if (child->status != ZOMBIE) {
+		if (nohang)
+			return -1;
+		sched_block(pid, &processes[BLOCKED_ON_WSON],
+					BLOCKED_ON_WSON, NULL);
+	}
 
-        ret = child->pid;
-        //ret = (child->error)? 0 : child->pid;
+	ret = child->pid;
+	//ret = (child->error)? 0 : child->pid;
 
-        if (retvalp != NULL)
-                *retvalp = child->info;
+	if (retvalp != NULL)
+		*retvalp = child->info;
 
-        STATUS_QUEUE_DELETE(child);
-        FAMILY_QUEUE_DELETE(child);
-        process_destroy(child->pid);
+	STATUS_QUEUE_DELETE(child);
+	FAMILY_QUEUE_DELETE(child);
+	process_destroy(child->pid);
 
-        return ret;
+	return ret;
 }
 
 
@@ -146,7 +146,7 @@ static inline int sched_waitpid_full(int pid, int64_t *retvalp, int nohang)
 int64_t idle(void *arg)
 {
 	(void) arg;
-	
+
 	while (1) {
 		wfi();
 	}
@@ -154,7 +154,8 @@ int64_t idle(void *arg)
 	return 0;
 }
 
-void sched_init(){
+void sched_init()
+{
 	// Initialize the heads of the lists
 	int i;
 	for (i = 0; i < NB_SCHED_STATES; ++i) {
@@ -164,7 +165,7 @@ void sched_init(){
 	INIT_LIST_HEAD(&dustbin);
 
 	// Set idle's context
-	context_kernelinit(
+	context_kernel_init(
 			&kernel_idle.context, kernel_idle.kernel_stack, idle, NULL
 	);
 
@@ -172,10 +173,10 @@ void sched_init(){
 	STATUS_QUEUE_ADD((&kernel_idle), ACTIVABLE);
 }
 
-int sched_kstart(int64_t (*run) (void *),
-                 int prio,
-                 const char *name,
-                 void *arg)
+int sched_kstart(int64_t (*run)(void *),
+				 int prio,
+				 const char *name,
+				 void *arg)
 {
 	int ret_pid;
 
@@ -184,13 +185,13 @@ int sched_kstart(int64_t (*run) (void *),
 	}
 
 	// Process initialization
-	process_t* p = process_create(name, 0, prio, active);
+	process_t *p = process_create(name, prio, active);
 	if (p == NULL && run == NULL) {
 		return -1;
 	}
 
 	// Process context initialization
-	context_kernelinit(&p->context, p->kernel_stack, run, arg);
+	context_kernel_init(&p->context, p->kernel_stack, run, arg);
 
 	// PID to return (watch out: schedule())
 	ret_pid = p->pid;
@@ -209,69 +210,35 @@ int sched_kstart(int64_t (*run) (void *),
 
 void sched_user_exit(int retval)
 {
-	// TODO free user stack and virtual memory 
+	// TODO free user stack and virtual memory, voir la correction
 	sched_exit(retval);
 }
 
 int sched_ustart(const char *name,
-                 unsigned long ssize,
-                 int prio,
-                 void *arg)
+				 unsigned long ssize,
+				 int prio,
+				 void *arg)
 {
 	if (prio < 1 || prio > MAXPRIO) {
 		return -1;
 	}
 
 	if (ssize < 0
-			|| ssize > STACK_SIZE_MAX) {
+		|| ssize > STACK_SIZE_MAX) {
 		return NULL;
 	}
 	if (ssize < 100) {
 		ssize = 100;
 	}
 
-	// On recherche le code du programme
-	void* code = hello_user;
-	//const struct uapps *app = NULL;
-	//app = symbol_map_get(code_name, NULL);
-	//if (app == NULL) {
-//		return NULL;
-//	}
-
-
-	// Process initialization
-	process_t* p = process_create(name, 0, prio, active);
+	// User process initialization
+	process_t *p = process_user_create(name, prio, active, ssize);
 	if (p == NULL) {
 		return -1;
 	}
-	
-	// Mise en place de la mémoire virtuelle
-	//p->context.satp = init_user_virtual_memory(p->pid).reg;
-	p->context.satp = get_kernel_satp().reg;
 
-	//HEAP
-	//Tas User
-	//if (alloc_region(pagedir, MEM_USER_HEAP, MEM_USER_HEAP + 4*HEAP_USER_SIZE, PAGE_TABLE_USER_RW) == -1){
-		//return NULL;
-	//}
-
-	// Stack user
-	p->user_stack_size = ssize;
-	// on alloue la pile
-	void* user_stack = calloc(1, p->user_stack_size);
-	if (user_stack == NULL) {
- 	return NULL;
-	}
-	
-	// Context
-	p->context.sp = user_stack;
-	p->context.ra = (void*) crt_user_process;
-	p->context.s0 = sched_user_exit;
-	p->context.s1 = arg;
-	p->context.sepc = code;
-
-	// Copie du programme pour le processus
-	//alloc_and_copy_program(pagedir, app->start, app->end);
+	// User process context initialization
+	context_user_init(&p->context, p->user_stack, p->user_stack_size, arg);
 
 	STATUS_QUEUE_ADD(p, ACTIVABLE);
 	if (active != NULL) {
@@ -285,19 +252,18 @@ int sched_ustart(const char *name,
 }
 
 
-
 /* ====      Scheduling (FIFO with priorities)      ==== */
 
 void schedule(void)
 {
-	process_t* old = active;
-	process_t* new = queue_top(
-		  &processes[ACTIVABLE], process_t, status_link
+	process_t *old = active;
+	process_t *new = queue_top(
+			&processes[ACTIVABLE], process_t, status_link
 	);
 
 
-	context_t* old_ctx;
-	context_t* new_ctx;
+	context_t *old_ctx;
+	context_t *new_ctx;
 
 	if (new == NULL) {
 		assert(old != NULL && "No more processes available!");
@@ -316,7 +282,7 @@ void schedule(void)
 	}
 
 	active->status = ACTIVE;
-	old_ctx = (old != NULL)? &old->context : &dummy;
+	old_ctx = (old != NULL) ? &old->context : &dummy;
 	new_ctx = &active->context;
 
 	/*
@@ -339,7 +305,7 @@ void schedule(void)
 
 void sched_exit(int retval)
 {
-	process_t* p = active;
+	process_t *p = active;
 	active = NULL;
 	p->info = retval;
 	p->error = 0;
@@ -354,7 +320,7 @@ void sched_exit(int retval)
 		wfi();
 		*/
 	}
-	
+
 	sched_zombify(p);
 	schedule();
 
@@ -364,7 +330,7 @@ void sched_exit(int retval)
 int sched_kill(int pid)
 {
 	process_t *p = process_get(pid);
-	
+
 	if (p == NULL) {
 		return -1;
 	}
@@ -392,7 +358,7 @@ int sched_kill(int pid)
 	return -1;
 }
 
-int sched_get_active_pid(void) 
+int sched_get_active_pid(void)
 {
 	return active->pid;
 }
@@ -402,21 +368,20 @@ int sched_get_active_prio(void)
 	return active->prio;
 }
 
-int sched_block(long info, link* queue, int new_status, int* error)
+int sched_block(long info, link *queue, int new_status, int *error)
 {
 	int retval;
 
 	assert(active != NULL
-			&& new_status < NB_STATES
-			&& new_status >= BLOCKED_ON_WSON);
+		   && new_status < NB_STATES
+		   && new_status >= BLOCKED_ON_WSON);
 
 	active->current_queue = queue;
 	active->status = new_status;
 	active->info = info;
 	active->error = 0;
 
-	if (new_status != BLOCKED_ON_CLOCK)
-	{
+	if (new_status != BLOCKED_ON_CLOCK) {
 		queue_add(active, queue, process_t, status_link, prio);
 	} else {
 		queue_add(active, queue, process_t, status_link, info);
@@ -433,7 +398,7 @@ int sched_block(long info, link* queue, int new_status, int* error)
 	return retval;
 }
 
-int sched_unblock(process_t* p)
+int sched_unblock(process_t *p)
 {
 	assert(p->status >= BLOCKED_ON_WSON && p->status < NB_STATES);
 
@@ -443,12 +408,12 @@ int sched_unblock(process_t* p)
 	return active != NULL && p->prio > active->prio;
 }
 
-int sched_waitpid(int pid, int64_t* retvalp)
+int sched_waitpid(int pid, int64_t *retvalp)
 {
 	return sched_waitpid_full(pid, retvalp, 0);
 }
 
-int sched_waitpid_nohand(int pid, int64_t* retvalp)
+int sched_waitpid_nohand(int pid, int64_t *retvalp)
 {
 	process_t *p;
 
@@ -456,7 +421,8 @@ int sched_waitpid_nohand(int pid, int64_t* retvalp)
 		return sched_waitpid_full(pid, retvalp, 1);
 	}
 
-	queue_for_each(p, &active->children, process_t, family_link) {
+	queue_for_each(p, &active->children, process_t, family_link)
+	{
 		if (p->status == ZOMBIE) {
 			return sched_waitpid_full(p->pid, retvalp, 1);
 		}
@@ -466,63 +432,63 @@ int sched_waitpid_nohand(int pid, int64_t* retvalp)
 
 int sched_chprio(int pid, int newprio)
 {
-        int oldprio;
-        process_t *top;
-        process_t *p = process_get(pid);
+	int oldprio;
+	process_t *top;
+	process_t *p = process_get(pid);
 
-        if (p == NULL || newprio < 1 || newprio > MAXPRIO)
-                return -1;
+	if (p == NULL || newprio < 1 || newprio > MAXPRIO)
+		return -1;
 
-        if (p->status == ZOMBIE)
-                return -1;
+	if (p->status == ZOMBIE)
+		return -1;
 
-        oldprio = p->prio;
-        p->prio = newprio;
+	oldprio = p->prio;
+	p->prio = newprio;
 
-        if (p->status == BLOCKED_ON_CLOCK)
-                return oldprio;
+	if (p->status == BLOCKED_ON_CLOCK)
+		return oldprio;
 
-        if (p->parent != NULL) {
-                FAMILY_QUEUE_DELETE(p);
-                FAMILY_QUEUE_ADD(p, (p->parent));
-        }
+	if (p->parent != NULL) {
+		FAMILY_QUEUE_DELETE(p);
+		FAMILY_QUEUE_ADD(p, (p->parent));
+	}
 
-        if (p->status != ACTIVE) {
-                /* Si p n'est pas le processus actif 
-                 * il faut modifier l'ordre de sa file de priorité */
-                assert(p->current_queue != NULL);
-                queue_del(p, status_link);
-                queue_add(p, p->current_queue, process_t, status_link, prio);
-        }
+	if (p->status != ACTIVE) {
+		/* Si p n'est pas le processus actif
+		 * il faut modifier l'ordre de sa file de priorité */
+		assert(p->current_queue != NULL);
+		queue_del(p, status_link);
+		queue_add(p, p->current_queue, process_t, status_link, prio);
+	}
 
-        top = queue_top(&processes[ACTIVABLE], process_t, status_link);
-        assert(active != NULL);
-        if (top != NULL && active->prio < top->prio)
-                schedule();
+	top = queue_top(&processes[ACTIVABLE], process_t, status_link);
+	assert(active != NULL);
+	if (top != NULL && active->prio < top->prio)
+		schedule();
 
-        return oldprio;
+	return oldprio;
 }
 
 
 int sched_printstatus(process_t *p, char *buffer, unsigned int size)
 {
-        switch (p->status) {
-        case ACTIVE:
-                return snprintf(buffer, size, "active");
-        case ACTIVABLE:
-                return snprintf(buffer, size, "activable");
-        case ZOMBIE:
-                return snprintf(buffer, size, "zombie");
-        case BLOCKED_ON_CLOCK:
-                return snprintf(buffer, size, "sleeping");
-        case BLOCKED_ON_WSON:
-                return snprintf(buffer, size, "waiting %d", (int) p->info);
-        case BLOCKED_ON_MSG:
-                return snprintf(buffer, size, "blocked on message queue");
-        case BLOCKED_ON_IO:
-                return snprintf(buffer, size, "blocked on I/O");
-        default:
-                return snprintf(buffer, size, "unknown");
-        }
+	switch (p->status) {
+		case ACTIVE:
+			return snprintf(buffer, size, "active");
+		case ACTIVABLE:
+			return snprintf(buffer, size, "activable");
+		case ZOMBIE:
+			return snprintf(buffer, size, "zombie");
+		case BLOCKED_ON_CLOCK:
+			return snprintf(buffer, size, "sleeping");
+		case BLOCKED_ON_WSON:
+			return snprintf(buffer, size, "waiting %d", (int) p->info);
+		case BLOCKED_ON_MSG:
+			return snprintf(buffer, size, "blocked on message queue");
+		case BLOCKED_ON_IO:
+			return snprintf(buffer, size, "blocked on I/O");
+		default:
+			return snprintf(buffer, size, "unknown");
+	}
 }
 

@@ -53,10 +53,10 @@ SECTIONS
     PROVIDE(_bss_start = .);
     *(.sbss .sbss.*) *(.bss .bss.*)
     PROVIDE(_bss_end = .);
-    
+
     . = ALIGN(4096);
     PROVIDE(_heap_start = .);
-    PROVIDE(_heap_end = _heap_start + 16M);
+    PROVIDE(_heap_end = _heap_start + 32M);
     PROVIDE(_free_memory_start = _heap_end);
   } >ram AT>ram :bss
 

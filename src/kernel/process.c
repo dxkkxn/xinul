@@ -11,12 +11,75 @@
 #include "stdlib.h"
 
 #include "virtual_memory.h"
-#include "program.h"
+#include "userspace_apps.h"
 #include "context.h"
 #include "crt_process.h"
+#include "machine.h"
 
 
-process_t* processes[NBPROC];
+process_t *processes[NBPROC];
+
+
+static void process_copy_user_code(process_t *p, const struct uapps *app)
+{
+	assert(p != NULL);
+	assert(app != NULL);
+
+	// Switch to process directory
+	satp_csr old_satp;
+	old_satp.reg = (void *) read_const_csr(satp);
+	write_csr(satp, p->context.satp);
+
+	/* Copy the code */
+	uint32_t *code_start;
+	uint32_t *target_start;
+	for (code_start = (uint32_t *) app->start, target_start = (uint32_t *) PROCESS_CODE;
+		 (uint64_t) code_start < (uint64_t) app->end;
+		 code_start++, target_start++) {
+		*target_start = *code_start;
+	}
+
+	// Restore read only protection and wrap the page dir back
+	write_csr(satp, old_satp.reg);
+}
+
+int process_create_code_space(process_t *p)
+{
+	unsigned int code_size;
+	const struct uapps *app;
+	assert(p != NULL);
+
+	/* Evaluation de la taille du code du programme */
+	app = find_app(p->name);
+	if (app == NULL) {
+		return -1;
+	}
+	code_size = (uint64_t) app->end - (uint64_t) app->start;
+	assert(code_size > 0);
+
+	/* Réservation de l'espace mémoire */
+	p->code_varea = pmm_create_ucode(p, (void *) PROCESS_CODE, (code_size & 0xFFFFF000u) + 0x1000);
+	assert(p->code_varea != NULL);
+
+	/* Copie du code */
+	process_copy_user_code(p, app);
+
+	return 0;
+}
+
+void process_create_user_stack(process_t *p, int size)
+{
+	unsigned local_size;
+	assert(p != NULL);
+	assert(size != 0);
+
+	local_size = (size & 0xFFFFF000) + 0x1000;
+	p->user_stack_varea = pmm_create_ustack(p, (void *) PROCESS_USTACK, local_size);
+	assert(p->user_stack_varea != NULL);
+
+	p->user_stack_size = local_size;
+	p->user_stack = (uint8_t *) PROCESS_USTACK;
+}
 
 static inline int process_newpid(void)
 {
@@ -31,17 +94,16 @@ static inline int process_newpid(void)
 
 static inline int pid_exists(int pid)
 {
-	return pid > 0 && pid <= NBPROC && processes[pid-1] != NULL;
+	return pid > 0 && pid <= NBPROC && processes[pid - 1] != NULL;
 }
 
 /* Allocate and initialize a process structure */
-process_t* process_create(
+process_t *process_create(
 		const char *name,
-		unsigned long ssize,
 		int prio,
 		process_t *parent)
 {
-	process_t* p;
+	process_t *p;
 	int pid;
 	uint8_t name_length;
 
@@ -72,9 +134,14 @@ process_t* process_create(
 
 	// Kernel stack allocation
 	p->kernel_stack = malloc(K_STACK_SIZE);
+	// to peut-être remplacerpar la solution des profs
 	if (p->kernel_stack == NULL) {
 		return NULL;
 	}
+
+	/* Création de l'espace mémoire */
+	pmm_create_basic_directory(p);
+
 
 	// Structure informations
 	p->pid = pid;
@@ -85,24 +152,50 @@ process_t* process_create(
 	p->error = 0;
 
 	// register the created process in the table and return its pointer
-	processes[pid-1] = p;
+	processes[pid - 1] = p;
+	return p;
+}
+
+/* Allocate and initialize a user process structure */
+process_t *process_user_create(
+		const char *name,
+		int prio,
+		process_t *parent,
+		int ssize)
+{
+	process_t *p = process_create(name, prio, parent);
+	if (p == NULL) return NULL;
+
+
+	//HEAP
+	// todo Tas User
+	//if (alloc_region(pagedir, MEM_USER_HEAP, MEM_USER_HEAP + 4*HEAP_USER_SIZE, PAGE_TABLE_USER_RW) == -1){
+	//return NULL;
+	//}
+
+	// Stack user
+	process_create_user_stack(p, ssize);
+
+	process_create_code_space(p);
+
+
 	return p;
 }
 
 /* Destroy the "pid" process */
 int process_destroy(int pid)
 {
-	process_t* p;
+	process_t *p;
 	if (pid < 1 || pid > NBPROC) {
 		return -1;
 	}
-	p = processes[pid-1];
+	p = processes[pid - 1];
 
 	free(p->name);
 	free(p->kernel_stack);
 	free(p);
 
-	processes[pid-1] = NULL;
+	processes[pid - 1] = NULL;
 
 	return 0;
 }
@@ -145,18 +238,18 @@ int process_getprio(int pid)
 	}
 
 	// We cannot get the priority of a zombie process
-	if (processes[pid-1]->status == ZOMBIE) {
+	if (processes[pid - 1]->status == ZOMBIE) {
 		return -1;
 	}
 
-	return processes[pid-1]->prio;
+	return processes[pid - 1]->prio;
 }
 
 /* Return the processus matching with the given pid */
-process_t* process_get(int pid)
+process_t *process_get(int pid)
 {
 	if (pid > 0 && pid <= NBPROC) {
-		return processes[pid-1];
+		return processes[pid - 1];
 	} else {
 		return NULL;
 	}

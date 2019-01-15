@@ -27,5 +27,9 @@ struct uapps {
  */
 extern const struct uapps symbols_table[];
 
-#endif
+/**
+ * A way to find a program using its name.
+ */
+extern const struct uapps *find_app(const char *name);
 
+#endif

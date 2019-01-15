@@ -7,15 +7,18 @@
 #pragma once
 
 #include "stdint.h"
-typedef uint64_t * kernel_stack_t;
+
 #include "context.h"
 #include "queue.h"
+#include "pmm.h"
+
 
 typedef struct __process_st process_t;
 
 #include "scheduler.h"
+#include "virtual_memory.h"
 
-typedef uint64_t * user_stack_t;
+
 typedef struct list_head list_process_t;
 extern process_t process_alive;
 // Nombre max de process
@@ -43,7 +46,11 @@ struct __process_st {
 
 	// Execution context
 	context_t context;
+	pagetable_t page_dir;
+	struct pmm_varea *code_varea;
 	uint32_t user_stack_size;
+	user_stack_t user_stack;
+	struct pmm_varea *user_stack_varea;
 	kernel_stack_t kernel_stack;
 
 	// Scheduler part
@@ -72,9 +79,15 @@ void init_process();
 /* Allocate and initialize a process structure */
 process_t* process_create(
 		const char *name,
-		unsigned long ssize,
 		int prio,
 		process_t *parent);
+
+/* Allocate and initialize a user process structure */
+process_t *process_user_create(
+		const char *name,
+		int prio,
+		process_t *parent,
+		int ssize);
 
 /* Destroy the "pid" process */
 int process_destroy(int pid);

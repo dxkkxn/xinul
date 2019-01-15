@@ -22,14 +22,15 @@ int main()
 	sched_init();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
-	printf("Virtual memory manager initialization...");
-	init_virtual_memory();
-	printf("\r\t\t\t\t\t\t\t[OK]\n");
-
 	printf("Hardware memory manager initialization...");
 	extern char _free_memory_start[];
 	extern char _memory_end[];
 	hmm_init(_free_memory_start, _memory_end);
+	printf("\r\t\t\t\t\t\t\t[OK]\n");
+	printf("Number of frames %d = %d ko\n", hmm_frame_count(), hmm_free_memory()>>10);
+
+printf("Virtual memory manager initialization...");
+	init_virtual_memory();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	printf("test map\n");
@@ -37,7 +38,7 @@ int main()
 	printf("frame addr %p\n", frame);
 	char *test_42 = (char *) frame;
 	*test_42 = 42;
-	mapper_map(get_kernel_satp(), (void *) 0x40000000, frame, 1, 1, 1, 0);
+	mapper_map(get_current_directory(), (void *) 0x40000000, frame, 1, 1, 1, 0);
 	printf("le chiffre est %d\n", *(char *) 0x40000000);
 	printf("test map end\n");
 
