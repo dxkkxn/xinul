@@ -23,7 +23,8 @@ struct vmm_area;
 
 // CSR
 union satp {
-	void *reg;
+	void* reg;
+	uint64_t ureg;
 	struct {
 		uint64_t PPN:44;
 		uint64_t ASID:16;
