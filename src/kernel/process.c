@@ -14,7 +14,7 @@
 #include "userspace_apps.h"
 #include "context.h"
 #include "crt_process.h"
-#include "machine.h"
+#include "csr.h"
 
 
 process_t *processes[NBPROC];
@@ -25,12 +25,14 @@ static void process_copy_user_code(process_t *p, const struct uapps *app)
 	assert(p != NULL);
 	assert(app != NULL);
 
-	// Switch to process directory
-	satp_csr old_satp;
-	old_satp.reg = (void *) read_const_csr(satp);
-	write_csr(satp, p->context.satp);
+	// Switch to process directory to copy code at 1GiB
+	satp_csr parent_satp = {.ureg = csr_read(satp)};
+	csr_write(satp, p->context.satp);
+	// On authorise temporairement le superviseur à écrire dans du code user (Voir 4.3.1 Addressing and Memory Protection ISA Priv)
+	csr_set(sstatus, SSTATUS_SUM);
 
 	/* Copy the code */
+	// todo a remplacer la copie de code avec le for par un mem copy
 	uint32_t *code_start;
 	uint32_t *target_start;
 	for (code_start = (uint32_t *) app->start, target_start = (uint32_t *) PROCESS_CODE;
@@ -39,8 +41,9 @@ static void process_copy_user_code(process_t *p, const struct uapps *app)
 		*target_start = *code_start;
 	}
 
-	// Restore read only protection and wrap the page dir back
-	write_csr(satp, old_satp.reg);
+	// Remise en place de la protection SUM
+	csr_clear(sstatus, SSTATUS_SUM);
+	csr_write(satp, parent_satp.ureg);
 }
 
 int process_create_code_space(process_t *p)
