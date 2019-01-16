@@ -118,7 +118,7 @@ struct vmm_area *vmm_area_create(void *base,
 	assert(base != NULL);
 	assert(size != 0);
 	assert(dir != NULL);
-	assert(((uint64_t) base & 0xFFFFF000) == (uint64_t) base);
+	assert(((uint64_t) base & 0xFFFFFFFFFFFFF000) == (uint64_t) base);
 	assert((size & 0xFFFFF000) == size);
 
 	uint8_t readable = 1;
