@@ -179,7 +179,11 @@ process_t *process_user_create(
 	// Stack user
 	process_create_user_stack(p, ssize);
 
-	process_create_code_space(p);
+	if (process_create_code_space(p) != 0) {
+		printf("Program %s not found\n", name);
+		// todo libéré le processus
+		return NULL;
+	}
 
 
 	return p;
