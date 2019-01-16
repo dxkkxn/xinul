@@ -27,22 +27,13 @@ int main()
 	extern char _memory_end[];
 	hmm_init(_free_memory_start, _memory_end);
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
-	printf("Number of frames %d = %d ko\n", hmm_frame_count(), hmm_free_memory()>>10);
+	printf("Number of frames %d = %d ko\n", hmm_frame_count(), hmm_free_memory() >> 10);
 
-printf("Virtual memory manager initialization...");
+	printf("Virtual memory manager initialization...");
 	init_virtual_memory();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
-
-	printf("test map\n");
-	void *frame = hmm_frame_retain();
-	printf("frame addr %p\n", frame);
-	char *test_42 = (char *) frame;
-	*test_42 = 42;
-	mapper_map(get_current_directory(), (void *) 0x40000000, frame, 1, 1, 1, 0);
-	printf("le chiffre est %d\n", *(char *) 0x40000000);
-	printf("test map end\n");
-
-	if (sched_ustart("user hello", 1024, 10, (void *) 0) < 0) {
+	printf("Start test program hello\n");
+	if (sched_ustart("hello", 1024, 10, (void *) 0) < 0) {
 		assert(0 && "Unable to create programme hello userde test ");
 	}
 	//if (sched_kstart(systemd, 1, "systemd", (void *) 0) < 0) {
