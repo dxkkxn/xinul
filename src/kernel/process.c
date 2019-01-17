@@ -42,7 +42,8 @@ static void process_copy_user_code(process_t *p, const struct uapps *app)
 	}
 
 	// Remise en place de la protection SUM
-	csr_clear(sstatus, SSTATUS_SUM);
+//	csr_clear(sstatus, SSTATUS_SUM);
+//todo : remettre en place la protection quand la strape_entry sera adapté pour changer de pile
 	csr_write(satp, parent_satp.ureg);
 }
 
