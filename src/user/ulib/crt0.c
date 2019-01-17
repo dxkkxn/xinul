@@ -6,17 +6,16 @@
  * in the app.
  */
 
-extern int main(void*);
-extern void proc_exit_user(void);
-// extern void* get_arg(void);
+#include "syscall.h"
+
+extern int main(void *);
 
 /* Tell the compiler the function is in a special section */
-void _start(void) __attribute__((section(".text.init")));
+void _start(void *arg) __attribute__((section(".text.init")));
 
-void _start(void) {
-	//void* arg = get_arg();
-	int tmp_var = 42;
-	void* arg = &tmp_var;
-        (void) main(arg);
-        (void) proc_exit_user();
+void _start(void *arg)
+{
+	int retval = main(arg);
+	exit(retval);
+
 }

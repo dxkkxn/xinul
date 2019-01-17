@@ -1,7 +1,10 @@
 #include "stdio.h"
 
+#include "syscall.h"
+
 int main(void)
 {
-	printf("Hellowords from User space.\n");
-	return 42;
+	exit(42);
+//	printf("Hellowords from User space.\n");
+	return 43;
 }

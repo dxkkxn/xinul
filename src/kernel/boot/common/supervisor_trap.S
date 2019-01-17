@@ -4,6 +4,7 @@
 	.align 4
 strap_entry:
 	# save context
+	# todo switch to kernel stack
 	addi	sp, sp, -128
 	sd		ra, 0(sp)
 	sd		a0, 8(sp)
@@ -22,12 +23,8 @@ strap_entry:
 	sd		t5, 112(sp)
 	sd		t6, 120(sp)
 	
-	mv a5, a2
-	mv a4, a1 
-	mv a3, a0
-	mv a2, a7
-	csrr	a0, scause
-	csrr	a1, sepc
+	csrr	a6, scause
+	csrr	a7, sepc
 	
 	jal		strap_handler
 

@@ -23,8 +23,8 @@ void set_next_timer_event()
 	sbi_call_set_timer(delta);
 }
 
-void strap_handler(uintptr_t scause, uintptr_t sepc,
-				   uint64_t syscall_no, void *arg0, void *arg1, void *arg2)
+void strap_handler(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, uint64_t syscall_no,
+				   uintptr_t scause, uintptr_t sepc)
 {
 	if (scause & INTERRUPT_CAUSE_FLAG) {
 		switch (scause & ~INTERRUPT_CAUSE_FLAG) {
@@ -46,7 +46,7 @@ void strap_handler(uintptr_t scause, uintptr_t sepc,
 	} else {
 		switch (scause & ~INTERRUPT_CAUSE_FLAG) {
 			case cause_user_ecall :
-				syscall_handler(syscall_no, arg0, arg1, arg2);
+				syscall_handler(syscall_no, arg0, arg1, arg2, arg3, arg4);
 				die("die after syscall to test\n");
 				break;
 			default:
