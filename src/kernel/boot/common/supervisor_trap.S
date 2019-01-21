@@ -31,7 +31,6 @@ strap_entry:
 	jal		strap_handler
 
 restore_context:
-	# restore context
 	ld		ra, 0(sp)
 	ld		a0, 8(sp)
 	ld		a1, 16(sp)
@@ -60,4 +59,7 @@ syscall_entry:
     add t1, t1, t0
     ld t1, (t1)
     jalr ra, 0(t1)
+    # SEPC is into a7
+    addi t0, a7, 4
+    csrw sepc, t0
     j restore_context

@@ -10,6 +10,7 @@
 #include "scheduler.h"
 #include "process.h"
 #include "stddef.h"
+#include "cons_write.h"
 
 extern char userspace_end[];
 
@@ -17,10 +18,14 @@ extern char userspace_end[];
  * Vérification des pointeurs
  */
 
-#define INVALID_PTR(ptr)                                                \
-        (  (ptr) != NULL &&                                             \
-           (  ((char *) (ptr)) < ((char *) user_start)                  \
-           || ((char *) userspace_end - sizeof(*ptr)) <= ((char *) (ptr)) )  )
+#define INVALID_PTR(ptr) \
+        ! ( \
+        (ptr)!=NULL \
+        && \
+        ( \
+        		((char*) (ptr)) >= ((char*) PROCESS_CODE) \
+        		&& ((char*) KERNEL_CODE - sizeof(*ptr)) >= ((char*) (ptr)) \
+        		))
 
 
 
@@ -50,6 +55,7 @@ static void checked_clock_settings(unsigned long *q, unsigned long *t)
 */
 
 #define checked_cons_echo       cons_echo
+
 /*
 static int checked_cons_chbuffer(unsigned char *buf, font *f, int w, int h)
 {
@@ -64,14 +70,14 @@ static unsigned long checked_cons_read(char *str, unsigned long l)
 		return 0;
 	return cons_read(str, l);
 }
+*/
 
 static int checked_cons_write(char *str, long l)
 {
-	if (UNLIKELY(INVALID_PTR(str)))
-		return RET_ERROR;
+	if ( ! INVALID_PTR(str))
+		return -1;
 	return cons_write(str, l);
 }
-*/
 
 #define checked_cons_wait       cons_wait
 
@@ -203,7 +209,7 @@ void sysc_init(void)
 //	BIND_SYSCALL(clock_settings);
 //	BIND_SYSCALL(cons_echo);
 //	BIND_SYSCALL(cons_read);
-//	BIND_SYSCALL(cons_write);
+	BIND_SYSCALL(cons_write);
 //	BIND_SYSCALL(current_clock);
 	BIND_SYSCALL(exit);
 //	BIND_SYSCALL(getpid);
@@ -233,7 +239,6 @@ void sysc_init(void)
 //	BIND_SYSCALL(shm_release);
 
 	/* Affectation du traitant d'interruption */
-	// todo un jour passer sur vectoriel
 // todo regarder si on peut activer les interruptinos syscall indépendament.
 }
 

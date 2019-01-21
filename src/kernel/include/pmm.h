@@ -16,7 +16,7 @@
  *   Kernel space   *
  *   2Go -> 0x80000000
  ********************/
-
+#define     KERNEL_CODE 0x80000000
 /**
  * Process kernel stack.
  * @note A stack usage decreases the pointer.

@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stddef.h>
 
+extern int cons_write(const char *str, long size);
+
 #define alloca(sz) __builtin_alloca(sz)
 
 int vprintf(const char* s, va_list vl)
@@ -12,6 +14,6 @@ int vprintf(const char* s, va_list vl)
     int res = vsnprintf(NULL, n, s, vl);
     out = alloca(res + 1);
     vsnprintf(out, res + 1, s, vl);
-    while (*out) putchar(*out++);
+    cons_write(out, res + 1);
     return res;
 }
