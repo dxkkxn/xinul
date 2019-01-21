@@ -9,13 +9,14 @@
 #include "virtual_memory.h"
 #include "hmm.h"
 #include "mapper.h"
+#include "syscall.h"
 
 int main()
 {
 	printf("\n= OSON Initialization =\n");
 
 	printf("Clock interruptions...");
-	setup_clock_interrupts();
+//	setup_clock_interrupts();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	printf("Scheduler initialization...");
