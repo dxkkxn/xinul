@@ -1,3 +1,6 @@
 src/build/
 .lvimrc
 tags
+.idea/
+cmake-build-debug/
+CMakeLists.txt
