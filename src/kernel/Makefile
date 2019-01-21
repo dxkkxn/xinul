@@ -42,15 +42,33 @@ BIN_DIR = $(OUTPUT)/user
 include build/apps-integration.mk
 
 #
+# Source directories
+#
+
+KERNEL_SRC_DIRS = . $(sort $(dir $(wildcard */)))
+
+#
 # Include headers directories
 #
 
 INCLUDE_DIRS = \
 	$(LIB_INCLUDES) \
-	include \
-	asm_include \
-	tests \
+	$(KERNEL_SRC_DIRS) \
 	boot/common \
+
+#
+# Kernel sources files
+#
+
+# Fetch BOOT_OBJS
+include boot/boot.mk
+OBJS = $(BOOT_OBJS)
+
+KERNEL_SRC = $(foreach d, $(KERNEL_SRC_DIRS), $(wildcard $(d)/*.c))
+KERNEL_ASM = $(foreach d, $(KERNEL_SRC_DIRS), $(wildcard $(d)/*.S))
+OBJS += $(sort $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.S=.o))
+OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
+DEPFILES = $(OBJS:.o=.d)
 
 #
 # Import specific architecture  parameters :
@@ -84,26 +102,6 @@ LDFLAGS += $(ARCH_LDFLAGS)
 # Add specific kernel LD options
 LD_SCRIPTS = boot/$(MACHINE)/default.lds
 LDFLAGS += $(addprefix -T, $(LD_SCRIPTS))
-
-#
-# Kernel sources files
-#
-
-KERNEL_SRC_DIRS = \
-	. \
-	asm_src \
-	tests \
-	vmm \
-
-# Fetch BOOT_OBJS
-include boot/boot.mk
-OBJS = $(BOOT_OBJS)
-
-KERNEL_SRC = $(foreach d, $(KERNEL_SRC_DIRS), $(wildcard $(d)/*.c))
-KERNEL_ASM = $(foreach d, $(KERNEL_SRC_DIRS), $(wildcard $(d)/*.S))
-OBJS += $(sort $(KERNEL_SRC:.c=.o) $(KERNEL_ASM:.S=.o))
-OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
-DEPFILES = $(OBJS:.o=.d)
 
 #
 # Targets
