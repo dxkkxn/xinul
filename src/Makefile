@@ -31,6 +31,7 @@ DK_SHARE_DIR = $(PWD)
 all:$(KERNEL_BIN)
 
 $(KERNEL_BIN):
+	make -C user
 	make -C kernel/ all	
 
 $(STDLIB_NAME):
