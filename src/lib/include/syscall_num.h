@@ -26,19 +26,15 @@
 #define SYSC_getstatus          21
 #define SYSC_psize              22
 #define SYSC_waitpid_nohang     23
-#define SYSC_surface_info       24
-#define SYSC_surface_update     25
-#define SYSC_sleepms            26
-#define SYSC_waitmouse          27
-#define SYSC_beep               28
-#define SYSC_cons_chbuffer      29
-#define SYSC_cons_wait          30
-#define SYSC_reboot             31
+#define SYSC_sleepms            24
+#define SYSC_cons_chbuffer      25
+#define SYSC_cons_wait          26
+#define SYSC_reboot             27
 
-#define SYSC_shm_create         32
-#define SYSC_shm_acquire        33
-#define SYSC_shm_release        34
+#define SYSC_shm_create         28
+#define SYSC_shm_acquire        29
+#define SYSC_shm_release        30
 
-#define NB_SYSCALLS             35
+#define NB_SYSCALLS             31
 
 #endif
