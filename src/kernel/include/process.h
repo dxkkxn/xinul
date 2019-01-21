@@ -16,7 +16,7 @@
 typedef struct __process_st process_t;
 
 #include "scheduler.h"
-#include "virtual_memory.h"
+#include "vmm.h"
 
 
 typedef struct list_head list_process_t;

@@ -10,7 +10,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-#include "virtual_memory.h"
+#include "vmm.h"
 #include "userspace_apps.h"
 #include "context.h"
 #include "crt_process.h"

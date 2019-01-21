@@ -7,7 +7,7 @@
  */
 
 #include "pmm.h"
-#include "virtual_memory.h"
+#include "vmm.h"
 #include "hmm.h"
 #include "mapper.h"
 #include "process.h"

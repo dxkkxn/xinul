@@ -10,7 +10,7 @@
 #include "mem.h"
 
 #include "machine.h"
-#include "virtual_memory.h"
+#include "vmm.h"
 #include "hmm.h"
 #include "mapper.h"
 

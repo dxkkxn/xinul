@@ -5,7 +5,7 @@
 #include "csr.h"
 #include "machine.h"
 
-#include "virtual_memory.h"
+#include "vmm.h"
 #include "program.h"
 #include "crt_process.h"
 

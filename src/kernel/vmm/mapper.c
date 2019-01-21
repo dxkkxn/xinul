@@ -11,7 +11,7 @@
 
 #include "machine.h"
 #include "hmm.h"
-#include "virtual_memory.h"
+#include "vmm.h"
 #include "mapper.h"
 
 

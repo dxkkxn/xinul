@@ -6,7 +6,7 @@
 #include "scheduler.h"
 #include "program.h"
 #include "interrupts.h"
-#include "virtual_memory.h"
+#include "vmm.h"
 #include "hmm.h"
 #include "mapper.h"
 #include "syscall.h"
