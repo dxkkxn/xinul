@@ -32,6 +32,11 @@ int main()
 	printf("Virtual memory manager initialization...");
 	init_virtual_memory();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
+
+	printf("Syscall initialization...");
+	sysc_init();
+	printf("\r\t\t\t\t\t\t\t[OK]\n");
+
 	printf("Start test program hello\n");
 	if (sched_ustart("hello", 1024, 10, (void *) 0) < 0) {
 		assert(0 && "Unable to create programme hello userde test ");

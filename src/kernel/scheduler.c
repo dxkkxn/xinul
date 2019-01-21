@@ -211,6 +211,7 @@ int sched_kstart(int64_t (*run)(void *),
 void sched_user_exit(int retval)
 {
 	// TODO free user stack and virtual memory, voir la correction
+	printf("In sched_user_exit with retval %d\n", retval);
 	sched_exit(retval);
 }
 

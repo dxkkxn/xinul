@@ -6,7 +6,6 @@
 #include "machine.h"
 #include "sbi.h"
 #include "scheduler.h"
-#include "syscall_handler.h"
 
 void setup_clock_interrupts()
 {
@@ -45,10 +44,6 @@ void strap_handler(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, u
 		}
 	} else {
 		switch (scause & ~INTERRUPT_CAUSE_FLAG) {
-			case cause_user_ecall :
-				syscall_handler(syscall_no, arg0, arg1, arg2, arg3, arg4);
-				die("die after syscall to test\n");
-				break;
 			default:
 				die(
 						"supervisor mode: unhandable exception %ld @ %p",

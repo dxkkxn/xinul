@@ -1,3 +1,4 @@
+
 .globl strap_entry
 
 	.text
@@ -25,9 +26,11 @@ strap_entry:
 	
 	csrr	a6, scause
 	csrr	a7, sepc
-	
+	li t0, 8 # user_ecall
+	beq t0, a6, syscall_entry
 	jal		strap_handler
 
+restore_context:
 	# restore context
 	ld		ra, 0(sp)
 	ld		a0, 8(sp)
@@ -48,3 +51,13 @@ strap_entry:
 	addi	sp, sp, 128
 
 	sret
+
+
+syscall_entry:
+    la t0, sysc_handlers
+    li t1, 8
+    mul t1, a5, t1
+    add t1, t1, t0
+    ld t1, (t1)
+    jalr ra, 0(t1)
+    j restore_context
