@@ -4,6 +4,11 @@ STDLIB_NAME = lib
 BUILD_DIR = build
 KERNEL_BIN = $(BUILD_DIR)/$(KERNEL_NAME)
 
+# Hardware plateforme
+ZYBO_IP = 192.168.1.5
+ZYBO_USER = root
+ZYBO_MDP = root
+
 # Qemu
 # Qemu environement machine : spike_v1.10
 QEMU_MACHINE = spike_v1.10
@@ -87,4 +92,13 @@ dk-go: $(DK_MAKEFILE_DIR)/Makefile
 dk-rm-image: $(DK_MAKEFILE_DIR)/Makefile
 	make -C $(DK_MAKEFILE_DIR) CMD="make clean" exec
 
+
+zybo_ssh:
+	ssh $(ZYBO_USER)@$(ZYBO_IP)
+
+zybo_copy: $(KERNEL_BIN)
+	scp $(KERNEL_BIN) $(ZYBO_USER)@$(ZYBO_IP):
+
+zybo_go:zybo_copy
+	ssh $(ZYBO_USER)@$(ZYBO_IP) ./fesvr-zynq $(KERNEL_NAME)
 
