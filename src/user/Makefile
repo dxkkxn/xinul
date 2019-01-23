@@ -63,10 +63,9 @@ LDFLAGS = $(CFLAGS) $(ARCH_LDFLAGS)
 APPS_NAMES      = hello
 APP_CFLAGS := $(CFLAGS)
 APP_LDFLAGS := $(LDFLAGS) -T build/apps.lds
-# -Wl,--oformat=binary 
 
 APPS_STD_INC    = $(USER_INCLUDES)
-APPS_STD_LIB = $(BUILD_DIR)/$(STDLIB_NAME).a
+APPS_STD_LIB = $(BUILD_DIR)/$(STDLIB_NAME).a $(ULIB)
 APPS_STD_TARGET := $(LIB_TARGET) $(ULIB)
 include build/apps.mk
 
