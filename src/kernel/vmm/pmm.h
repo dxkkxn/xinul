@@ -17,38 +17,32 @@
  *   2Go -> 0x80000000
  ********************/
 #define     KERNEL_CODE 0x80000000
-/**
- * Process kernel stack.
- * @note A stack usage decreases the pointer.
- */
-// todo voir si on vire ou modif
-// 2,5Go
-#define     PROCESS_KSTACK      0xa0000000
 
 /******************
  *   User space   *
  ******************/
 
 /** Process code start */
+
 #define     PROCESS_CODE        0x40000000
 
-
 /** Process heap start
- * 3Go
+ * 2,25 Go
  * */
 
-#define     PROCESS_HEAP        0xC0000000
+#define     PROCESS_HEAP        0x50000000
 
-/** Process shared page */
-// todo a comprendre et à mettre en place
-#define     PROCESS_SHM        (PROCESS_HEAP - PAGE_SIZE)
 
 /**
  * Process stack start.
  * @note A stack usage decreases the pointer.
- * 4Go
  */
-#define     PROCESS_USTACK      0x100000000
+
+#define     PROCESS_USTACK      0x60000000
+
+/** Process shared page */
+
+#define     PROCESS_SHM        0x70000000
 
 
 struct pmm_varea;
