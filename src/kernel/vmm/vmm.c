@@ -160,5 +160,7 @@ void vmm_area_free(struct vmm_area *varea)
 		assert(frame != NULL);
 		hmm_frame_release(frame);
 	}
+
+	mem_free(varea, sizeof(* varea));
 }
 

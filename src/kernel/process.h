@@ -41,33 +41,28 @@ struct __process_st {
 	int prio;
 
 	// Process "family"
-	process_t* parent;
+	process_t *parent;
 	link children;
 
 	// Execution context
 	context_t context;
-	pagetable_t page_dir;
 	struct pmm_varea *code_varea;
 	uint32_t user_stack_size;
 	user_stack_t user_stack;
 	struct pmm_varea *user_stack_varea;
 	kernel_stack_t kernel_stack;
 
+	// Virtual memory
+	pagetable_t page_dir;
+	//struct shm_handle *shm_handle;
+
 	// Scheduler part
 	long info;
 	int error;
-	int  status;
+	int status;
 	link *current_queue;
 	link status_link;
 	link family_link;
-
-	// TODO
-	int zero; // utilisé comme prio pour prendre la queu pour une fifo (toujours à zéro
-	int return_value;
-	//link linker;
-	uint32_t wakeup;
-	int waitting_for;
-	int children_return_value;
 };
 
 #if 0
@@ -77,7 +72,7 @@ void init_process();
 #endif
 
 /* Allocate and initialize a process structure */
-process_t* process_create(
+process_t *process_create(
 		const char *name,
 		int prio,
 		process_t *parent);
@@ -101,4 +96,4 @@ process_t* create_user_process(const char *code_name, const char *nom, int prior
 int process_getprio(int pid);
 
 /* Return the processus matching with the given pid */
-process_t* process_get(int pid);
+process_t *process_get(int pid);

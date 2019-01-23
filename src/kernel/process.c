@@ -8,9 +8,10 @@
 
 #include "string.h"
 #include "stdio.h"
-#include "stdlib.h"
+#include "mem.h"
 
 #include "vmm.h"
+#include "pmm.h"
 #include "userspace_apps.h"
 #include "context.h"
 #include "crt_process.h"
@@ -118,7 +119,7 @@ process_t *process_create(
 	}
 
 	// allocate the process structure
-	p = malloc(sizeof(*p));
+	p = mem_alloc(sizeof(*p));
 	if (p == NULL) {
 		return NULL;
 	}
@@ -129,7 +130,7 @@ process_t *process_create(
 	if (name_length > MAX_LENGTH_PROCESS_NAME) {
 		name_length = MAX_LENGTH_PROCESS_NAME;
 	}
-	p->name = malloc(name_length + 1);
+	p->name = mem_alloc(name_length + 1);
 	if (p->name == NULL) {
 		return NULL;
 	}
@@ -137,7 +138,7 @@ process_t *process_create(
 	p->name[name_length] = 0;
 
 	// Kernel stack allocation
-	p->kernel_stack = malloc(K_STACK_SIZE);
+	p->kernel_stack = mem_alloc(K_STACK_SIZE);
 	// to peut-être remplacerpar la solution des profs
 	if (p->kernel_stack == NULL) {
 		return NULL;
@@ -198,13 +199,36 @@ int process_destroy(int pid)
 		return -1;
 	}
 	p = processes[pid - 1];
+	if (p == NULL)
+		return -1;
 
-	free(p->name);
-	free(p->kernel_stack);
-	free(p);
+	/* Destroy shared memory mappings */
+	// todo destroy memory maping
+//	if (p->shm_handle) {
+//		shm_cleanup(p, p->shm_handle->hash);
+//	}
+
+	// Destroy user stack if needed
+	if (p->user_stack_varea != NULL) {
+		pmm_destroy_area(p->user_stack_varea);
+		p->user_stack_varea = NULL;
+		p->user_stack = NULL;
+	}
+
+	// Destroy code space
+	if (p->code_varea != NULL) {
+		pmm_destroy_area(p->code_varea);
+		p->code_varea = NULL;
+	}
+
+/* Free virtual memory structures */
+	pmm_destroy_directory(p);
+
+	mem_free(p->kernel_stack, K_STACK_SIZE);
+	mem_free(p->name, strlen(p->name) + 1);
+	mem_free(p, sizeof(*p));
 
 	processes[pid - 1] = NULL;
-
 	return 0;
 }
 

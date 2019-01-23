@@ -10,6 +10,7 @@
 #define _MAPPER_H_
 
 #include "stdint.h"
+#include "vmm.h"
 
 
 /**
@@ -28,6 +29,6 @@ void mapper_map(pagetable_t pdirectory, void *page, void *frame, uint8_t readabl
  * @param satp register to find page_dir the page directory to modify.
  * @param address the address to unmap.
  */
- void *mapper_unmap(void *page_dir, void *address);
+ void *mapper_unmap(pagetable_t pgdir, void *address);
 
 #endif /* _MAPPER_H_ */

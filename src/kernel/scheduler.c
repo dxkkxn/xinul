@@ -305,14 +305,8 @@ void sched_exit(int retval)
 	p->error = 0;
 
 	if (p->pid == 1) {
-		printf("TODO: reboot if process 1 dies\n");
-		// TODO halt
-		/*
-		assert(0 && "reboot dans scheduler.c");
-		//reboot();
-		printf("It is now safe to shutdown");
-		wfi();
-		*/
+		printf("End of process with pid=1, OSON halt.\n");
+		exit(0);
 	}
 
 	sched_zombify(p);
