@@ -14,6 +14,6 @@ int vprintf(const char* s, va_list vl)
     int res = vsnprintf(NULL, n, s, vl);
     out = alloca(res + 1);
     vsnprintf(out, res + 1, s, vl);
-    cons_write(out, res + 1);
+    cons_write(out, res);
     return res;
 }
