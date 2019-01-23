@@ -37,7 +37,7 @@ void context_user_init(
 		void *arg)
 {
 	c->ra = (void *) crt_user_process;
-	c->s0 = sched_user_exit;
+	c->s0 = sched_exit;
 	c->s1 = arg;
 	c->sepc = (void*) PROCESS_CODE;
 	c->sp = user_stack + ssize - 1;

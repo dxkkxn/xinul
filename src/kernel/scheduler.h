@@ -50,7 +50,6 @@ void schedule(void);
 
 /* End the current process with its returned value, reboot if pid = 1 */
 void sched_exit(int retval);
-void sched_user_exit(int retval);
 
 /* Kill the process of the given pid */
 int sched_kill(int pid);

@@ -83,7 +83,7 @@ static int checked_cons_write(char *str, long l)
 
 #define checked_current_clock   current_clock
 
-#define checked_exit            sched_user_exit
+#define checked_exit            sched_exit
 
 /*
 static int checked_getname(int pid, char *buf, unsigned int size)

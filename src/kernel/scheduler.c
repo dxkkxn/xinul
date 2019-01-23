@@ -8,7 +8,7 @@
 #include "vmm.h"
 #include "program.h"
 #include "crt_process.h"
-
+#include "mem.h"
 
 
 /* ====      Scheduler data strucutres        ==== */
@@ -165,6 +165,7 @@ void sched_init()
 	INIT_LIST_HEAD(&dustbin);
 
 	// Set idle's context
+	kernel_idle.kernel_stack = mem_alloc(K_STACK_SIZE);
 	context_kernel_init(
 			&kernel_idle.context, kernel_idle.kernel_stack, idle, NULL
 	);
@@ -205,14 +206,6 @@ int sched_kstart(int64_t (*run)(void *),
 	}
 
 	return ret_pid;
-}
-
-
-void sched_user_exit(int retval)
-{
-	// TODO free user stack and virtual memory, voir la correction
-	printf("In sched_user_exit with retval %d\n", retval);
-	sched_exit(retval);
 }
 
 int sched_ustart(const char *name,
@@ -313,7 +306,7 @@ void sched_exit(int retval)
 
 	if (p->pid == 1) {
 		printf("TODO: reboot if process 1 dies\n");
-		// TODO
+		// TODO halt
 		/*
 		assert(0 && "reboot dans scheduler.c");
 		//reboot();
