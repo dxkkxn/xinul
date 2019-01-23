@@ -50,6 +50,7 @@ struct __process_st {
 	uint32_t user_stack_size;
 	user_stack_t user_stack;
 	struct pmm_varea *user_stack_varea;
+	struct pmm_varea *user_heap_varea;
 	kernel_stack_t kernel_stack;
 
 	// Virtual memory

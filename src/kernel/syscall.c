@@ -19,13 +19,11 @@ extern char userspace_end[];
  */
 
 #define INVALID_PTR(ptr) \
-        ! ( \
-        (ptr)!=NULL \
-        && \
         ( \
-        		((char*) (ptr)) >= ((char*) PROCESS_CODE) \
-        		&& ((char*) KERNEL_CODE - sizeof(*ptr)) >= ((char*) (ptr)) \
-        		))
+                (char*)(ptr) < (char*) PROCESS_CODE \
+                || \
+                (char*) (ptr) > (char*) KERNEL_CODE - sizeof(*ptr) \
+                )
 
 
 
@@ -74,7 +72,7 @@ static unsigned long checked_cons_read(char *str, unsigned long l)
 
 static int checked_cons_write(char *str, long l)
 {
-	if ( ! INVALID_PTR(str))
+	if (INVALID_PTR(str))
 		return -1;
 	return cons_write(str, l);
 }

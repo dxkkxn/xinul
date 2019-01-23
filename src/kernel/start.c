@@ -11,13 +11,24 @@
 #include "mapper.h"
 #include "syscall.h"
 
+int64_t launcher(void *arg)
+{
+	printf("Launcher start.\n");
+	printf("Nombre de frame disponible avant app hello : %d\n", hmm_frame_count());
+	if (sched_ustart("hello", 1024, 11, (void *) 0) < 0) {
+		assert(0 && "Unable to create programme hello userde test ");
+	}
+	printf("Nombre de frame disponible aprèes app hello : %d\n", hmm_frame_count());
+	return 0;
+}
+
 int main()
 {
 	printf("\n= OSON Initialization =\n");
 
-	printf("Clock interruptions...");
+//	printf("Clock interruptions...");
 //	setup_clock_interrupts();
-	printf("\r\t\t\t\t\t\t\t[OK]\n");
+//	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	printf("Scheduler initialization...");
 	sched_init();
@@ -38,12 +49,9 @@ int main()
 	sysc_init();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
-	printf("Start test program hello\n");
-	if (sched_ustart("hello", 1024, 10, (void *) 0) < 0) {
-		assert(0 && "Unable to create programme hello userde test ");
-	}
+	sched_kstart(launcher, 10, "Launcher", 0);
 	//if (sched_kstart(systemd, 1, "systemd", (void *) 0) < 0) {
 //		assert(0 && "Unable to create systemd process");
 //	}
-	return 0;
+	assert(0 && "end of main");
 }

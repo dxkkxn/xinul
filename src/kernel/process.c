@@ -72,6 +72,11 @@ int process_create_code_space(process_t *p)
 	return 0;
 }
 
+void process_create_user_heap(process_t *p)
+{
+	p->user_heap_varea = pmm_create_udata(p, (void *) PROCESS_HEAP, HEAP_USER_SIZE);
+}
+
 void process_create_user_stack(process_t *p, int size)
 {
 	unsigned local_size;
@@ -177,6 +182,8 @@ process_t *process_user_create(
 	//if (alloc_region(pagedir, MEM_USER_HEAP, MEM_USER_HEAP + 4*HEAP_USER_SIZE, PAGE_TABLE_USER_RW) == -1){
 	//return NULL;
 	//}
+	process_create_user_heap(p);
+
 
 	// Stack user
 	process_create_user_stack(p, ssize);
@@ -214,6 +221,14 @@ int process_destroy(int pid)
 		p->user_stack_varea = NULL;
 		p->user_stack = NULL;
 	}
+
+	// Destroy user heap if needed
+	if (p->user_heap_varea != NULL) {
+		pmm_destroy_area(p->user_heap_varea);
+		p->user_heap_varea = NULL;
+	}
+
+
 
 	// Destroy code space
 	if (p->code_varea != NULL) {
