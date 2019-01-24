@@ -55,7 +55,8 @@ SECTIONS
     PROVIDE(_bss_end = .);
 
     . = ALIGN(4096);
-    PROVIDE(_heap_start = .);
+    PROVIDE(_bss_end_align = .);
+    PROVIDE(_heap_start = _bss_end_align + 1M);
     PROVIDE(_heap_end = _heap_start + 32M);
     PROVIDE(_free_memory_start = _heap_end);
   } >ram AT>ram :bss
