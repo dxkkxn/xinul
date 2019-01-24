@@ -3,29 +3,47 @@
 
 #include "stdint.h"
 
-typedef uint8_t * kernel_stack_t;
-typedef uint8_t * user_stack_t;
+typedef uint8_t *kernel_stack_t;
+typedef uint8_t *user_stack_t;
 
 typedef struct __process_st process_t;
 
 typedef struct context {
-	void* sp;
-	void* ra;
-	void* s0;
-	void* s1;
-	void* s2;
-	void* s3;
-	void* s4;
-	void* s5;
-	void* s6;
-	void* s7;
-	void* s8;
-	void* s9;
-	void* s10;
-	void* s11;
-	void* satp;
-	void* sepc;
+	void *sp;
+	void *ra;
+	void *s0;
+	void *s1;
+	void *s2;
+	void *s3;
+	void *s4;
+	void *s5;
+	void *s6;
+	void *s7;
+	void *s8;
+	void *s9;
+	void *s10;
+	void *s11;
+	void *satp;
+	void *sepc;
 } context_t;
+
+struct caller_context {
+	uint64_t ra;
+	uint64_t a0;
+	uint64_t a1;
+	uint64_t a2;
+	uint64_t a3;
+	uint64_t a5;
+	uint64_t a6;
+	uint64_t a7;
+	uint64_t t0;
+	uint64_t t1;
+	uint64_t t2;
+	uint64_t t3;
+	uint64_t t4;
+	uint64_t t5;
+	uint64_t t6;
+};
 
 #include "process.h"
 
@@ -45,7 +63,7 @@ void ctx_sw(context_t *previous, context_t *next);
 void context_kernel_init(
 		context_t *c,
 		kernel_stack_t stack,
-		int64_t (*runf) (void *),
+		int64_t (*runf)(void *),
 		void *arg);
 
 /*

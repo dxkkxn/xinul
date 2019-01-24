@@ -1,9 +1,8 @@
-#include "machine_handlers.h"
+#include "machine_trap.h"
 #include "encoding.h"
 #include "sbi_no.h"
 #include "csr.h"
 #include "machine.h"
-
 
 void handle_mtimer_interrupt() {
 	// trigger a supervisor timer interrupt

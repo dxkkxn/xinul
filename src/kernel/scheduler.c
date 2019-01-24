@@ -5,6 +5,7 @@
 #include "csr.h"
 #include "machine.h"
 
+#include "supervisor_trap.h"
 #include "vmm.h"
 #include "program.h"
 #include "crt_process.h"
@@ -148,6 +149,7 @@ int64_t idle(void *arg)
 	(void) arg;
 
 	while (1) {
+		ENABLE_SUPERVISOR_INTERRUPTS();
 		wfi();
 	}
 

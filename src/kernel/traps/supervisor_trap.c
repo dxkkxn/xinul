@@ -1,4 +1,4 @@
-#include "interrupts.h"
+#include "supervisor_trap.h"
 
 #include "encoding.h"
 #include "csr.h"
@@ -22,8 +22,7 @@ void set_next_timer_event()
 	sbi_call_set_timer(delta);
 }
 
-void strap_handler(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, uint64_t syscall_no,
-				   uintptr_t scause, uintptr_t sepc)
+void strap_handler(uintptr_t scause, uintptr_t sepc)
 {
 	if (scause & INTERRUPT_CAUSE_FLAG) {
 		switch (scause & ~INTERRUPT_CAUSE_FLAG) {

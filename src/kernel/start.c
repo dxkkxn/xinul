@@ -5,7 +5,7 @@
 
 #include "scheduler.h"
 #include "program.h"
-#include "interrupts.h"
+#include "supervisor_trap.h"
 #include "vmm.h"
 #include "hmm.h"
 #include "mapper.h"
@@ -26,9 +26,9 @@ int main()
 {
 	printf("\n= OSON Initialization =\n");
 
-//	printf("Clock interruptions...");
-//	setup_clock_interrupts();
-//	printf("\r\t\t\t\t\t\t\t[OK]\n");
+	printf("Clock interruptions...");
+	setup_clock_interrupts();
+	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	printf("Scheduler initialization...");
 	sched_init();
@@ -49,6 +49,8 @@ int main()
 	sysc_init();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
+	ENABLE_SUPERVISOR_INTERRUPTS();
+//	while(1);
 	sched_kstart(launcher, 10, "Launcher", 0);
 	//if (sched_kstart(systemd, 1, "systemd", (void *) 0) < 0) {
 //		assert(0 && "Unable to create systemd process");

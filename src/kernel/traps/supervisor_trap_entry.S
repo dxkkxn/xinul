@@ -2,7 +2,7 @@
 .globl strap_entry
 
 	.text
-	.align 4
+	.align 2
 strap_entry:
 	# save context
 	# todo switch to kernel stack
@@ -23,11 +23,12 @@ strap_entry:
 	sd		t4, 104(sp)
 	sd		t5, 112(sp)
 	sd		t6, 120(sp)
-	
-	csrr	a6, scause
-	csrr	a7, sepc
-	li t0, 8 # user_ecall
-	beq t0, a6, syscall_entry
+
+	csrr t0, scause
+	li t1, 8 # user_ecall
+	beq t0, t1, syscall_entry
+	mv a0, t0
+	csrr	a1, sepc
 	jal		strap_handler
 
 restore_context:
@@ -48,7 +49,6 @@ restore_context:
 	ld		t5, 112(sp)
 	ld		t6, 120(sp)
 	addi	sp, sp, 128
-
 	sret
 
 
@@ -60,6 +60,7 @@ syscall_entry:
     ld t1, (t1)
     jalr ra, 0(t1)
     # SEPC is into a7
-    addi t0, a7, 4
+    csrr t0, sepc
+    addi t0, t0, 4
     csrw sepc, t0
     j restore_context

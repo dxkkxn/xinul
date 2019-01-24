@@ -1,7 +1,11 @@
 #include <machine.h>
 #include "machine_trap.h"
-#include "machine_handlers.h"
+#include "sbi.h"
+
 #include "csr.h"
+#include "context.h"
+
+struct caller_context m_caller_context;
 
 
 const char * riscv_excp_names[16] = {
@@ -43,7 +47,7 @@ const char * riscv_intr_names[16] = {
 };
 
 
-void trap_handler(uintptr_t* regs, uintptr_t mcause, uintptr_t mepc)
+void machine_trap_handler(struct caller_context regs, uintptr_t mcause, uintptr_t mepc)
 {
 	if (mcause & INTERRUPT_CAUSE_FLAG) {
 		switch (mcause & ~INTERRUPT_CAUSE_FLAG) {
@@ -61,7 +65,7 @@ void trap_handler(uintptr_t* regs, uintptr_t mcause, uintptr_t mepc)
 		switch (mcause) {
 		case cause_supervisor_ecall:
 			// call the function with the saved registers a7, a0, a1 and a2
-			handle_sbi_call(regs[8], regs[1], regs[2], regs[3]);
+			handle_sbi_call(regs.a7, regs.a0, regs.a1, regs.a2);
 			break;
 		default:
 			die(

@@ -3,6 +3,9 @@
 
 #include "stdint.h"
 
+void handle_mtimer_interrupt();
+uint64_t handle_sbi_call(uint64_t call_no, uintptr_t arg0, uintptr_t arg1, uintptr_t arg2);
+
 #define SBI_CALL(call_no, arg0, arg1, arg2) ({					\
 	register uintptr_t a0 __asm__ ("a0") = (uintptr_t)(arg0);	\
 	register uintptr_t a1 __asm__ ("a1") = (uintptr_t)(arg1);	\
@@ -23,6 +26,5 @@
 
 // value is given in ms
 void sbi_call_set_timer(uint64_t value);
-
 
 #endif /* _KERNEL_SBI_H_ */
