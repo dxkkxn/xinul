@@ -8,20 +8,18 @@
 #define MSTATUS_MPIE_MASK 0x80 /* bit 7 = 1 */
 
 
-int main(int argc, char **argv);
+int main();
 
 // this function is called by entry.S
 // Only the interrupt vector is set up and we are still in machine mode
 __attribute__((noreturn)) void boot_riscv()
 {
-	char *argv[] = { "femto", NULL };
 	arch_setup();
 	
 	// supervisor set-up and switch of mode (M to S)
 	delegate_traps();
 	enter_supervisor_mode();
 
-	// supervisor entry point
-	exit(main(1, argv));
+	exit(main());
 	__builtin_unreachable();
 }
