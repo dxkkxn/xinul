@@ -27,7 +27,7 @@ mtrap_entry:
     mv      a0, sp
     csrr    a1, mcause
     csrr    a2, mepc
-    jal     machine_trap_handler
+    jal     mtrap_handler
 
     # Restore registers.
     ld ra, 0(sp)

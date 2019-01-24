@@ -47,7 +47,7 @@ const char * riscv_intr_names[16] = {
 };
 
 
-void machine_trap_handler(struct caller_context regs, uintptr_t mcause, uintptr_t mepc)
+void mtrap_handler(struct caller_context regs, uintptr_t mcause, uintptr_t mepc)
 {
 	if (mcause & INTERRUPT_CAUSE_FLAG) {
 		switch (mcause & ~INTERRUPT_CAUSE_FLAG) {

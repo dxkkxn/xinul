@@ -1,3 +1,0 @@
-#define SBI_SET_TIMER 0
-#define SBI_CONFIGURE_TIMER 1
-
