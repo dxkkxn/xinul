@@ -6,7 +6,7 @@
 strap_entry:
 	# save context
 	# todo switch to kernel stack
-	addi	sp, sp, -128
+	addi	sp, sp, -136
 	sd		ra, 0(sp)
 	sd		a0, 8(sp)
 	sd		a1, 16(sp)
@@ -23,6 +23,13 @@ strap_entry:
 	sd		t4, 104(sp)
 	sd		t5, 112(sp)
 	sd		t6, 120(sp)
+	# On regarde si on vient du mond user ou kernel
+	# on enregistre l'information sur la pile pour repartir au bonne endroit
+	# SPP=0 -> from user space
+	# SPP=1 -> from kernel space
+	csrr t0, sstatus
+	andi t1, t0, 0x100
+	sd t1, 128(sp)
 
 	csrr t0, scause
 	li t1, 8 # user_ecall
@@ -32,6 +39,14 @@ strap_entry:
 	jal		strap_handler
 
 restore_context:
+    ld t0, 128(sp)
+    li t1, 0x100
+    beqz t0, user_land
+    csrs sstatus, t1
+    j restor_regs
+    user_land:
+    csrc sstatus, t1
+    restor_regs:
 	ld		ra, 0(sp)
 	ld		a0, 8(sp)
 	ld		a1, 16(sp)
@@ -48,7 +63,7 @@ restore_context:
 	ld		t4, 104(sp)
 	ld		t5, 112(sp)
 	ld		t6, 120(sp)
-	addi	sp, sp, 128
+	addi	sp, sp, 136
 	sret
 
 
