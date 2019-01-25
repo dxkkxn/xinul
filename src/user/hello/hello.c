@@ -8,6 +8,8 @@ int main(void)
 	printf("Je suis l'app hello et je suis dans l'espace user\n");
 	void *obj = malloc(50);
 	printf("obj allocation address %p\n", obj);
+	printf("On rentre dans une boucle\n");
+	while(1);
 	exit(42);
 //	printf("Hellowords from User space.\n");
 	return 43;
