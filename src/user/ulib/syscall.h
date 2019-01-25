@@ -8,6 +8,7 @@
  */
 #ifndef ___SYSCALL_H___
 #define ___SYSCALL_H___
+#include "stdint.h"
 
 int chprio(int pid, int newprio);
 
@@ -49,11 +50,11 @@ int psend(int fid, int message);
 
 int psize(int fid, int *size);
 
-int start(int (*ptfunc)(void *), unsigned long ssize, int prio, const char * name, void *arg);
+int start(const char *name, unsigned long ssize, int prio, void *arg);
 
 void wait_clock(unsigned long clock);
 
-int waitpid(int pid, int *retvalp);
+int waitpid(int pid, int64_t *retvalp);
 
 int waitpid_nohang(int pid, int *retvalp);
 

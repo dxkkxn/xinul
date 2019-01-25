@@ -146,28 +146,24 @@ static int checked_psize(int fid, int *size)
 
 #define checked_sleepms         sleepms
 
-/*
 static int checked_start(const char *name,
 						 unsigned long ssize,
 						 int prio,
 						 void *arg)
 {
-	if (UNLIKELY(INVALID_PTR(name)))
-		return RET_ERROR;
+	if (INVALID_PTR(name))
+		return -1;
 	return sched_ustart(name, ssize, prio, arg);
 }
-*/
 
 #define checked_wait_clock      wait_clock
 
-/*
-static int checked_waitpid(int pid, int *rv)
+static int checked_waitpid(int pid, int64_t *rv)
 {
-	if (UNLIKELY(INVALID_PTR(rv)))
-		return RET_ERROR;
+	if (INVALID_PTR(rv))
+		return -1;
 	return sched_waitpid(pid, rv);
 }
-*/
 
 /*
 static int checked_waitpid_nohang(int pid, int *rv)
@@ -219,9 +215,9 @@ void sysc_init(void)
 //	BIND_SYSCALL(preceive);
 //	BIND_SYSCALL(preset);
 //	BIND_SYSCALL(psend);
-//	BIND_SYSCALL(start);
+	BIND_SYSCALL(start);
 //	BIND_SYSCALL(wait_clock);
-//	BIND_SYSCALL(waitpid);
+	BIND_SYSCALL(waitpid);
 //	BIND_SYSCALL(sleep);
 //	BIND_SYSCALL(getname);
 //	BIND_SYSCALL(getstatus);
