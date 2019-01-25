@@ -54,8 +54,7 @@ restore_context:
 
 syscall_entry:
     la t0, sysc_handlers
-    li t1, 8
-    mul t1, a5, t1
+    slli t1, a5, 3
     add t1, t1, t0
     ld t1, (t1)
     jalr ra, 0(t1)
