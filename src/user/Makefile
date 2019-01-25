@@ -57,16 +57,22 @@ CFLAGS += $(addprefix -I, $(USER_INCLUDES))
 LDFLAGS = $(CFLAGS) $(ARCH_LDFLAGS)
 
 #
-# Import userspace program build toolchain
+# Apps
 #
 
-APPS_NAMES      = hello
+APPS_NAMES      = hello tests/test0 tests/autotest
+APPS_TESTS = $(sort $(dir $(wildcard tests/*)))
+#APPS_NAMES += $(APPS_TESTS)
+
 APP_CFLAGS := $(CFLAGS)
 APP_LDFLAGS := $(LDFLAGS) -T build/apps.lds
 
+# Configure and import userspace program build toolchain
 APPS_STD_INC    = $(USER_INCLUDES)
 APPS_STD_LIB = $(BUILD_DIR)/$(STDLIB_NAME).a $(ULIB)
 APPS_STD_TARGET := $(LIB_TARGET) $(ULIB)
+
+
 include build/apps.mk
 
 #
@@ -75,6 +81,9 @@ include build/apps.mk
 
 # Remove every implicite rules
 .suffixe:
+
+list_apps:
+	@ echo $(APPS_NAMES)
 
 apps: $(APPS_TARGETS)
 
