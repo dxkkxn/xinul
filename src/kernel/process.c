@@ -149,10 +149,6 @@ process_t *process_create(
 		return NULL;
 	}
 
-	/* Création de l'espace mémoire */
-	pmm_create_basic_directory(p);
-
-
 	// Structure informations
 	p->pid = pid;
 	p->prio = prio;
@@ -160,6 +156,9 @@ process_t *process_create(
 	INIT_LIST_HEAD(&p->children);
 	p->info = 0;
 	p->error = 0;
+
+	/* Création de l'espace mémoire */
+	pmm_create_basic_directory(p);
 
 	// register the created process in the table and return its pointer
 	processes[pid - 1] = p;
