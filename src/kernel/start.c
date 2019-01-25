@@ -14,11 +14,16 @@
 int64_t launcher(void *arg)
 {
 	printf("Launcher start.\n");
-	printf("Nombre de frame disponible avant app hello : %d\n", hmm_frame_count());
-	if (sched_ustart("hello", 1024, 11, (void *) 0) < 0) {
-		assert(0 && "Unable to create programme hello userde test ");
+	if (sched_ustart("autotest", 1024, 11, (void *) 0) < 0) {
+		assert(0 && "Unable to run app autotest\n");
 	}
-	printf("Nombre de frame disponible aprèes app hello : %d\n", hmm_frame_count());
+
+
+//	printf("Nombre de frame disponible avant app hello : %d\n", hmm_frame_count());
+//	if (sched_ustart("hello", 1024, 11, (void *) 0) < 0) {
+//		assert(0 && "Unable to create programme hello userde test ");
+//	}
+//	printf("Nombre de frame disponible aprèes app hello : %d\n", hmm_frame_count());
 	return 0;
 }
 
@@ -37,6 +42,10 @@ int main()
 	printf("Hardware memory manager initialization...");
 	extern char _free_memory_start[];
 	extern char _memory_end[];
+	extern char _bss_start[];
+	extern char _bss_end[];
+	(void) _bss_end;
+	(void) _bss_start;
 	hmm_init(_free_memory_start, _memory_end);
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 	printf("Number of frames %d = %d ko\n", hmm_frame_count(), hmm_free_memory() >> 10);
@@ -48,9 +57,8 @@ int main()
 	printf("Syscall initialization...");
 	sysc_init();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
-
-	ENABLE_SUPERVISOR_INTERRUPTS();
-//	while(1);
+	hmm_frame_retain();
+	printf("test ok\n");
 	sched_kstart(launcher, 10, "Launcher", 0);
 	//if (sched_kstart(systemd, 1, "systemd", (void *) 0) < 0) {
 //		assert(0 && "Unable to create systemd process");
