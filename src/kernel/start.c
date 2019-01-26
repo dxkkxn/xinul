@@ -63,8 +63,10 @@ int main()
 #endif
 
 	int i = -1;
+	printf("mip: 0x%lx\n", csr_read(sip));
 	i = getchar();
 	printf("%c", i);
+	printf("mip: 0x%x\n", 1234);
 	//if (sched_kstart(systemd, 1, "systemd", (void *) 0) < 0) {
 //		assert(0 && "Unable to create systemd process");
 //	}
