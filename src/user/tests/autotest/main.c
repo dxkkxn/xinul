@@ -9,8 +9,9 @@
 #define TESTS_NUMBER    1
 
 const char *tests[TESTS_NUMBER] = {
-        "test0",
+		"test0",
 };
+
 /*
         "test1",
         "test2",
@@ -39,15 +40,16 @@ const char *tests[TESTS_NUMBER] = {
 
 int main(void)
 {
-        int i;
-        int pid;
-        int64_t ret;
-printf("Auto test with %d tests\n", TESTS_NUMBER);
-        for (i = 0; i < TESTS_NUMBER; i++) {
-                printf("Test %s : ", tests[i]);
-                pid = start(tests[i], 4000, 128, NULL);
-                waitpid(pid, &ret);
-                assert(ret == 0);
-        }
+	int i;
+	int pid;
+	int64_t ret;
+	printf("Auto test with %d tests\n", TESTS_NUMBER);
+	for (i = 0; i < TESTS_NUMBER; i++) {
+		printf("Test %s : ", tests[i]);
+		pid = start(tests[i], 4000, 128, NULL);
+		waitpid(pid, &ret);
+		assert(ret == 0);
+	}
+	printf("Auto test done.\n");
 }
 
