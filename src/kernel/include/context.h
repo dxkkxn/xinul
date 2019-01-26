@@ -25,6 +25,7 @@ typedef struct context {
 	void *s11;
 	void *satp;
 	void *sepc;
+	void *usp;
 } context_t;
 
 struct caller_context {
@@ -70,14 +71,15 @@ void context_kernel_init(
 /*
  * Initialize the context of a new user process
  * c		: context to initialize
- * user stack pointer
+ * user stack base pointer (min address)
  * size of user stack
- * runf		: process function pointer
+ * kernel stack base pointer (min address)
  * arg		: runf parameters
  */
 void context_user_init(
 		context_t *c,
 		user_stack_t ustack, int ssize,
+		kernel_stack_t kernel_stack,
 		void *arg);
 
 

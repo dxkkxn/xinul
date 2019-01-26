@@ -144,7 +144,6 @@ process_t *process_create(
 
 	// Kernel stack allocation
 	p->kernel_stack = mem_alloc(K_STACK_SIZE);
-	// to peut-être remplacerpar la solution des profs
 	if (p->kernel_stack == NULL) {
 		return NULL;
 	}
@@ -175,24 +174,17 @@ process_t *process_user_create(
 	process_t *p = process_create(name, prio, parent);
 	if (p == NULL) return NULL;
 
-
-	//HEAP
-	// todo Tas User
-	//if (alloc_region(pagedir, MEM_USER_HEAP, MEM_USER_HEAP + 4*HEAP_USER_SIZE, PAGE_TABLE_USER_RW) == -1){
-	//return NULL;
-	//}
 	process_create_user_heap(p);
-
 
 	// Stack user
 	process_create_user_stack(p, ssize);
 
+	// Allocation et copie du code du programme
 	if (process_create_code_space(p) != 0) {
 		printf("Program %s not found\n", name);
 		// todo libéré le processus
 		return NULL;
 	}
-
 
 	return p;
 }
@@ -209,7 +201,7 @@ int process_destroy(int pid)
 		return -1;
 
 	/* Destroy shared memory mappings */
-	// todo destroy memory maping
+	// todo destroy memory share
 //	if (p->shm_handle) {
 //		shm_cleanup(p, p->shm_handle->hash);
 //	}
@@ -226,8 +218,6 @@ int process_destroy(int pid)
 		pmm_destroy_area(p->user_heap_varea);
 		p->user_heap_varea = NULL;
 	}
-
-
 
 	// Destroy code space
 	if (p->code_varea != NULL) {

@@ -6,6 +6,7 @@
 strap_entry:
 	# save context
 	# todo switch to kernel stack
+	csrrw sp, sscratch, sp
 	addi	sp, sp, -136
 	sd		ra, 0(sp)
 	sd		a0, 8(sp)
@@ -64,6 +65,7 @@ restore_context:
 	ld		t5, 112(sp)
 	ld		t6, 120(sp)
 	addi	sp, sp, 136
+	csrrw sp, sscratch, sp
 	sret
 
 

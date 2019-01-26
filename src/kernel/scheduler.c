@@ -234,7 +234,7 @@ int sched_ustart(const char *name,
 	}
 
 	// User process context initialization
-	context_user_init(&p->context, p->user_stack, ssize, arg);
+	context_user_init(&p->context, p->user_stack, ssize, p->kernel_stack, arg);
 
 	STATUS_QUEUE_ADD(p, ACTIVABLE);
 	if (active != NULL) {
