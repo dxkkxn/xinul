@@ -39,6 +39,7 @@ int main()
 	sched_init();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
+#if 0
 	printf("Hardware memory manager initialization...");
 	extern char _free_memory_start[];
 	extern char _memory_end[];
@@ -59,6 +60,11 @@ int main()
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	sched_kstart(launcher, 10, "Launcher", 0);
+#endif
+
+	int i = -1;
+	i = getchar();
+	printf("%c", i);
 	//if (sched_kstart(systemd, 1, "systemd", (void *) 0) < 0) {
 //		assert(0 && "Unable to create systemd process");
 //	}

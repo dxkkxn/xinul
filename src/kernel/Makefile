@@ -23,6 +23,8 @@ all: $(KERNEL_BIN)
 #
 
 DEFAULT_MACHINE = spike
+DEFAULT_MACHINE = qemu-sifive_e
+DEFAULT_MACHINE = qemu-sifive_u
 MACHINE ?= $(DEFAULT_MACHINE)
 
 #

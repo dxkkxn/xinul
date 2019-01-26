@@ -12,6 +12,8 @@ ZYBO_MDP = root
 # Qemu
 # Qemu environement machine : spike_v1.10
 QEMU_MACHINE = spike_v1.10
+QEMU_MACHINE = sifive_e
+QEMU_MACHINE = sifive_u
 
 QEMU = qemu-system-riscv64
 QEMU_OPTS = -machine $(QEMU_MACHINE) -kernel $(KERNEL_BIN) -rtc base=localtime -k fr -m 256M
