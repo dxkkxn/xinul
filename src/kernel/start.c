@@ -32,7 +32,7 @@ int main()
 	printf("\n= OSON Initialization =\n");
 
 	printf("Clock interruptions...");
-	setup_clock_interrupts();
+	//setup_clock_interrupts();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	printf("Scheduler initialization...");
@@ -61,8 +61,17 @@ int main()
 
 	sched_kstart(launcher, 10, "Launcher", 0);
 #endif
-
+	printf("sstatus: 0x%lx\n", csr_read(sstatus));
+	csr_set(sie, 0x222);
+	printf("sie: 0x%lx\n", csr_read(sie));
+	printf("plic: 0x%lx\n", *((uintptr_t*)0xc000000));
 	int i = -1;
+	while (1) if ((i = getchar()) != -1) {
+		printf("char: %c (0x%x)\n", i, i);
+		printf("sie: 0x%lx\n", csr_read(sie));
+		printf("sip: 0x%lx\n", csr_read(sip));
+	}
+
 	printf("mip: 0x%lx\n", csr_read(sip));
 	i = getchar();
 	printf("%c", i);
