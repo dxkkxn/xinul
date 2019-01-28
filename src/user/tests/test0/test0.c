@@ -12,7 +12,6 @@
 int main(void *arg)
 {
         (void)arg;
-        printf("test 0 start\n");
         register unsigned reg1 = 1u;
         register unsigned reg2 = 0xFFFFFFFFu;
         register unsigned reg3 = 0xBADB00B5u;

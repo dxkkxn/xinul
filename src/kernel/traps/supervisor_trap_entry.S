@@ -6,6 +6,12 @@
 strap_entry:
 	# save context
 	# todo switch to kernel stack
+	csrrw sp, sscratch, sp
+	# Si sscratch = 0, process kernel, on garde notre stack pour continuer
+	bnez sp, all_process
+kernel_process:
+	csrrw sp, sscratch, sp
+all_process:
 	addi	sp, sp, -136
 	sd		ra, 0(sp)
 	sd		a0, 8(sp)
@@ -64,6 +70,11 @@ restore_context:
 	ld		t5, 112(sp)
 	ld		t6, 120(sp)
 	addi	sp, sp, 136
+	csrrw sp, sscratch, sp
+	bnez sp, all_process2
+kernel_process2:
+	csrrw sp, sscratch, sp
+all_process2:
 	sret
 
 

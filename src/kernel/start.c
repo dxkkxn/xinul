@@ -57,8 +57,7 @@ int main()
 	printf("Syscall initialization...");
 	sysc_init();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
-	hmm_frame_retain();
-	printf("test ok\n");
+
 	sched_kstart(launcher, 10, "Launcher", 0);
 	//if (sched_kstart(systemd, 1, "systemd", (void *) 0) < 0) {
 //		assert(0 && "Unable to create systemd process");

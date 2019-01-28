@@ -34,11 +34,13 @@ void context_kernel_init(
 void context_user_init(
 		context_t *c,
 		user_stack_t user_stack, int ssize,
+		kernel_stack_t kernel_stack,
 		void *arg)
 {
 	c->ra = (void *) crt_user_process;
 	c->s0 = sched_exit;
 	c->s1 = arg;
+	c->s2 = kernel_stack + K_STACK_SIZE;
 	c->sepc = (void*) PROCESS_CODE;
 	c->sp = user_stack + ssize - 1;
 }
