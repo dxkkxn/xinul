@@ -31,9 +31,9 @@ int main()
 {
 	printf("\n= OSON Initialization =\n");
 
-	printf("Clock interruptions...");
+	//printf("Clock interruptions...");
 	//setup_clock_interrupts();
-	printf("\r\t\t\t\t\t\t\t[OK]\n");
+	//printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	printf("Scheduler initialization...");
 	sched_init();
@@ -62,20 +62,24 @@ int main()
 	sched_kstart(launcher, 10, "Launcher", 0);
 #endif
 	printf("sstatus: 0x%lx\n", csr_read(sstatus));
-	csr_set(sie, 0x222);
-	printf("sie: 0x%lx\n", csr_read(sie));
+	csr_set(sie, 0x200);
+	//printf("sie: 0x%lx\n", csr_read(sie));
 	printf("plic: 0x%lx\n", *((uintptr_t*)0xc000000));
+		printf("sie: 0x%lx\n", csr_read(sie));
+		printf("sip: 0x%lx\n", csr_read(sip));
 	int i = -1;
+	while(1) {if (i%100000 == 0) printf("#"); i++;}
+
 	while (1) if ((i = getchar()) != -1) {
 		printf("char: %c (0x%x)\n", i, i);
 		printf("sie: 0x%lx\n", csr_read(sie));
 		printf("sip: 0x%lx\n", csr_read(sip));
 	}
 
-	printf("mip: 0x%lx\n", csr_read(sip));
-	i = getchar();
-	printf("%c", i);
-	printf("mip: 0x%x\n", 1234);
+	//printf("mip: 0x%lx\n", csr_read(sip));
+	//i = getchar();
+	//printf("%c", i);
+	//printf("mip: 0x%x\n", 1234);
 	//if (sched_kstart(systemd, 1, "systemd", (void *) 0) < 0) {
 //		assert(0 && "Unable to create systemd process");
 //	}

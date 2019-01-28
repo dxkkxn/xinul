@@ -1,0 +1,4 @@
+#pragma once
+
+#define CLINT_BASE 0x0200000
+#define CLINT_CLK_FREQ 1000000000

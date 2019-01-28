@@ -19,6 +19,19 @@ void register_poweroff(poweroff_device_t *dev)
     }
 }
 
+void register_clint(clint_device_t *dev)
+{
+	clint_dev = dev;
+}
+
+void register_plic(plic_device_t *dev)
+{
+	plic_dev = dev;
+	if (dev->init) {
+		dev->init();
+	}
+}
+
 static int default_getchar()
 {
     __asm__ __volatile__("ebreak");
@@ -50,5 +63,16 @@ poweroff_device_t poweroff_none = {
     default_poweroff,
 };
 
+clint_device_t clint_none = {
+	0,
+	0,
+};
+
+plic_device_t plic_none = {
+	NULL,
+};
+
 console_device_t *console_dev = &console_none;
 poweroff_device_t *poweroff_dev = &poweroff_none;
+clint_device_t *clint_dev = &clint_none;
+plic_device_t *plic_dev = &plic_none;

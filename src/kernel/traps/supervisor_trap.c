@@ -6,6 +6,7 @@
 #include "machine.h"
 #include "sbi.h"
 #include "scheduler.h"
+#include "kbd.h"
 
 void setup_clock_interrupts()
 {
@@ -34,10 +35,14 @@ void strap_handler(uintptr_t scause, uintptr_t sepc)
 				csr_clear(sip, MIP_STIP);
 				schedule();
 				break;
+			case intr_s_external:
+				keyboard_handler();
+				csr_clear(sip, MIP_SEIP);
+				break;
 			default:
 				die(
 						"supervisor mode: unhandable interrupt %ld @ %p",
-						(uint64_t) scause, (void *) sepc
+						(uint64_t) scause & ~INTERRUPT_CAUSE_FLAG, (void *) sepc
 				);
 				break;
 		}

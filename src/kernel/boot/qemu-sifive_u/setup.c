@@ -15,4 +15,6 @@ void arch_setup()
 {
     register_console(&console_sifive_uart);
     register_poweroff(&poweroff_sifive_test);
+	register_clint(&sifive_clint);
+	register_plic(&sifive_plic);
 }
