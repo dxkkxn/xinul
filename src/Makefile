@@ -4,6 +4,8 @@ STDLIB_NAME = lib
 BUILD_DIR = build
 KERNEL_BIN = $(BUILD_DIR)/$(KERNEL_NAME)
 
+GDB=riscv64-unknown-elf-gdb
+
 # Hardware plateforme
 ZYBO_IP = 192.168.1.5
 ZYBO_USER = root

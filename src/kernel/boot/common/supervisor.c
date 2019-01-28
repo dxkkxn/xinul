@@ -28,9 +28,6 @@ void delegate_traps()
 void enter_supervisor_mode()
 {
 
-	// Enable supervisor use of counters
-	csr_write(scounteren, -1);
-
 	// Disable paging (bare memory)
 	csr_write(satp, 0);
 
@@ -39,7 +36,6 @@ void enter_supervisor_mode()
 
 	// Set the trap vector (direct mode)
 	csr_write(stvec, (unsigned long)strap_entry | 0UL);
-	csr_set(mstatus, MSTATUS_SIE);
 	// Enable timer interrupt at a machine level to be able to catch it in
 	csr_set(mie, MIP_MTIP);
 
