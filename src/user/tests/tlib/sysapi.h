@@ -13,8 +13,11 @@
 /*******************************************************************************
  * Gestion de liste d'arguments de taille variable (printf)
  ******************************************************************************/
+int printf(const char *, ...);
+int puts(const char *);
 typedef void *__gnuc_va_list;
 typedef __gnuc_va_list va_list;
+int vprintf(const char *, va_list);
 #define va_arg(AP, TYPE)                                                \
  (AP = (__gnuc_va_list) ((char *) (AP) + __va_rounded_size (TYPE)),     \
   *((TYPE *) (void *) ((char *) (AP) - __va_rounded_size (TYPE))))
@@ -130,12 +133,10 @@ typedef __SIZE_TYPE__ size_t;
 
 int strcmp(const char *str1, const char *str2);
 unsigned long strlen(const char *s);
-char *strncpy(char *dst, const char *src, unsigned n);
+char *strncpy(char *, const char *, size_t);
 void *memset(void *dst, int c, size_t n);
 
 /* printf.h */
-#define printf safe_printf
-int safe_printf(const char *format, ...);
 void cons_gets(char *s, unsigned long length);
 
 /* assert.c */

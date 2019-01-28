@@ -44,7 +44,7 @@ int main(void)
 	int ret;
 	printf("Auto test with %d tests\n", TESTS_NUMBER);
 	for (i = 0; i < TESTS_NUMBER; i++) {
-//		printf("Test %s : ", tests[i]);
+		printf("Test %s : ", tests[i]);
 		pid = start(tests[i], 4000, 128, NULL);
 		waitpid(pid, &ret);
 		assert(ret == 0);
