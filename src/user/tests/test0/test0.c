@@ -4,10 +4,7 @@
  * A simple test that probes a classic system call.
  ******************************************************************************/
 
-#include "syscall.h"
-#include "stdio.h"
-#include "assert.h"
-
+#include "sysapi.h"
 
 int main(void *arg)
 {
