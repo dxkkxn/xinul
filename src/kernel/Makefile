@@ -22,7 +22,7 @@ all: $(KERNEL_BIN)
 # Architecture and hardware selection
 #
 
-DEFAULT_MACHINE = zybo
+DEFAULT_MACHINE = spike
 MACHINE ?= $(DEFAULT_MACHINE)
 
 #
