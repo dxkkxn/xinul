@@ -3,6 +3,7 @@
 #include "csr.h"
 #include "machine_trap.h"
 #include "encoding.h"
+#include "stdio.h"
 
 extern void strap_entry();
 
@@ -20,7 +21,7 @@ void delegate_traps()
 			(1U << cause_load_page_fault)					|
 			(1U << cause_store_page_fault)					|
 			(1U << cause_user_ecall);
-		
+
 		csr_write(mideleg, interrupts);
 		csr_write(medeleg, exceptions);
 }
@@ -32,12 +33,14 @@ void enter_supervisor_mode()
 	csr_write(satp, 0);
 
 	// set the previous context in mstatus
-	csr_set(mstatus, MSTATUS_MPP & MSTATUS_MPP_S);
 
 	// Set the trap vector (direct mode)
 	csr_write(stvec, (unsigned long)strap_entry | 0UL);
 	// Enable timer interrupt at a machine level to be able to catch it in
 	csr_set(mie, MIP_MTIP);
+	csr_set(mstatus, MSTATUS_MPP & MSTATUS_MPP_S);
+	uint64_t status = csr_read(mstatus);
+	printf("status :%lx\n",status);
 
 	__asm__ __volatile__ (
 			"la t0, 1f\n"
