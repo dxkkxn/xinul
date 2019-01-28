@@ -5,7 +5,6 @@
 	.align 2
 strap_entry:
 	# save context
-	# todo switch to kernel stack
 	csrrw sp, sscratch, sp
 	# Si sscratch = 0, process kernel, on garde notre stack pour continuer
 	bnez sp, all_process
