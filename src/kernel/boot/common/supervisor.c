@@ -27,12 +27,6 @@ void delegate_traps()
 
 void enter_supervisor_mode()
 {
-	uint64_t pmpcfg = PMP_NAPOT | PMP_R | PMP_W | PMP_X;
-	uint64_t pmpaddr = ((uint64_t)1U << 53)-1;
-
-	// allow access to all of the memory for everyone
-	csr_write(pmpaddr0, pmpaddr);
-	csr_write(pmpcfg0, pmpcfg);
 
 	// Enable supervisor use of counters
 	csr_write(scounteren, -1);
@@ -43,12 +37,10 @@ void enter_supervisor_mode()
 	// set the previous context in mstatus
 	csr_set(mstatus, MSTATUS_MPP & MSTATUS_MPP_S);
 
-	// Set the trap vector (direct mode) and enable interrupts for the
-	// supervisor mode
+	// Set the trap vector (direct mode)
 	csr_write(stvec, (unsigned long)strap_entry | 0UL);
 	csr_set(mstatus, MSTATUS_SIE);
 	// Enable timer interrupt at a machine level to be able to catch it in
-	// supervisor mode
 	csr_set(mie, MIP_MTIP);
 
 	__asm__ __volatile__ (
@@ -58,6 +50,4 @@ void enter_supervisor_mode()
 			"1:" ::: "t0"
 	);
 
-	// Enable interruption in supervisor mode
-	csr_set(sstatus, MSTATUS_SIE);
 }
