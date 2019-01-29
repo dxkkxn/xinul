@@ -19,22 +19,22 @@ GEN_SECTIONS := build/generate-link-sections.sh
 GEN_TABLE    := build/generate-symbols-table.sh
 
 
-BIN_DIRS := $(BIN_DIR) $(BIN_DIR)/tests
+BIN_DIRS := $(BIN_DIR)
 APPS_BIN := $(foreach d, $(BIN_DIRS), $(wildcard $(d)/*.bin))
-APPS_OUT  := $(OUTPUT)/kernel
+APPS_OUT  := $(OUTPUT)/kernel/apps
 APPS_OBJS := $(APPS_BIN:$(BIN_DIR)/%=$(APPS_OUT)/%.o)
 
 APPS_OBJS  += $(APPS_OUT)/symbols-table.o
 vpath %.bin $(dir $(APPS_BIN))
 
 # Transform binary files in linkable files
-$(APPS_OUT)/%.bin.o: $(OBJ_DIR)/empty.o $(OUTPUT)/user/%.bin | $(APPS_OUT) $(APPS_OUT)/tests
+$(APPS_OUT)/%.bin.o: $(OBJ_DIR)/empty.o $(OUTPUT)/user/%.bin | $(APPS_OUT)
 	$(OBJCOPY) $< \
 		--add-section=.$(notdir $*).bin=$(filter-out $<, $^) \
 		--set-section-flags=.$*.bin=contents,alloc,load,data $@
 
-$(APPS_OUT) $(APPS_OUT)/tests:
-	mkdir -p $@/tests
+$(APPS_OUT):
+	mkdir -p $@
 
 # Generate a linker file that:
 # - creates a table with an entry (address, size) for each application

@@ -4,6 +4,8 @@ STDLIB_NAME = lib
 BUILD_DIR = build
 KERNEL_BIN = $(BUILD_DIR)/$(KERNEL_NAME)
 
+GDB=riscv64-unknown-elf-gdb
+
 # Hardware plateforme
 ZYBO_IP = 192.168.1.5
 ZYBO_USER = root
@@ -21,9 +23,6 @@ QEMU_GDB_OPTS = -s -S
 # Pour afficher l'affichage VGA en console, marche à travers ssh
 QEMU_NO_GRAPH_OPTS = -nographic
 
-# X-compile
-CC=riscv64-unknown-elf-gcc
-GDB=riscv64-unknown-elf-gdb
 
 # Docker
 DK_MAKEFILE_DIR = ../docker/riscv/
@@ -95,10 +94,15 @@ dk-rm-image: $(DK_MAKEFILE_DIR)/Makefile
 	make -C $(DK_MAKEFILE_DIR) CMD="make clean" exec
 
 
+
+zybo_kernel:
+	make -C user
+	make MACHINE=zybo -C kernel/ all
+
 zybo_ssh:
 	ssh $(ZYBO_USER)@$(ZYBO_IP)
 
-zybo_copy: $(KERNEL_BIN)
+zybo_copy: zybo_kernel
 	scp $(KERNEL_BIN) $(ZYBO_USER)@$(ZYBO_IP):
 
 zybo_go:zybo_copy

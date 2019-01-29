@@ -249,7 +249,6 @@ int sched_ustart(const char *name,
 
 
 /* ====      Scheduling (FIFO with priorities)      ==== */
-
 void schedule(void)
 {
 	process_t *old = active;
@@ -265,7 +264,10 @@ void schedule(void)
 		assert(old != NULL && "No more processes available!");
 		return;
 	}
-
+	int8_t pid = -2;
+	if (old) pid = old->pid;
+	else pid = -1;
+printf("schedul %d -> %d\n", pid, new->pid);
 	// set the new active process
 	if (old == NULL || old->status != ACTIVE || old->prio <= new->prio) {
 		STATUS_QUEUE_DELETE(new);
@@ -280,17 +282,15 @@ void schedule(void)
 	active->status = ACTIVE;
 	old_ctx = (old != NULL) ? &old->context : &dummy;
 	new_ctx = &active->context;
-
-	/*
-	printf("scheduling... ");
+/*
+	printf("\nscheduling... ");
 	if (old) printf("%s [%d]", old->name, old->pid);
 	else printf("null proc");
 	printf(" -> ");
 	if (active) printf("%s [%d]", active->name, active->pid);
 	else printf("null proc");
 	printf("\n");
-	*/
-
+*/
 	ctx_sw(old_ctx, new_ctx);
 
 	// Destroy the marked processes

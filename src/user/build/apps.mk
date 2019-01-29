@@ -93,14 +93,15 @@ $(1)_TARGET := $$(addprefix $(OUTPUT)/, $$(addsuffix .bin, $$($(1)_DIR)))
 # Compilation products depends on output directory
 $$($(1)_DEPS) $$($(1)_OBJS)): | $$($(1)_OUT)
 $$($(1)_OUT):
-	mkdir -p $$@
+	@mkdir -p $$@
+	@echo \# Build apps $$(@:$$(OUTPUT)/%=%) \#
 
 # Define for app targets
 
 $$($(1)_TARGET): $$(APPS_STD_TARGET) $$($(1)_OBJS) build/apps.mk
-	$(call cmd, LD APP $$(@:%.bin=%.elf), $$(dir $$@), \
+	$(call cmd,LD APP -> $$(@:../%.bin=%.elf), $$(dir $$@), \
 	$$(LD) $$(APP_LDFLAGS) -o $$(@:%.bin=%.elf) $$(filter-out build/apps.mk, $$(filter-out $$<, $$^)) $() $(APPS_STD_LIB))
-	$(call cmd, OBJCOPY APP $$@, $$(dir $$@), \
+	$(call cmd,OBJCOPY APP -> $$(@:../%=%), $$(dir $$@), \
 	$(OBJCOPY) -O binary $$(@:%.bin=%.elf) $$@ )
 
 endef
@@ -110,22 +111,14 @@ endef
 # definitions.
 # (see http://www.gnu.org/software/make/manual/make.html#Target_002dspecific)
 
-### Dependency generation targets ###
-$(OUTPUT)/%.d: %.c
-	@printf "$(@D)/" > $@
-	$(DEPS) $(CFLAGS) -MM $< >> $@
-
-$(OUTPUT)/%.d: %.S
-	@printf "$(@D)/" > $@
-	$(DEPS) $(CFLAGS) -MM $< $(APP_INC) >> $@
 
 ### Generic targets for compilation ###
 $(OUTPUT)/%.o: %.c $(APPS_CONFIG_DEPENDENCIES)
-	$(call cmd, CC APP $< -> $@, $(dir $@), \
-		$(CC) -c $< -o $@ $(APP_CFLAGS) -MMD -MP)
+	$(call cmd,CC APP $<, $(dir $@), \
+            $(CC) -c $< -o $@ $(APP_CFLAGS) -MMD -MP)
 
 $(OUTPUT)/%.o: %.S $(APPS_CONFIG_DEPENDENCIES)
-	$(call cmd, AS APP $< -> $@, $(dir $@), \
+	$(call cmd,AS APP $<, $(dir $@), \
 		$(AS) -c $< -o $@ $(APP_CFLAGS) -MMD -MP)
 
 ### Create targets for parent Makefile ###
@@ -134,6 +127,3 @@ APPS_TARGETS := $(addprefix $(OUTPUT)/, $(addsuffix .bin, $(APPS_NAMES)))
 ### Apply compile environment to each app ###
 $(foreach app, $(APPS_NAMES), $(eval $(call APP_BUILD,$(app))))
 
-
-aa:
-	echo $(APPS_CONFIG_DEPENDENCIES)

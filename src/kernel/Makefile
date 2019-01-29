@@ -144,6 +144,7 @@ else
 cmd = @echo "$1"; mkdir -p $2 ; $3
 endif
 
-test:
-	echo $(LIB_OBJS)
-	
+
+
+tt:
+	echo $(APPS_OBJS)

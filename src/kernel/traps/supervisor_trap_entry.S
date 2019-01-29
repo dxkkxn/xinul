@@ -4,8 +4,8 @@
 	.text
 	.align 2
 strap_entry:
-	# save context
-	# todo switch to kernel stack
+	# Sauvegarde du contexte
+	# La pile kernel est dans sscratch
 	csrrw sp, sscratch, sp
 	# Si sscratch = 0, process kernel, on garde notre stack pour continuer
 	bnez sp, all_process
@@ -30,31 +30,38 @@ all_process:
 	sd		t5, 112(sp)
 	sd		t6, 120(sp)
 	# On regarde si on vient du mond user ou kernel
-	# on enregistre l'information sur la pile pour repartir au bonne endroit
+	# on enregistre l'information sur la pile pour repartir dans le bon monde
 	# SPP=0 -> from user space
 	# SPP=1 -> from kernel space
 	csrr t0, sstatus
 	andi t1, t0, 0x100
 	sd t1, 128(sp)
 
+# On récupère la cause et on regarde si c'est un syscall
 	csrr t0, scause
 	li t1, 8 # user_ecall
 	beq t0, t1, syscall_entry
 	mv a0, t0
 	csrr	a1, sepc
 	jal		strap_handler
+    # Comme on est pas dans un syscall, on peut restaurer a0 (retval)
+    ld		a0, 8(sp)
+
+
 
 restore_context:
+# On regarde si on vient du monde kernel ou user (info push sur la pile)
     ld t0, 128(sp)
     li t1, 0x100
     beqz t0, user_land
+    # from kernel
     csrs sstatus, t1
     j restor_regs
-    user_land:
+user_land:
     csrc sstatus, t1
     restor_regs:
 	ld		ra, 0(sp)
-	ld		a0, 8(sp)
+    # Skip A0 : On restore A0 seulement dans le cas d'une interruption.
 	ld		a1, 16(sp)
 	ld		a2, 24(sp)
 	ld		a3, 32(sp)

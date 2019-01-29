@@ -16,7 +16,7 @@
 SHELL = /bin/sh
 BUILD_DIR ?= ../build
 OUTPUT ?= $(BUILD_DIR)/user
-#CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config
+CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config
 
 user_space: apps
 
@@ -36,8 +36,9 @@ include ../$(STDLIB_NAME)/Makefile
 #
 
 ULIB_DIR = ulib
-ULIB = $(BUILD_DIR)/ulib.a
-OUTPUT_ULIB = $(BUILD_DIR)
+ULIB = $(OUTPUT)/ulib.a
+OUTPUT_ULIB = $(OUTPUT)/ulib
+
 # ulib Sources files
 ULIB_SRC = $(wildcard $(ULIB_DIR)/*.c)
 ULIB_ASM = $(wildcard $(ULIB_DIR)/*.S)
@@ -60,10 +61,7 @@ LDFLAGS = $(CFLAGS) $(ARCH_LDFLAGS)
 # Apps
 #
 
-APPS_NAMES      = hello tests/test0 tests/autotest
-APPS_TESTS = $(sort $(dir $(wildcard tests/*)))
-#APPS_NAMES += $(APPS_TESTS)
-
+APPS_NAMES      = hello
 APP_CFLAGS := $(CFLAGS)
 APP_LDFLAGS := $(LDFLAGS) -T build/apps.lds
 
@@ -71,9 +69,15 @@ APP_LDFLAGS := $(LDFLAGS) -T build/apps.lds
 APPS_STD_INC    = $(USER_INCLUDES)
 APPS_STD_LIB = $(BUILD_DIR)/$(STDLIB_NAME).a $(ULIB)
 APPS_STD_TARGET := $(LIB_TARGET) $(ULIB)
-
-
 include build/apps.mk
+
+#
+# Tests apps
+#
+
+TESTS_DIR     := tests
+TESTS_OPTIONS := CONS_READ_LINE WITH_MSG
+include build/tests.mk
 
 #
 # Targets
@@ -85,21 +89,20 @@ include build/apps.mk
 list_apps:
 	@ echo $(APPS_NAMES)
 
-apps: $(APPS_TARGETS)
+apps: $(APPS_TARGETS) $(TESTS_TARGETS)
 
 ulib: $(ULIB)
 $(ULIB): $(ULIB_OBJS)
-	$(call cmd, AR $@, $(dir $@), \
+	$(call cmd,AR ULIB -> $(@:../%=%), $(dir $@), \
 	$(AR) cr $@ $^)
 
 $(OUTPUT_ULIB)/%.o: %.S $(CONFIG_DEPENDENCIES)
-	$(call cmd, CC $< -> $@, $(dir $@), \
+	$(call cmd,CC ULIB $<, $(dir $@), \
 	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
 
 $(OUTPUT_ULIB)/%.o: %.c $(CONFIG_DEPENDENCIES)
-	$(call cmd, AS $< -> $@, $(dir $@), \
+	$(call cmd,AS ULIB $<, $(dir $@), \
 	$(AS) -c $< -o $@ $(CFLAGS) -MMD -MP)
-
 
 ### Standard output directory ###
 $(OUTPUT):
