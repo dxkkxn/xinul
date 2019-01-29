@@ -4,7 +4,7 @@ STDLIB_NAME = lib
 BUILD_DIR = build
 KERNEL_BIN = $(BUILD_DIR)/$(KERNEL_NAME)
 
-#MACHINE?=qemu-sifive_u
+#MACHINE?=sifive_u
 MACHINE?=spike
 
 GDB=riscv64-unknown-elf-gdb
@@ -19,7 +19,7 @@ ZYBO_MDP = root
 ifeq ("$(MACHINE)", "spike")
 	QEMU_MACHINE=spike_v1.10
 else
-	ifeq ("$(MACHINE)", "qemu-sifive_u")
+	ifeq ("$(MACHINE)", "sifive_u")
 		QEMU_MACHINE=sifive_u
 	else
 		$(error Machine unknown)
