@@ -11,6 +11,7 @@
 #include "mapper.h"
 #include "syscall.h"
 #include "timer.h"
+#include "kbd.h"
 
 int64_t launcher(void *arg)
 {
@@ -34,6 +35,10 @@ int main()
 
 	printf("Clock interruptions...");
 	setup_clock_interrupts();
+	printf("\r\t\t\t\t\t\t\t[OK]\n");
+
+	printf("Keyboard initialization...");
+	kbd_init();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	printf("Scheduler initialization...");
