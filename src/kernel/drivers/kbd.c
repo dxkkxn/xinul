@@ -61,7 +61,7 @@ void keyboard_handler()
 	//ACK_IT_M;
 	int scancode = getchar();
 	//do_scancode(scancode);
-	if (scancode != -1) printf("|%c", scancode);
+	if (scancode != -1) printf("%c", scancode);
 }
 
 

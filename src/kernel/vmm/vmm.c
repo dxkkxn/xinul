@@ -32,7 +32,9 @@ struct vmm_area {
 */
 int8_t init_virtual_memory()
 {
+	printf("init...");
 	kernel_pgdir = hmm_frame_retain();
+	printf("init...");
 	assert(kernel_pgdir != NULL);
 
 	// Création d'une feuille giga page pour maper tout le kernel d'un coup à 1Go
@@ -50,13 +52,16 @@ int8_t init_virtual_memory()
 	kernel_gigapage.PPN2 = 2;
 	kernel_gigapage.RSSV = 0;
 	kernel_pgdir[2] = kernel_gigapage;
+	printf("init...");
 
 	// Configure satp csr
 	kernel_satp.field.MODE = SATP_MODE_SV39;
 	kernel_satp.field.ASID = 0;
 	kernel_satp.field.PPN = (uint64_t) kernel_pgdir >> 12;
 
+	printf("o...");
 	write_csr(satp, kernel_satp.reg);
+	printf("o...");
 
 	return 0;
 }

@@ -4,6 +4,8 @@
 #include "machine.h"
 #include "supervisor.h"
 
+#include "info.h"
+
 #define MSTATUS_MPP_MASK_S 0x800 /* bit 12-11 = 01 */
 #define MSTATUS_MPIE_MASK 0x80 /* bit 7 = 1 */
 
@@ -15,6 +17,8 @@ int main();
 __attribute__((noreturn)) void boot_riscv()
 {
 	arch_setup();
+
+	display_info_proc();
 
 	// supervisor set-up and switch of mode (M to S)
 	delegate_traps();

@@ -31,15 +31,14 @@ int main()
 {
 	printf("\n= OSON Initialization =\n");
 
-	//printf("Clock interruptions...");
-	//setup_clock_interrupts();
-	//printf("\r\t\t\t\t\t\t\t[OK]\n");
+	printf("Clock interruptions...");
+	setup_clock_interrupts();
+	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	printf("Scheduler initialization...");
 	sched_init();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
-#if 0
 	printf("Hardware memory manager initialization...");
 	extern char _free_memory_start[];
 	extern char _memory_end[];
@@ -60,7 +59,7 @@ int main()
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	sched_kstart(launcher, 10, "Launcher", 0);
-#endif
+#if 0
 	printf("sstatus: 0x%lx\n", csr_read(sstatus));
 	csr_set(sie, 0x200);
 	//printf("sie: 0x%lx\n", csr_read(sie));
@@ -68,7 +67,7 @@ int main()
 		printf("sie: 0x%lx\n", csr_read(sie));
 		printf("sip: 0x%lx\n", csr_read(sip));
 	int i = -1;
-	while(1) {if (i%100000 == 0) printf("#"); i++;}
+	while(1) {if (i%100000 == 0) printf("."); i++;}
 
 	while (1) if ((i = getchar()) != -1) {
 		printf("char: %c (0x%x)\n", i, i);
@@ -83,5 +82,6 @@ int main()
 	//if (sched_kstart(systemd, 1, "systemd", (void *) 0) < 0) {
 //		assert(0 && "Unable to create systemd process");
 //	}
+#endif
 	assert(0 && "end of main");
 }

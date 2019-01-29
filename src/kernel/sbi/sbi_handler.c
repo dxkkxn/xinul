@@ -19,6 +19,13 @@ uint64_t handle_sbi_call(
 	csr_write(mepc, csr_read(mepc)+4);
 	switch(call_no) {
 		case SBI_SET_TIMER:
+#if 0
+			uint64_t curtime = get_mtime();
+			uint64_t delta_ms = arg0;
+			uint64_t clk_freq = clint_dev->clk_freq;
+			uint64_t new_irq_time = curtime + delta_ms * (clk_freq / 1000);
+			set_mtimecmp(new_irq_time);
+#endif
 			set_mtimecmp(get_mtime() + arg0 * (clint_dev->clk_freq / 1000));
 			csr_set(mie, MIP_MTIP);
 			break;
