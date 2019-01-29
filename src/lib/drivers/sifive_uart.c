@@ -37,7 +37,7 @@ static void sifive_uart_init()
     uart[UART_REG_DIV] = divisor;
     uart[UART_REG_TXCTRL] = UART_TXEN;
     uart[UART_REG_RXCTRL] = UART_RXEN;
-    uart[UART_REG_IE] = 0;
+    uart[UART_REG_IE] = 2;
 }
 
 static int sifive_uart_getchar()

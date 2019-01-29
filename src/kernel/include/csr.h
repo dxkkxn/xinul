@@ -2,8 +2,8 @@
 #define ARCH_RISCV_CSR_H
 
 #include <stdint.h>
+#include "device.h"
 
-#define CLINT_BASE 0x02000000
 #define CLINT_MTIME 0xbff8
 #define CLINT_MTIMECMP 0x4000
 
@@ -34,9 +34,9 @@
 	__asm__ __volatile__ ("csrc " #csr ", %0" : : "rK" (__v) : "memory");	\
 })
 
-#define get_mtime() (*(uint64_t*)(CLINT_BASE + CLINT_MTIME))
+#define get_mtime() (*(uint64_t*)((uint64_t)clint_dev->base_addr + CLINT_MTIME))
 
-#define get_mtimecmp() (*(uint64_t*)(CLINT_BASE + CLINT_MTIMECMP))
+#define get_mtimecmp() (*(uint64_t*)((uint64_t)clint_dev->base_addr + CLINT_MTIMECMP))
 
 #define set_mtimecmp(value)													\
 ({																			\

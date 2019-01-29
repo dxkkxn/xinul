@@ -23,6 +23,7 @@ all: $(KERNEL_BIN)
 #
 
 DEFAULT_MACHINE = spike
+#DEFAULT_MACHINE = sifive_u
 MACHINE ?= $(DEFAULT_MACHINE)
 
 #

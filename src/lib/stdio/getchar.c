@@ -5,7 +5,5 @@
 
 int getchar()
 {
-	int i;
-	while ((i = console_dev->getchar()) <= 255);
-    return i;
+    return console_dev->getchar();
 }

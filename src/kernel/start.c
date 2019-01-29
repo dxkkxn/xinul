@@ -10,6 +10,7 @@
 #include "hmm.h"
 #include "mapper.h"
 #include "syscall.h"
+#include "timer.h"
 
 int64_t launcher(void *arg)
 {
@@ -59,8 +60,16 @@ int main()
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	sched_kstart(launcher, 10, "Launcher", 0);
-	//if (sched_kstart(systemd, 1, "systemd", (void *) 0) < 0) {
-//		assert(0 && "Unable to create systemd process");
-//	}
+#if 0
+	printf("sstatus: 0x%lx\n", csr_read(sstatus));
+	csr_set(sie, 0x200);
+	//printf("sie: 0x%lx\n", csr_read(sie));
+	printf("plic: 0x%lx\n", *((uintptr_t*)0xc000000));
+		printf("sie: 0x%lx\n", csr_read(sie));
+		printf("sip: 0x%lx\n", csr_read(sip));
+	int i = -1;
+	while(1) {if (i%100000 == 0) printf("."); i++;}
+
+#endif
 	assert(0 && "end of main");
 }

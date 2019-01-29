@@ -17,6 +17,7 @@
 // The base kernel page directory, fetch pmm.c
 extern pagetable_t kernel_pgdir;
 extern struct pte kernel_gigapage;
+extern struct pte io_gigapage;
 
 static satp_csr kernel_satp;
 
@@ -50,6 +51,12 @@ int8_t init_virtual_memory()
 	kernel_gigapage.PPN2 = 2;
 	kernel_gigapage.RSSV = 0;
 	kernel_pgdir[2] = kernel_gigapage;
+
+	io_gigapage = kernel_gigapage;
+	io_gigapage.PPN0 = 0;
+	io_gigapage.PPN1 = 0;
+	io_gigapage.PPN2 = 0;
+	kernel_pgdir[0] = io_gigapage;
 
 	// Configure satp csr
 	kernel_satp.field.MODE = SATP_MODE_SV39;
