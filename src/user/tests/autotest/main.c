@@ -5,16 +5,16 @@
 
 #include "sysapi.h"
 
-#define TESTS_NUMBER 3
+#define TESTS_NUMBER 4
 
 const char *tests[TESTS_NUMBER] = {
 		"test0",
 		"test1",
 		"test2",
+		"test3",
 };
 
 /*
-        "test3",
         "test4",
         "test5",
         "test6",
