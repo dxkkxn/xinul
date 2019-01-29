@@ -4,6 +4,9 @@ STDLIB_NAME = lib
 BUILD_DIR = build
 KERNEL_BIN = $(BUILD_DIR)/$(KERNEL_NAME)
 
+MACHINE?=qemu-sifive_u
+#MACHINE?=spike
+
 GDB=riscv64-unknown-elf-gdb
 
 # Hardware plateforme
@@ -13,9 +16,15 @@ ZYBO_MDP = root
 
 # Qemu
 # Qemu environement machine : spike_v1.10
-QEMU_MACHINE = spike_v1.10
-QEMU_MACHINE = sifive_e
-QEMU_MACHINE = sifive_u
+ifeq ("$(MACHINE)", "spike")
+	QEMU_MACHINE=spike_v1.10
+else
+	ifeq ("$(MACHINE)", "qemu-sifive_u")
+		QEMU_MACHINE=sifive_u
+	else
+		$(error Machine unknown)
+	endif
+endif
 
 QEMU = qemu-system-riscv64
 QEMU_OPTS = -machine $(QEMU_MACHINE) -kernel $(KERNEL_BIN) -rtc base=localtime -k fr -m 256M
@@ -38,7 +47,7 @@ all:$(KERNEL_BIN)
 
 $(KERNEL_BIN):
 	make -C user
-	make -C kernel/ all	
+	make MACHINE=$(MACHINE) -C kernel/ all	
 
 $(STDLIB_NAME):
 	make -C $(STDLIB_NAME)
