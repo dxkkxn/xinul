@@ -4,8 +4,8 @@ STDLIB_NAME = lib
 BUILD_DIR = build
 KERNEL_BIN = $(BUILD_DIR)/$(KERNEL_NAME)
 
-MACHINE?=qemu-sifive_u
-#MACHINE?=spike
+#MACHINE?=qemu-sifive_u
+MACHINE?=spike
 
 GDB=riscv64-unknown-elf-gdb
 

@@ -7,6 +7,10 @@ strap_entry:
 	# Sauvegarde du contexte
 	# La pile kernel est dans sscratch
 	csrrw sp, sscratch, sp
+	nop
+	csrr t0, satp
+	nop
+	csrr t0, stval
 	# Si sscratch = 0, process kernel, on garde notre stack pour continuer
 	bnez sp, all_process
 kernel_process:

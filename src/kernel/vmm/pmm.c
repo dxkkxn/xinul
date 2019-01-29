@@ -26,6 +26,7 @@ struct pmm_varea {
 pagetable_t kernel_pgdir;
 // Giga page to map 1:1 kernel
 struct pte kernel_gigapage;
+struct pte io_gigapage;
 
 void pmm_create_basic_directory(process_t *p)
 {
@@ -38,6 +39,7 @@ void pmm_create_basic_directory(process_t *p)
 	assert(new_pgdir != NULL);
 
 	/* Map the minimal kernel space */
+	new_pgdir[0] = io_gigapage;
 	new_pgdir[2] = kernel_gigapage;
 
 	/* Set the directory */

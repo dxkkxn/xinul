@@ -9,13 +9,6 @@
 #include "kbd.h"
 #include "stdio.h"
 
-void setup_clock_interrupts()
-{
-	csr_set(sie, MIP_STIP);
-
-	// Schedule the first interruption in 100ms
-	set_mtimecmp(get_mtime() + 100 * (SPIKE_CLOCK_FREQUENCY / 1000));
-}
 
 void set_next_timer_event()
 {
@@ -29,7 +22,6 @@ void strap_handler(uintptr_t scause, uintptr_t sepc)
 	if (scause & INTERRUPT_CAUSE_FLAG) {
 		switch (scause & ~INTERRUPT_CAUSE_FLAG) {
 			case intr_s_timer:
-				printf("|timer|");
 				// Set a new timer interrupt
 				set_next_timer_event();
 				// Clear the interrupt flag so that the processor does not take

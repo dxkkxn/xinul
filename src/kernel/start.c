@@ -10,6 +10,7 @@
 #include "hmm.h"
 #include "mapper.h"
 #include "syscall.h"
+#include "timer.h"
 
 int64_t launcher(void *arg)
 {
@@ -69,19 +70,6 @@ int main()
 	int i = -1;
 	while(1) {if (i%100000 == 0) printf("."); i++;}
 
-	while (1) if ((i = getchar()) != -1) {
-		printf("char: %c (0x%x)\n", i, i);
-		printf("sie: 0x%lx\n", csr_read(sie));
-		printf("sip: 0x%lx\n", csr_read(sip));
-	}
-
-	//printf("mip: 0x%lx\n", csr_read(sip));
-	//i = getchar();
-	//printf("%c", i);
-	//printf("mip: 0x%x\n", 1234);
-	//if (sched_kstart(systemd, 1, "systemd", (void *) 0) < 0) {
-//		assert(0 && "Unable to create systemd process");
-//	}
 #endif
 	assert(0 && "end of main");
 }
