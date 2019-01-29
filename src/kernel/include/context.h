@@ -25,7 +25,7 @@ typedef struct context {
 	void *s11;
 	void *satp;
 	void *sepc;
-	void *usp;
+	void *sscratch;
 } context_t;
 
 struct caller_context {

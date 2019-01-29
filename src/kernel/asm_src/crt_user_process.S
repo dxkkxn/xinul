@@ -8,11 +8,15 @@ crt_user_process:
 	mv ra, s0
 	# On charge le paramètre arg du programme provisoirement placé dans s1.
 	mv a0, s1
-	# On place dans sscratch la pile kernel
-	csrw sscratch, s2
+	# On enregistre la pile kernel
+	la t0, sav_stack_kernel
+	sd s2, (t0)
 	# set previous mode to user (SPP=0)
 	# Note : in user-mode, SIE is always enabled.
 		li t0, 0x100
 		csrc sstatus, t0
+
+
+
 		sret
 

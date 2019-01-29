@@ -6,20 +6,6 @@
 #include "crt_process.h"
 #include "scheduler.h"
 
-
-#if 0
-static void kernel_run(int (*runf) (void *), void arg, unsigned int magic)
-{
-	assert(magic == CONTEXT_MAGIC_NUMBER);
-
-	int retval = runf(arg);
-	sched_exit(retval);
-
-	assert(0 && "kernel run exit :(");
-}
-#endif
-
-
 void context_kernel_init(
 		context_t *c, kernel_stack_t stack, int64_t (*runf)(void *), void *arg)
 {

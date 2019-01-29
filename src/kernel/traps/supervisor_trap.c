@@ -7,6 +7,9 @@
 #include "sbi.h"
 #include "scheduler.h"
 
+//variable globale pour sauvgarder le SP kernel lors de l'éxécution en mode user
+uint64_t sav_stack_kernel = 0;
+
 void setup_clock_interrupts()
 {
 	csr_set(sie, MIP_STIP);
