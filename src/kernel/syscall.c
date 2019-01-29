@@ -20,7 +20,7 @@ extern char userspace_end[];
 
 #define INVALID_PTR(ptr) \
         ( \
-                (char*)(ptr) < (char*) PROCESS_CODE \
+				( (char*)(ptr) < (char*) PROCESS_CODE && (char*)(ptr) != NULL) \
                 || \
                 (char*) (ptr) > (char*) KERNEL_CODE - sizeof(*ptr) \
                 )
@@ -199,7 +199,7 @@ void sysc_init(void)
 	for (i = 0; i < NB_SYSCALLS; ++i)
 		sysc_handlers[i] = sysc_error_handler;
 
-//	BIND_SYSCALL(chprio);
+	BIND_SYSCALL(chprio);
 //	BIND_SYSCALL(clock_settings);
 //	BIND_SYSCALL(cons_echo);
 //	BIND_SYSCALL(cons_read);
@@ -207,7 +207,7 @@ void sysc_init(void)
 //	BIND_SYSCALL(current_clock);
 	BIND_SYSCALL(exit);
 	BIND_SYSCALL(getpid);
-//	BIND_SYSCALL(getprio);
+	BIND_SYSCALL(getprio);
 	BIND_SYSCALL(kill);
 //	BIND_SYSCALL(pcount);
 //	BIND_SYSCALL(pcreate);
