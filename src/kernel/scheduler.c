@@ -256,7 +256,6 @@ void schedule(void)
 			&processes[ACTIVABLE], process_t, status_link
 	);
 
-
 	context_t *old_ctx;
 	context_t *new_ctx;
 
@@ -264,10 +263,7 @@ void schedule(void)
 		assert(old != NULL && "No more processes available!");
 		return;
 	}
-	int8_t pid = -2;
-	if (old) pid = old->pid;
-	else pid = -1;
-printf("schedul %d -> %d\n", pid, new->pid);
+	
 	// set the new active process
 	if (old == NULL || old->status != ACTIVE || old->prio <= new->prio) {
 		STATUS_QUEUE_DELETE(new);
