@@ -206,9 +206,9 @@ void sysc_init(void)
 	BIND_SYSCALL(cons_write);
 //	BIND_SYSCALL(current_clock);
 	BIND_SYSCALL(exit);
-//	BIND_SYSCALL(getpid);
+	BIND_SYSCALL(getpid);
 //	BIND_SYSCALL(getprio);
-//	BIND_SYSCALL(kill);
+	BIND_SYSCALL(kill);
 //	BIND_SYSCALL(pcount);
 //	BIND_SYSCALL(pcreate);
 //	BIND_SYSCALL(pdelete);
