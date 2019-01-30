@@ -15,20 +15,25 @@
 
 int64_t launcher(void *arg)
 {
+	int pid;
+
 	printf("Launcher start.\n");
-	if (sched_ustart("console", 1024, 11, (void *) 0) < 0) {
+	if ((pid = sched_ustart("console", 1024, 11, (void *) 0)) < 0) {
 		assert(0 && "Unable to run app autotest\n");
 	}
+	sched_waitpid(pid, NULL);
 
 #if 0
-	if (sched_ustart("autotest", 1024, 11, (void *) 0) < 0) {
+	if ((pid = sched_ustart("autotest", 1024, 11, (void *) 0)) < 0) {
 		assert(0 && "Unable to run app autotest\n");
 	}
+	sched_waitpid(pid, NULL);
 
 	printf("Nombre de frame disponible avant app hello : %d\n", hmm_frame_count());
-	if (sched_ustart("hello", 1024, 11, (void *) 0) < 0) {
+	if ((pid = sched_ustart("hello", 1024, 11, (void *) 0)) < 0) {
 		assert(0 && "Unable to create programme hello userde test ");
 	}
+	sched_waitpid(pid, NULL);
 //	printf("Nombre de frame disponible aprèes app hello : %d\n", hmm_frame_count());
 #endif
 	return 0;
