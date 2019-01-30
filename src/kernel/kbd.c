@@ -57,10 +57,17 @@ void kbd_init(void)
 /* Traitant clavier */
 void keyboard_handler()
 {
-	//ACK_IT_M;
+#if 0
+	char s[2];
 	int scancode = getchar();
 	//do_scancode(scancode);
-	if (scancode != -1) printf("%c", scancode);
+	if (scancode != -1 && echo_on) {
+		//printf("%c", scancode);
+		s[0] = (char) scancode;
+		s[1] = '\0';
+		keyboard_data(s);
+	}
+#endif
 }
 
 
