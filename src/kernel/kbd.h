@@ -28,9 +28,9 @@ void kbd_init(void);
 
 void keyboard_handler();
 
-/* Call this function for each scancode received to translate them to
-characters. */
-void do_scancode(int scancode);
+void cons_echo(int on);
+
+unsigned long cons_read(char *, unsigned long);
 
 /* You have to implement this function. It is called by do_scancode with
 a string that is the translation of the scancodes into characters. */

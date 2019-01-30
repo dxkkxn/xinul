@@ -68,11 +68,11 @@ void process_cmd(char *command) {
 
 
 int main(void) {
-	cons_echo(0);
-	process_cmd("boot");
+	//cons_echo(0);
+	//process_cmd("boot");
 	cons_echo(1);
 	while (1) {
-		cons_write("WINDOB $ ", 9);
+		printf("user@oson $ ");
 		cons_read(command, LINE_SIZE);
 		process_cmd(command);
 		save_command(command);
