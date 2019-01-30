@@ -14,7 +14,7 @@ void context_kernel_init(
 	c->s0 = sched_exit;
 	c->s1 = arg;
 	c->sepc = runf;
-	c->sp = stack + K_STACK_SIZE - 1;
+	c->sp = stack + K_STACK_SIZE;
 }
 
 void context_user_init(
@@ -28,5 +28,5 @@ void context_user_init(
 	c->s1 = arg;
 	c->s2 = kernel_stack + K_STACK_SIZE;
 	c->sepc = (void*) PROCESS_CODE;
-	c->sp = user_stack + ssize - 1;
+	c->sp = user_stack + ssize;
 }
