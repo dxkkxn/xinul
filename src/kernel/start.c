@@ -16,7 +16,7 @@
 int64_t launcher(void *arg)
 {
 	printf("Launcher start.\n");
-	if (sched_ustart("autotest", 1024, 11, (void *) 0) < 0) {
+	if (sched_ustart("console", 1024, 11, (void *) 0) < 0) {
 		assert(0 && "Unable to run app autotest\n");
 	}
 
