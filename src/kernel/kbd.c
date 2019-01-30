@@ -57,7 +57,6 @@ void kbd_init(void)
 /* Traitant clavier */
 void keyboard_handler()
 {
-#if 0
 	char s[2];
 	int scancode = getchar();
 	//do_scancode(scancode);
@@ -67,7 +66,6 @@ void keyboard_handler()
 		s[1] = '\0';
 		keyboard_data(s);
 	}
-#endif
 }
 
 
