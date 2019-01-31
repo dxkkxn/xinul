@@ -46,7 +46,7 @@ int main()
 	printf("\n= OSON Initialization =\n");
 
 	printf("Clock interruptions...");
-	setup_clock_interrupts();
+	clock_init();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	printf("Keyboard initialization...");

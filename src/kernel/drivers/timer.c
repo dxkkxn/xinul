@@ -2,11 +2,117 @@
 
 #include "csr.h"
 #include "encoding.h"
+#include "device.h"
+#include "sbi.h"
+#include "scheduler.h"
 
-void setup_clock_interrupts()
+// Compteur de temps
+static unsigned long timer = 0;
+
+static link blocked_processes = LIST_HEAD_INIT(blocked_processes);
+
+int clock_free_processes();
+
+void clock_handler()
+{
+	uint64_t delta = 1000 / CLK_IT_FREQ; // ms
+
+	timer++;
+	// set the new mtimecmp value and activate the machine timer interruptions
+	sbi_call_set_timer(delta);
+	// Clear the interrupt flag so that the processor does not take
+	// this trap again after return from interrupt
+	csr_clear(sip, MIP_STIP);
+
+	if (timer % (CLK_IT_FREQ / SCHED_FREQ) == 0 || clock_free_processes())
+		schedule();
+}
+
+// Endors le processus tant que "clock" n'est pas passée.
+void wait_clock(unsigned long clock)
+{
+	sched_block(clock, &blocked_processes, BLOCKED_ON_CLOCK, NULL);
+}
+
+/* 
+ * Réveille les processus en attente sur l'horloge
+ * et renvoie un entier indiquant si un processus 
+ * plus prioritaire nécessite de scheduler.
+ */
+int clock_free_processes()
+{
+        int scheduling = 0;
+
+        /* Débloquer tous les processus qui le doivent */
+        process_t *p = PROCESS_QUEUE_BOTTOM(&blocked_processes);
+        while (p != NULL && (unsigned int)p->info <= timer) {
+                scheduling = sched_unblock(p) || scheduling;
+                p = PROCESS_QUEUE_BOTTOM(&blocked_processes); 
+        }
+        /* Retourner l'information sur le scheduling */
+        return scheduling;
+}
+
+/* Attend x secondes
+ * <sec>: nombre de secondes à attendre
+ */
+void sleep(unsigned long sec)
+{
+        wait_clock(timer + sec * CLK_IT_FREQ);
+}
+
+/* Attend x milli-secondes
+ * <ms>: nombre de ms à attendre
+ * Attention, ne pas descendre en dessous de 10ms
+ */
+void sleepms(unsigned long ms)
+{
+        wait_clock(timer + (ms * CLK_IT_FREQ)/1000);
+}
+
+/* execute <callback> en boucle pendant <sec> secondes
+ * <sec>: nombre de secondes à attendre
+ */
+void do_for_seconds(int sec, void (*callback) ())
+{
+	unsigned int timeout = timer + sec * CLK_IT_FREQ;
+	while (timer < timeout)
+		callback();
+}
+
+static void print_callback(void)
+{
+	unsigned sec = timer / CLK_IT_FREQ;
+	unsigned min = sec / 60;
+	unsigned hrs = min / 60;
+	printf("%02d:%02d:%02d",
+		hrs,
+		min % 60,
+		sec % 60);
+}
+
+/* affiche le temps écoulé depuis le démarrage du noyau */
+void afficher_horloge()
+{
+	print_callback();
+}
+
+// initialise l'horloge
+void clock_init()
 {
 	csr_set(sie, MIP_STIP);
 
 	// Schedule the first interruption in 100ms
-	set_mtimecmp(get_mtime() + 100 * (SPIKE_CLOCK_FREQUENCY / 1000));
+	set_mtimecmp(get_mtime() + 100 * (clint_dev->clk_freq / 1000));
+}
+
+void clock_settings(unsigned long *quartz, unsigned long *ticks)
+{
+	*quartz = clint_dev->clk_freq;
+	*ticks = clint_dev->clk_freq / CLK_IT_FREQ;
+}
+
+unsigned long current_clock(void)
+{
+	return timer;
 }

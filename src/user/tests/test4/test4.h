@@ -9,7 +9,7 @@
 #ifndef _TEST4_H_
 #define _TEST4_H_
 
-static const int loop_count0 = 10000	;
-static const int loop_count1 = 20000;
+static const int loop_count0 = 1000;
+static const int loop_count1 = 2000;
 
 #endif /* _TEST4_H_ */

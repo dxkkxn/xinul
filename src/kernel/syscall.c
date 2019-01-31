@@ -12,6 +12,7 @@
 #include "stddef.h"
 #include "cons_write.h"
 #include "kbd.h"
+#include "timer.h"
 
 extern char userspace_end[];
 
@@ -44,14 +45,12 @@ extern char userspace_end[];
 
 #define checked_chprio          sched_chprio
 
-/*
 static void checked_clock_settings(unsigned long *q, unsigned long *t)
 {
-	if (UNLIKELY(INVALID_PTR(q) || INVALID_PTR(t)))
+	if (INVALID_PTR(q) || INVALID_PTR(t))
 		return;
 	clock_settings(q, t);
 }
-*/
 
 #define checked_cons_echo       cons_echo
 
@@ -202,7 +201,7 @@ void sysc_init(void)
 		sysc_handlers[i] = sysc_error_handler;
 
 	BIND_SYSCALL(chprio);
-//	BIND_SYSCALL(clock_settings);
+	BIND_SYSCALL(clock_settings);
 	BIND_SYSCALL(cons_echo);
 	BIND_SYSCALL(cons_read);
 	BIND_SYSCALL(cons_write);

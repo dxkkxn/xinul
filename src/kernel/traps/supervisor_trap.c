@@ -1,24 +1,17 @@
 #include "supervisor_trap.h"
 
+#include "stdio.h"
 #include "encoding.h"
 #include "csr.h"
-#include "machine_trap.h"
 #include "machine.h"
-#include "sbi.h"
+#include "machine_trap.h"
 #include "scheduler.h"
 #include "kbd.h"
-#include "stdio.h"
+#include "timer.h"
 
 //variable globale pour sauvgarder le SP kernel lors de l'éxécution en mode user
 uint64_t sav_stack_kernel = 0;
 
-
-void set_next_timer_event()
-{
-	uint64_t delta = 100; // ms
-	// set the new mtimecmp value and activate the machine timer interruptions
-	sbi_call_set_timer(delta);
-}
 
 void strap_handler(uintptr_t scause, uintptr_t sepc)
 {
@@ -26,11 +19,7 @@ void strap_handler(uintptr_t scause, uintptr_t sepc)
 		switch (scause & ~INTERRUPT_CAUSE_FLAG) {
 			case intr_s_timer:
 				// Set a new timer interrupt
-				set_next_timer_event();
-				// Clear the interrupt flag so that the processor does not take
-				// this trap again after return from interrupt
-				csr_clear(sip, MIP_STIP);
-				schedule();
+				clock_handler();
 				break;
 			case intr_s_external:
 				keyboard_handler();

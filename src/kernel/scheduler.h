@@ -7,6 +7,7 @@
 #include "machine.h"
 #include "stdint.h"
 
+#define SCHED_FREQ 50
 
 #define PROCESS_QUEUE_TOP(head)		queue_top(head, process_t, status_link)
 #define PROCESS_QUEUE_BOTTOM(head)	queue_bottom(head, process_t, status_link)
