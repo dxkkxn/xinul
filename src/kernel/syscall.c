@@ -205,7 +205,7 @@ void sysc_init(void)
 	BIND_SYSCALL(cons_echo);
 	BIND_SYSCALL(cons_read);
 	BIND_SYSCALL(cons_write);
-//	BIND_SYSCALL(current_clock);
+	BIND_SYSCALL(current_clock);
 	BIND_SYSCALL(exit);
 	BIND_SYSCALL(getpid);
 	BIND_SYSCALL(getprio);
@@ -217,14 +217,14 @@ void sysc_init(void)
 //	BIND_SYSCALL(preset);
 //	BIND_SYSCALL(psend);
 	BIND_SYSCALL(start);
-//	BIND_SYSCALL(wait_clock);
+	BIND_SYSCALL(wait_clock);
 	BIND_SYSCALL(waitpid);
-//	BIND_SYSCALL(sleep);
+	BIND_SYSCALL(sleep);
 //	BIND_SYSCALL(getname);
 //	BIND_SYSCALL(getstatus);
 //	BIND_SYSCALL(psize);
 //	BIND_SYSCALL(waitpid_nohang);
-//	BIND_SYSCALL(sleepms);
+	BIND_SYSCALL(sleepms);
 //	BIND_SYSCALL(beep);
 //	BIND_SYSCALL(cons_chbuffer);
 //	BIND_SYSCALL(cons_wait);
