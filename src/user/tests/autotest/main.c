@@ -41,7 +41,7 @@ int main(void)
 {
 	int i;
 	int pid;
-	int ret;
+	long int ret;
 	printf("Auto test with %d tests\n", TESTS_NUMBER);
 	for (i = 0; i < TESTS_NUMBER; i++) {
 		printf("Test %s : ", tests[i]);

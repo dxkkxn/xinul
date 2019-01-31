@@ -11,7 +11,7 @@
 int main(void *arg)
 {
         int pid1, pid2;
-        int r;
+        long int r;
 
         (void)arg;
 
@@ -31,9 +31,6 @@ int main(void *arg)
         assert(pid1 > 0);
         pid2 = start("waiter", 4000, 65, (void *)pid1);
         assert(pid2 > 0);
-		//int pid = waitpid(pid2, &r);
-		//printf("pid = %d\n", pid);
-        //assert(pid == pid2);
         assert(waitpid(pid2, &r) == pid2);
         assert(r == 1);
         assert(waitpid(pid1, &r) == pid1);
