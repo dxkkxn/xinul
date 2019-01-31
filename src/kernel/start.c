@@ -13,12 +13,14 @@
 #include "timer.h"
 #include "kbd.h"
 
+char default_program[20];
+
 int64_t launcher(void *arg)
 {
 	int pid;
 
 	printf("Launcher start.\n");
-	if ((pid = sched_ustart("console", 1024, 11, (void *) 0)) < 0) {
+	if ((pid = sched_ustart(default_program, 1024, 11, (void *) 0)) < 0) {
 		assert(0 && "Unable to run app autotest\n");
 	}
 	sched_waitpid(pid, NULL);
