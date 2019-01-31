@@ -9,12 +9,7 @@
 #ifndef _TEST4_H_
 #define _TEST4_H_
 
-#ifdef microblaze
-static const int loop_count0 = 500;
-static const int loop_count1 = 1000;
-#else
-static const int loop_count0 = 5000;
-static const int loop_count1 = 10000;
-#endif
+static const int loop_count0 = 10000	;
+static const int loop_count1 = 20000;
 
 #endif /* _TEST4_H_ */
