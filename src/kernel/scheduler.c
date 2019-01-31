@@ -263,7 +263,6 @@ void schedule(void)
 		assert(old != NULL && "No more processes available!");
 		return;
 	}
-	
 	// set the new active process
 	if (old == NULL || old->status != ACTIVE || old->prio <= new->prio) {
 		STATUS_QUEUE_DELETE(new);

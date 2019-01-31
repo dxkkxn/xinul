@@ -11,6 +11,7 @@
 #include "process.h"
 #include "stddef.h"
 #include "cons_write.h"
+#include "kbd.h"
 
 extern char userspace_end[];
 
@@ -61,14 +62,15 @@ static int checked_cons_chbuffer(unsigned char *buf, font *f, int w, int h)
 		return RET_ERROR;
 	return vesa_text_mode(buf, f, w, h);
 }
+*/
 
 static unsigned long checked_cons_read(char *str, unsigned long l)
 {
-	if (UNLIKELY(INVALID_PTR(str)))
+	if (INVALID_PTR(str))
 		return 0;
 	return cons_read(str, l);
 }
-*/
+
 
 static int checked_cons_write(char *str, long l)
 {
@@ -201,8 +203,8 @@ void sysc_init(void)
 
 	BIND_SYSCALL(chprio);
 //	BIND_SYSCALL(clock_settings);
-//	BIND_SYSCALL(cons_echo);
-//	BIND_SYSCALL(cons_read);
+	BIND_SYSCALL(cons_echo);
+	BIND_SYSCALL(cons_read);
 	BIND_SYSCALL(cons_write);
 //	BIND_SYSCALL(current_clock);
 	BIND_SYSCALL(exit);
