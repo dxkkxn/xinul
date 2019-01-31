@@ -34,7 +34,7 @@ $(APPS_OUT)/%.bin.o: $(OBJ_DIR)/empty.o $(OUTPUT)/user/%.bin | $(APPS_OUT)
 		--set-section-flags=.$*.bin=contents,alloc,load,data $@
 
 $(APPS_OUT):
-	mkdir -p $@
+	@mkdir -p $@
 
 # Generate a linker file that:
 # - creates a table with an entry (address, size) for each application
@@ -44,16 +44,19 @@ $(APPS_OUT):
 # re-generated at each build.
 
 $(APPS_OUT)/symbols-table.o: $(APPS_OUT)/symbols-table.c | $(APPS_OUT)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(call cmd,CC APPS_INTEGRATION $<, $(dir $@), \
+	$(CC) $(CFLAGS) -c $< -o $@)
 
 .PHONY: $(APPS_OUT)/symbols-table.c
 #.INTERMEDIATE: $(APPS_OUT)/symbols-table.c
 $(APPS_OUT)/symbols-table.c: | $(APPS_OUT)
-	$(GEN_TABLE) "$@" $(APPS_BIN)
+	$(call cmd,GEN_TABLE APPS_INTEGRATION $(@:../%=%), $(dir $@), \
+	$(GEN_TABLE) "$@" $(APPS_BIN))
 
 .PHONY: $(APPS_OUT)/apps.lds
 $(APPS_OUT)/apps.lds: | $(APPS_OUT)
-	$(GEN_SECTIONS) "$@" $(APPS_BIN)
+	$(call cmd,GEN_SECTIONS APPS_INTEGRATION $(@:../%=%), $(dir $@), \
+	$(GEN_SECTIONS) "$@" $(APPS_BIN))
 
 #.PHONY: build/kernel.lds
 #build/kernel.lds: $(APPS_OUT)/apps.lds

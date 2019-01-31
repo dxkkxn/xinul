@@ -114,15 +114,15 @@ CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config boot/boot.mk build/apps-int
 .suffixe:
 
 $(KERNEL_BIN): $(LIBS) $(OBJS) $(LD_SCRIPTS) $(APPS_OBJS) $(APPS_OUT)/apps.lds
-	$(call cmd, LD $@, $(dir $@), \
+	$(call cmd,LD KERNEL -> $(@:../%=%), $(dir $@), \
 	$(LD) $(CFLAGS) $(LDFLAGS) $(OBJS) $(APPS_OBJS) $(LIBS) -o $@)
 
 $(OBJ_DIR)/%.o: %.S $(CONFIG_DEPENDENCIES)
-	$(call cmd, AS $< -> $@, $(dir $@), \
+	$(call cmd,AS KERNEL $<, $(dir $@), \
 	$(AS) -c $< -o $@ $(CFLAGS) -MMD -MP)
 
 $(OBJ_DIR)/%.o: %.c $(CONFIG_DEPENDENCIES)
-	$(call cmd, CC $< -> $@, $(dir $@), \
+	$(call cmd,CC KERNEL $<, $(dir $@), \
 	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
 
 # Include object dependencies generated previously by gcc
@@ -145,5 +145,3 @@ endif
 
 
 
-tt:
-	echo $(APPS_OBJS)
