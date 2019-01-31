@@ -29,22 +29,13 @@ static void process_copy_user_code(process_t *p, const struct uapps *app)
 	// Switch to process directory to copy code at 1GiB
 	satp_csr parent_satp = {.ureg = csr_read(satp)};
 	csr_write(satp, p->context.satp);
-	// On authorise temporairement le superviseur à écrire dans du code user (Voir 4.3.1 Addressing and Memory Protection ISA Priv)
-	csr_set(sstatus, SSTATUS_SUM);
 
 	/* Copy the code */
-	// todo a remplacer la copie de code avec le for par un mem copy
-	uint32_t *code_start;
-	uint32_t *target_start;
-	for (code_start = (uint32_t *) app->start, target_start = (uint32_t *) PROCESS_CODE;
-		 (uint64_t) code_start < (uint64_t) app->end;
-		 code_start++, target_start++) {
-		*target_start = *code_start;
-	}
+	memcpy((uint64_t *) PROCESS_CODE,
+		   (uint64_t *) app->start,
+		   (uint64_t) app->end - (uint64_t) app->start);
 
-	// Remise en place de la protection SUM
-//	csr_clear(sstatus, SSTATUS_SUM);
-//todo : remettre en place la protection quand la strape_entry sera adapté pour changer de pile
+	// Remise en place du directory appelant.
 	csr_write(satp, parent_satp.ureg);
 }
 

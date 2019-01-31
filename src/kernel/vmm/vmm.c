@@ -65,6 +65,9 @@ int8_t init_virtual_memory()
 
 	write_csr(satp, kernel_satp.reg);
 
+	// On authorise le superviseur à accéder au page user (Voir 4.3.1 Addressing and Memory Protection ISA Priv)
+	set_csr(sstatus, SSTATUS_SUM);
+
 	return 0;
 }
 
@@ -168,6 +171,6 @@ void vmm_area_free(struct vmm_area *varea)
 		hmm_frame_release(frame);
 	}
 
-	mem_free(varea, sizeof(* varea));
+	mem_free(varea, sizeof(*varea));
 }
 
