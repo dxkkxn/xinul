@@ -109,7 +109,7 @@ unsigned long current_clock(void);
 void wait_clock(unsigned long wakeup);
 #endif
 int start(const char *process_name, unsigned long ssize, int prio, void *arg);
-int waitpid(int pid, int *retval);
+int waitpid(int pid, long int *retval);
 
 #if defined WITH_SEM
 /*

@@ -13,7 +13,7 @@ int main(void *arg)
 {
         int pid1;
         int r;
-        int rval;
+        long int rval;
 
         (void)arg;
 

@@ -18,7 +18,8 @@ int main(void *arg)
 
 int main(void *arg)
 {
-        int pid1, pid2, r;
+        int pid1, pid2;
+        long int r;
         unsigned long c0, c, quartz, ticks, dur;
         volatile unsigned long *timer = NULL;
 

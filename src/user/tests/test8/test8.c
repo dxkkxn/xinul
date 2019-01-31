@@ -10,7 +10,8 @@ int main(void *arg)
 {
         unsigned long long tsc1;
         unsigned long long tsc2;
-        int i, r, pid, count;
+        int i, pid, count;
+        long int r;
 
         (void)arg;
         assert(getprio(getpid()) == 128);
@@ -21,7 +22,7 @@ int main(void *arg)
         pid = start("suicide_launcher", 4000, 129, 0);
         assert(pid > 0);
         assert(waitpid(pid, &r) == pid);
-        assert(chprio(r, 192) < 0);
+        assert(chprio((int)r, 192) < 0);
 
         count = 0;
         __asm__ __volatile__("rdcycle %0":"=r"(tsc1));

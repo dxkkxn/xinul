@@ -2,7 +2,7 @@
 
 int main(void *arg)
 {
-        int rval;
+        long int rval;
         int r;
         int pid1;
         int val = 45;
