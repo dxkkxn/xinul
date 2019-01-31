@@ -60,6 +60,12 @@ struct pte {
 
 typedef struct pte *pagetable_t;
 
+// flush tlb
+static inline void flush_tlb()
+{
+	__asm__ __volatile__("sfence.vma");
+}
+
 // Prototype
 int8_t init_virtual_memory();
 

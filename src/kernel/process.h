@@ -55,7 +55,7 @@ struct __process_st {
 
 	// Virtual memory
 	pagetable_t page_dir;
-	//struct shm_handle *shm_handle;
+	struct shm_handle *shm_handle;
 
 	// Scheduler part
 	long info;

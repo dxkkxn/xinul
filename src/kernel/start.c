@@ -8,6 +8,7 @@
 #include "supervisor_trap.h"
 #include "vmm.h"
 #include "hmm.h"
+#include "shm.h"
 #include "mapper.h"
 #include "syscall.h"
 #include "timer.h"
@@ -70,6 +71,10 @@ int main()
 
 	printf("Virtual memory manager initialization...");
 	init_virtual_memory();
+	printf("\r\t\t\t\t\t\t\t[OK]\n");
+
+	printf("Shared memory API initialization...");
+	shm_init();
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	printf("Syscall initialization...");
