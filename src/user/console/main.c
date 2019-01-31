@@ -56,7 +56,7 @@ void process_cmd(char *command) {
 		else {
 			int pid = start(cmd[0], 4000, 128, (void *) cmd[1]);
 			if (pid == -1) {
-				printf("bat'sh: %s: command not found\n", cmd[0]);
+				printf("shell: %s: command not found\n", cmd[0]);
 			} else if (!bool_bg) {
 				waitpid(pid, NULL);
 			} else {
