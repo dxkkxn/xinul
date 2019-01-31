@@ -28,10 +28,14 @@ APPS_OBJS  += $(APPS_OUT)/symbols-table.o
 vpath %.bin $(dir $(APPS_BIN))
 
 # Transform binary files in linkable files
+# Bug avec call cmd,  comprend pas pourquoi ça marche pas!
+# plante aussi si on met le echo avant le objcopy...
 $(APPS_OUT)/%.bin.o: $(OBJ_DIR)/empty.o $(OUTPUT)/user/%.bin | $(APPS_OUT)
-	$(OBJCOPY) $< \
+	@$(OBJCOPY) $< \
 		--add-section=.$(notdir $*).bin=$(filter-out $<, $^) \
 		--set-section-flags=.$*.bin=contents,alloc,load,data $@
+	@echo OBJCOPY APPS_INTEGRATION $(@:../%=%)
+
 
 $(APPS_OUT):
 	@mkdir -p $@
