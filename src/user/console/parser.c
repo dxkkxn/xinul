@@ -9,7 +9,7 @@ void parse_cmd(char *line, char cmd[CMD_ARGS][LINE_SIZE], int *bool_bg) {
 	while (line[line_index] != '\0') {
 		if (line[line_index] == ' ') {
 			if (char_prec != ' ') {
-				snprintf(cmd[arg_index], word_index, "%s", &(line[line_index - word_index]));
+				snprintf(cmd[arg_index], word_index + 1, "%s", &(line[line_index - word_index]));
 				arg_index++;
 			}
 			word_index = -1;
@@ -22,6 +22,6 @@ void parse_cmd(char *line, char cmd[CMD_ARGS][LINE_SIZE], int *bool_bg) {
 			&& line[line_index-1] == '&' && line[line_index-2] == ' ') {
 		*bool_bg = 1;
 	} else {
-		snprintf(cmd[arg_index], word_index, "%s", &(line[line_index - word_index]));
+		snprintf(cmd[arg_index], word_index + 1, "%s", &(line[line_index - word_index]));
 	}
 }

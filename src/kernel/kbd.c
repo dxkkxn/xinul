@@ -59,9 +59,7 @@ void keyboard_handler()
 {
 	char s[2];
 	int scancode = getchar();
-	//do_scancode(scancode);
-	if (scancode != -1 && echo_on) {
-		//printf("%c", scancode);
+	if (scancode != -1) {
 		s[0] = (char) scancode;
 		s[1] = '\0';
 		keyboard_data(s);
@@ -170,27 +168,33 @@ unsigned long cons_read(char *string, unsigned long length)
 	unsigned long i;
 	char c;
 
-	if (length == 0)
+	if (length == 0) {
+		string[0] = '\0';
 		return 0;
+	}
 
 	while (count_endl == 0 && !buf_full(&buffer))
 		sched_block(0, &waitq, BLOCKED_ON_IO, NULL);
 
 	assert(!buf_empty(&buffer) && "Buffer clavier vide après déblocage");
 	for (i = 0; i < length; ++i) {
-		if (buf_empty(&buffer))
-			break;
+		if (buf_empty(&buffer)) {
+			string[i] = '\0';
+			return i;
+		}
 
 		buf_read(&buffer, c);
 		if (c == ENDL) {
 			--count_endl;
 			assert(count_endl >= 0);
-			break;
+			string[i] = '\0';
+			return i;
 		}
 
 		string[i] = c;
 	}
 
+	string[length] = '\0';
 	return i;
 }
 
