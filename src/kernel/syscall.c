@@ -13,6 +13,7 @@
 #include "cons_write.h"
 #include "kbd.h"
 #include "timer.h"
+#include "msgqueue.h"
 
 extern char userspace_end[];
 
@@ -58,7 +59,7 @@ static void checked_clock_settings(unsigned long *q, unsigned long *t)
 static int checked_cons_chbuffer(unsigned char *buf, font *f, int w, int h)
 {
 	if (UNLIKELY(INVALID_PTR(buf) || INVALID_PTR(f)))
-		return RET_ERROR;
+		return -1;
 	return vesa_text_mode(buf, f, w, h);
 }
 */
@@ -88,7 +89,7 @@ static int checked_cons_write(char *str, long l)
 static int checked_getname(int pid, char *buf, unsigned int size)
 {
 	if (UNLIKELY(INVALID_PTR(buf)))
-		return RET_ERROR;
+		return -1;
 	return process_getname(pid, buf, size);
 }
 */
@@ -101,47 +102,41 @@ static int checked_getname(int pid, char *buf, unsigned int size)
 static int checked_getstatus(int pid, char *buf, unsigned int size)
 {
 	if (UNLIKELY(INVALID_PTR(buf)))
-		return RET_ERROR;
+		return -1;
 	return process_getstatus(pid, buf, size);
 }
 */
 
 #define checked_kill            sched_kill
 
-/*
 static int checked_pcount(int fid, int *count)
 {
-	if (UNLIKELY(INVALID_PTR(count)))
-		return RET_ERROR;
+	if (INVALID_PTR(count))
+		return -1;
 	return pcount(fid, count);
 }
-*/
 
 #define checked_pcreate         pcreate
 
 #define checked_pdelete         pdelete
 
-/*
 static int checked_preceive(int fid, int *msg)
 {
-	if (UNLIKELY(INVALID_PTR(msg)))
-		return RET_ERROR;
+	if (INVALID_PTR(msg))
+		return -1;
 	return preceive(fid, msg);
 }
-*/
 
 #define checked_preset          preset
 
 #define checked_psend           psend
 
-/*
 static int checked_psize(int fid, int *size)
 {
-	if (UNLIKELY(INVALID_PTR(size)))
-		return RET_ERROR;
+	if (INVALID_PTR(size))
+		return -1;
 	return psize(fid, size);
 }
-*/
 
 #define checked_sleep           sleep
 
@@ -170,7 +165,7 @@ static int checked_waitpid(int pid, int64_t *rv)
 static int checked_waitpid_nohang(int pid, int *rv)
 {
 	if (UNLIKELY(INVALID_PTR(rv)))
-		return RET_ERROR;
+		return -1;
 	return sched_waitpid_nohang(pid, rv);
 }
 */
@@ -210,19 +205,19 @@ void sysc_init(void)
 	BIND_SYSCALL(getpid);
 	BIND_SYSCALL(getprio);
 	BIND_SYSCALL(kill);
-//	BIND_SYSCALL(pcount);
-//	BIND_SYSCALL(pcreate);
-//	BIND_SYSCALL(pdelete);
-//	BIND_SYSCALL(preceive);
-//	BIND_SYSCALL(preset);
-//	BIND_SYSCALL(psend);
+	BIND_SYSCALL(pcount);
+	BIND_SYSCALL(pcreate);
+	BIND_SYSCALL(pdelete);
+	BIND_SYSCALL(preceive);
+	BIND_SYSCALL(preset);
+	BIND_SYSCALL(psend);
 	BIND_SYSCALL(start);
 	BIND_SYSCALL(wait_clock);
 	BIND_SYSCALL(waitpid);
 	BIND_SYSCALL(sleep);
 //	BIND_SYSCALL(getname);
 //	BIND_SYSCALL(getstatus);
-//	BIND_SYSCALL(psize);
+	BIND_SYSCALL(psize);
 //	BIND_SYSCALL(waitpid_nohang);
 	BIND_SYSCALL(sleepms);
 //	BIND_SYSCALL(beep);
