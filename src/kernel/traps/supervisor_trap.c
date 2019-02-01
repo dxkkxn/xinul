@@ -1,4 +1,5 @@
 #include "supervisor_trap.h"
+#include "trap.h"
 
 #include "stdio.h"
 #include "encoding.h"
@@ -9,14 +10,10 @@
 #include "kbd.h"
 #include "timer.h"
 
-//variable globale pour sauvgarder le SP kernel lors de l'éxécution en mode user
-uint64_t sav_stack_kernel = 0;
-
-
-void strap_handler(uintptr_t scause, uintptr_t sepc)
+void strap_handler(struct trap_frame *tf)
 {
-	if (scause & INTERRUPT_CAUSE_FLAG) {
-		switch (scause & ~INTERRUPT_CAUSE_FLAG) {
+	if (tf->scause & INTERRUPT_CAUSE_FLAG) {
+		switch (tf->scause & ~INTERRUPT_CAUSE_FLAG) {
 			case intr_s_timer:
 				// Set a new timer interrupt
 				clock_handler();
@@ -28,16 +25,16 @@ void strap_handler(uintptr_t scause, uintptr_t sepc)
 			default:
 				die(
 						"supervisor mode: unhandable interrupt %ld @ %p",
-						(uint64_t) scause & ~INTERRUPT_CAUSE_FLAG, (void *) sepc
+						tf->scause & ~INTERRUPT_CAUSE_FLAG, (void *) tf->sepc
 				);
 				break;
 		}
 	} else {
-		switch (scause & ~INTERRUPT_CAUSE_FLAG) {
+		switch (tf->scause & ~INTERRUPT_CAUSE_FLAG) {
 			default:
 				die(
 						"supervisor mode: unhandable exception %ld @ %p",
-						(uint64_t) scause, (void *) sepc
+						tf->scause, (void *) tf->sepc
 				);
 				break;
 		}

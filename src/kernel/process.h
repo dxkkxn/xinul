@@ -25,7 +25,7 @@ extern process_t process_alive;
 #define NBPROC 100
 #define MAX_LENGTH_PROCESS_NAME 20
 // Taille de la stack kernel pour chaque process
-#define K_STACK_SIZE 1024
+#define K_STACK_SIZE 2048
 // Taille max de la pile user
 #define STACK_SIZE_MAX 100000
 #define MAXPRIO 256
