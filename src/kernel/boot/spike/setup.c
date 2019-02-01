@@ -24,10 +24,6 @@ void arch_setup()
 	register_poweroff(&poweroff_htif);
 	register_clint(&spike_clint);
 
-
-	// Enable supervisor use of counters
-	csr_write(scounteren, -1);
-
 	// PPM configuration
 	uint64_t pmpcfg = PMP_NAPOT | PMP_R | PMP_W | PMP_X;
 	uint64_t pmpaddr = ((uint64_t) 1U << 53) - 1;
