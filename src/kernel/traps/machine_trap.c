@@ -1,5 +1,6 @@
 #include <machine.h>
 #include "machine_trap.h"
+#include "trap.h"
 #include "sbi.h"
 
 #include "csr.h"
@@ -63,7 +64,7 @@ void mtrap_handler(struct caller_context regs, uintptr_t mcause, uintptr_t mepc)
 		}
 	} else {
 		switch (mcause) {
-		case cause_supervisor_ecall:
+		case CAUSE_SUPERVISOR_ECALL:
 			// call the function with the saved registers a7, a0, a1 and a2
 			handle_sbi_call(regs.a7, regs.a0, regs.a1, regs.a2);
 			break;

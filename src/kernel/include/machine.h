@@ -171,3 +171,6 @@ static inline void mode_set_and_continue(unsigned mode)
 		::: "t0"
 	);
 }
+
+
+#define ARRAY_SIZE(x) (sizeof(x)/sizeof((x)[0]))

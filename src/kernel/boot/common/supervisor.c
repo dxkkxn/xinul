@@ -1,7 +1,8 @@
 #include "supervisor.h"
 
 #include "csr.h"
-#include "machine_trap.h"
+#include "trap.h"
+
 #include "encoding.h"
 #include "stdio.h"
 
@@ -14,13 +15,13 @@ void delegate_traps()
 	uint64_t interrupts = MIP_SSIP | MIP_STIP | MIP_SEIP;
 	// Delegate most of the exceptions to the supervisor
 	uint64_t exceptions =
-			(1U << cause_instruction_address_misaligned) |
-			(1U << cause_breakpoint) |
-			(1U << cause_illegal_instruction) |
-			(1U << cause_instruction_page_fault) |
-			(1U << cause_load_page_fault) |
-			(1U << cause_store_page_fault) |
-			(1U << cause_user_ecall);
+			(1U << CAUSE_MISALIGNED_FETCH) |
+			(1U << CAUSE_BREAKPOINT) |
+			(1U << CAUSE_ILLEGAL_INSTRUCTION) |
+			(1U << CAUSE_FETCH_PAGE_FAULT) |
+			(1U << CAUSE_LOAD_PAGE_FAULT) |
+			(1U << CAUSE_STORE_PAGE_FAULT) |
+			(1U << CAUSE_USER_ECALL);
 
 	csr_write(mideleg, interrupts);
 	csr_write(medeleg, exceptions);
