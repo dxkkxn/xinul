@@ -24,11 +24,4 @@ void arch_setup()
 	register_clint(&sifive_clint);
 	register_plic(&sifive_plic);
 	strncpy(default_program, "console", 20);
-
-	// PPM configuration
-	uint64_t pmpcfg = PMP_NAPOT | PMP_R | PMP_W | PMP_X;
-	uint64_t pmpaddr = ((uint64_t) 1U << 53) - 1;
-	// allow access to all of the memory for everyone
-	csr_write(pmpaddr0, pmpaddr);
-	csr_write(pmpcfg0, pmpcfg);
 }

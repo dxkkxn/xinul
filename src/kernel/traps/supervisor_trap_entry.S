@@ -41,9 +41,9 @@
     sd s0, 31*8(sp)
     csrr s1, sepc
     sd s1, 32*8(sp)
-    csrr  t1, stval
+    csrr t1, stval
     sd t1, 33*8(sp)
-    csrr  t2,scause
+    csrr t2, scause
     sd t2, 34*8(sp)
 
   # get faulting insn, if it wasn't a fetch-related trap

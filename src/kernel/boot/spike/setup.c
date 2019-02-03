@@ -23,11 +23,4 @@ void arch_setup()
 	register_console(&console_htif);
 	register_poweroff(&poweroff_htif);
 	register_clint(&spike_clint);
-
-	// PPM configuration
-	uint64_t pmpcfg = PMP_NAPOT | PMP_R | PMP_W | PMP_X;
-	uint64_t pmpaddr = ((uint64_t) 1U << 53) - 1;
-	// allow access to all of the memory for everyone
-	csr_write(pmpaddr0, pmpaddr);
-	csr_write(pmpcfg0, pmpcfg);
 }
