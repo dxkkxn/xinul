@@ -5,10 +5,6 @@
 #include "info.h"
 #include "trap.h"
 
-// todo a virer si pas de bug
-//#define MSTATUS_MPP_MASK_S 0x800 /* bit 12-11 = 01 */
-//#define MSTATUS_MPIE_MASK 0x80 /* bit 7 = 1 */
-
 extern void strap_entry();
 
 
@@ -69,9 +65,6 @@ static inline void enter_supervisor_mode()
 	);
 }
 
-// todo à virer
-#include "vmm.h"
-#include "hmm.h"
 
 // this function is called by entry.S
 // Only the interrupt vector is set up and we are still in machine mode
@@ -97,25 +90,9 @@ __attribute__((noreturn)) void boot_riscv()
 	// Configuration de supervisor trap vector (direct mode)
 	write_csr(stvec, (unsigned long) strap_entry | 0UL);
 
-
 	// Mise à zéro des registres s
 	write_csr(sscratch, 0);
 	write_csr(sie, 0);
-
-	// todo a vriervirer mais garder pour test harware
-	set_csr(sstatus, SSTATUS_SUM | SSTATUS_FS);
-	printf("Hardware memory manager initialization...");
-	extern char _free_memory_start[];
-	extern char _memory_end[];
-	extern char _bss_start[];
-	extern char _bss_end[];
-	(void) _bss_end;
-	(void) _bss_start;
-	hmm_init(_free_memory_start, _memory_end);
-	printf("\r\t\t\t\t\t\t\t[OK]\n");
-	printf("Number of frames %d = %d ko\n", hmm_frame_count(), hmm_free_memory() >> 10);
-
-	init_virtual_memory();
 
 	enter_supervisor_mode();
 	exit(main());
