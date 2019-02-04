@@ -17,7 +17,7 @@ crt_process:
     csrw sscratch, zero
 
     # On indique que le mode à utiliser lors du sret est le mode superviseur (SPP=1)
-    li t0, SSTATUS_SPP | SSTATUS_SIE
+    li t0, SSTATUS_SPP
     csrs sstatus, t0
 
     sret
