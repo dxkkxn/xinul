@@ -14,6 +14,7 @@
 #include "kbd.h"
 #include "timer.h"
 #include "msgqueue.h"
+#include "shm.h"
 
 extern char userspace_end[];
 
@@ -224,9 +225,9 @@ void sysc_init(void)
 //	BIND_SYSCALL(cons_chbuffer);
 //	BIND_SYSCALL(cons_wait);
 
-//	BIND_SYSCALL(shm_create);
-//	BIND_SYSCALL(shm_acquire);
-//	BIND_SYSCALL(shm_release);
+	BIND_SYSCALL(shm_create);
+	BIND_SYSCALL(shm_acquire);
+	BIND_SYSCALL(shm_release);
 
 	/* Affectation du traitant d'interruption */
 // todo regarder si on peut activer les interruptinos syscall indépendament.
