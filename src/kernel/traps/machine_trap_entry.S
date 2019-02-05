@@ -4,8 +4,9 @@
     .align 2
 mtrap_entry:
 
-# On récupère l'adresse du tableau m_caller_context pour sauvegarder le context
+# On bascule sur la stack machine (la même pour tout le monde)
     csrrw sp, mscratch, sp
+    addi sp, sp, -16*8
     sd ra, 0(sp)
     sd a0, 1*8(sp)
     sd a1, 2*8(sp)
@@ -24,7 +25,7 @@ mtrap_entry:
     sd t6, 15*8(sp)
 
     # Invoke the handler.
-    mv      a0, sp
+    mv a0, sp
     csrr    a1, mcause
     csrr    a2, mepc
     jal     mtrap_handler
@@ -46,6 +47,7 @@ mtrap_entry:
         ld t4, 13*8(sp)
         ld t5, 14*8(sp)
         ld t6, 15*8(sp)
+    addi sp, sp, 16*8
     csrrw sp, mscratch, sp
     # Return
     mret

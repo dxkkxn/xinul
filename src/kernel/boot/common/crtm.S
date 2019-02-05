@@ -12,9 +12,10 @@ _start:
     la      t0, mtrap_entry
     csrw    mtvec, t0
 
-    # On place dans mscratch l'adresse d'un tableau de context.
-    # il sera utilisé lors d'une interruption machine
-    la t0, m_caller_context
+    # On place dans mscratch le haut de la pile machine
+    # elle sera utilisé lors d'une interruption machine
+    la t0, msp
+    ld t0, (t0)
     csrw mscratch, t0
 
     # set up stack pointer based on hartid

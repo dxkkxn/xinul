@@ -6,7 +6,8 @@
 #include "csr.h"
 #include "context.h"
 
-struct caller_context m_caller_context;
+char machine_stack[1024] = {0};
+char * msp = machine_stack + 1024;
 
 
 const char * riscv_excp_names[16] = {
