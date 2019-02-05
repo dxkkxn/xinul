@@ -28,6 +28,14 @@ struct vmm_area {
 	pagetable_t directory;
 };
 
+bool is_virtual_memory_enable()
+{
+	satp_csr satp = {.ureg = read_csr(satp)};
+	if (satp.field.MODE == SATP_MODE_SV39)
+		return true;
+	else return false;
+}
+
 /* init virtual memory
 * returns -1 if a error occurred.
 */

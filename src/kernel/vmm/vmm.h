@@ -3,6 +3,7 @@
 #pragma once
 
 #include "stdint.h"
+#include "stdbool.h"
 
 #define PAGE_SIZE 4096
 #define NBR_PAGE_ENTRIES 512;
@@ -73,6 +74,8 @@ void init_pagetable_entry(struct pte *pte, void *frame_addr, uint8_t readable, u
 						  uint8_t user);
 
 void init_pagetable_entry_node(struct pte *entry, void *pagetable);
+
+bool is_virtual_memory_enable();
 
 satp_csr get_kernel_satp();
 
