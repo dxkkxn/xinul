@@ -43,13 +43,21 @@ int64_t launcher(void *arg)
 	return 0;
 }
 
+int64_t kernel_tests(void *arg)
+{
+	printf("Tests kernel\n");
+	int pid = sched_kstart(test0, 10, "Test 0", 0);
+	sched_waitpid(pid, NULL);
+	pid = sched_kstart(test1, 10, "test1", 0);
+	sched_waitpid(pid, NULL);
+
+	puts("Kernel tests done.");
+	return 0;
+}
+
 int main()
 {
 	printf("\n= OSON Initialization =\n");
-
-	printf("Clock interruptions...");
-	clock_init();
-	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	printf("Keyboard initialization...");
 	kbd_init();
@@ -70,22 +78,30 @@ int main()
 	printf("\r\t\t\t\t\t\t\t[OK]\n");
 	printf("Number of frames %d = %d ko\n", hmm_frame_count(), hmm_free_memory() >> 10);
 
+	printf("Clock interruptions...");
+	clock_init();
+	printf("\r\t\t\t\t\t\t\t[OK]\n");
+
 	printf("Virtual memory manager initialization...");
 	init_virtual_memory();
-	printf("\r\t\t\t\t\t\t\t[OK]\n");
-
-	printf("Shared memory API initialization...");
-	shm_init();
-	printf("\r\t\t\t\t\t\t\t[OK]\n");
-
-	printf("Syscall initialization...");
-	sysc_init();
-	printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 	if (is_virtual_memory_enable()) {
+		printf("\r\t\t\t\t\t\t\t[OK]\n");
+
+		printf("Shared memory API initialization...");
+		shm_init();
+		printf("\r\t\t\t\t\t\t\t[OK]\n");
+
+		printf("Syscall initialization...");
+		sysc_init();
+		printf("\r\t\t\t\t\t\t\t[OK]\n");
+
 		sched_kstart(launcher, 10, "Launcher", 0);
+
 	} else {
-		sched_kstart(test0, 10, "Launcher", 0);
+		printf("\r\t\t\t\t\t\t\t[NOT AVAILABLE]\n");
+		printf("# Virtual memory not available, start kernel tests\n");
+		sched_kstart(kernel_tests, 10, "Launcher", 0);
 	}
 
 	assert(0 && "end of main");
