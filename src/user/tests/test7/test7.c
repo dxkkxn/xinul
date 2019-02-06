@@ -55,7 +55,7 @@ int main(void *arg)
         assert(waitpid(pid1, 0) == pid1);
         assert(kill(pid2) == 0);
         assert(waitpid(pid2, 0) == pid2);
-        printf("%lu changements de contexte sur %lu tops d'horloge", *timer, dur);
+        printf("%ld changements de contexte sur %ld tops d'horloge", *timer, dur);
         pid1 = start("sleep_pr1", 4000, 192, 0);
         assert(pid1 > 0);
         assert(kill(pid1) == 0);
