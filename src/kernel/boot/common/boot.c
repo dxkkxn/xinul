@@ -27,7 +27,8 @@ static void delegate_traps()
 	write_csr(mideleg, interrupts);
 	write_csr(medeleg, exceptions);
 	assert(read_csr(mideleg) == interrupts);
-	assert(read_csr(medeleg) == exceptions);
+//	assert(read_csr(medeleg) == exceptions);
+// Commenté car pour la zybo, on ne peut délèguer les exceptions de mémoire virtuelle (pas de VM)
 }
 
 static inline void setup_pmp(void)

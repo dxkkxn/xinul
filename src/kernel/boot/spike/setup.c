@@ -19,8 +19,8 @@ auxval_t __auxv[] = {
 void arch_setup()
 {
 	__auxv[0].val = (uintptr_t) (&tohost < &fromhost ? &tohost : &fromhost);
-	strncpy(default_program, "autotest", 20);
 	register_console(&console_htif);
 	register_poweroff(&poweroff_htif);
 	register_clint(&spike_clint);
+	strncpy(default_program, "autotest", 20);
 }
