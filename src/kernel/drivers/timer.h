@@ -1,6 +1,6 @@
 #pragma once
 
-#define CLK_IT_FREQ 50
+#define CLK_IT_FREQ 100
 
 
 void clock_handler();

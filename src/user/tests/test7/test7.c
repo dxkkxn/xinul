@@ -35,7 +35,9 @@ int main(void *arg)
         assert(waitpid(-1, 0) == pid1);
         printf(" 8 : ");
 
+		printf("preparing timer to 0\n");
         *timer = 0;
+		printf("timer to 0 done\n");
         pid1 = start("timer", 4000, 127, 0);
         pid2 = start("timer", 4000, 127, 0);
         assert(pid1 > 0);

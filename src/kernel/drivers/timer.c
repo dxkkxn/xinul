@@ -24,8 +24,10 @@ void clock_handler()
 	// this trap again after return from interrupt
 	csr_clear(sip, MIP_STIP);
 
-	if (timer % (CLK_IT_FREQ / SCHED_FREQ) == 0 || clock_free_processes())
+	// unblock if it's time or if a process is freed
+	if (timer % (CLK_IT_FREQ / SCHED_FREQ) == 0 || clock_free_processes()) {
 		schedule();
+	}
 }
 
 // Endors le processus tant que "clock" n'est pas passée.
