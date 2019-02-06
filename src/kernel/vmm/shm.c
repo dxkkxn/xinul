@@ -50,7 +50,7 @@ void *shm_create(const char *hash)
                 frame = hmm_frame_retain();
                 if (frame == NULL) goto noframe;
                 /* Map it */
-                mapper_map(p->page_dir, (void*)PROCESS_SHM, frame, 0, 1, 0, 1);
+                mapper_map(p->page_dir, (void*)PROCESS_SHM, frame, 1, 1, 0, 1);
 				flush_tlb();
                 /* Fill process handle */
                 handle->frame = frame;
@@ -85,7 +85,7 @@ void *shm_acquire(const char *hash)
         assert(p != NULL);
 
         if (p->shm_handle == NULL) {
-                mapper_map(p->page_dir, (void*)PROCESS_SHM, handle->frame, 0, 1, 0, 1);
+                mapper_map(p->page_dir, (void*)PROCESS_SHM, handle->frame, 1, 1, 0, 1);
 				flush_tlb();
                 handle->ref_count++;
                 p->shm_handle = handle;
