@@ -342,7 +342,6 @@ int sched_kill(int pid)
 	assert(0 && "Return after kamikaze sched_kill");
 	return -1;
 }
-
 int sched_get_active_pid(void)
 {
 	return active->pid;

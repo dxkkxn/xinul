@@ -12,6 +12,7 @@
 
 #include "vmm.h"
 #include "pmm.h"
+#include "shm.h"
 #include "userspace_apps.h"
 #include "context.h"
 #include "crt_process.h"
@@ -192,10 +193,9 @@ int process_destroy(int pid)
 		return -1;
 
 	/* Destroy shared memory mappings */
-	// todo destroy memory share
-//	if (p->shm_handle) {
-//		shm_cleanup(p, p->shm_handle->hash);
-//	}
+	if (p->shm_handle) {
+		shm_cleanup(p, p->shm_handle->hash);
+	}
 
 	// Destroy user stack if needed
 	if (p->user_stack_varea != NULL) {
