@@ -51,7 +51,7 @@ static inline void enter_supervisor_mode()
 
 	setup_pmp();
 
-	// todo : bug ici :
+	// bug hardware zybo ici :
 	// si on configure mstatus/mpp avant mie,
 	// csrw mie modifi mstatus mpp à 0
 	// on neva en mode user plutôt quand mode supervisor
