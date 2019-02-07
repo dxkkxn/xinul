@@ -2,6 +2,7 @@
 #define __ASSERT_H__
 
 #include "stdio.h"
+#include "stdlib.h"
 
 
 #define die(str, ...) ({ \
