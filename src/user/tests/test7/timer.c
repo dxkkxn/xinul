@@ -3,9 +3,7 @@
 int main(void *arg)
 {
         volatile unsigned long *timer = NULL;
-		printf("shm acquire\n");
         timer = shm_acquire("test7_shm");
-		printf("shm acquire done\n");
         assert(timer != NULL);
 
         (void)arg;
