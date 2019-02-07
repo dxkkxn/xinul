@@ -23,4 +23,8 @@ void arch_setup()
 	register_poweroff(&poweroff_htif);
 	register_clint(&spike_clint);
 	strncpy(default_program, "autotest", 20);
+
+	// activation des compteurs de performances
+	csr_write(mcounteren, -1);
+	csr_write(scounteren, -1);
 }

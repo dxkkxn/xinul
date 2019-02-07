@@ -24,4 +24,8 @@ void arch_setup()
 	register_clint(&sifive_clint);
 	register_plic(&sifive_plic);
 	strncpy(default_program, "console", 20);
+
+	// activation des compteurs de performances
+	csr_write(mcounteren, -1);
+	csr_write(scounteren, -1);
 }
