@@ -68,7 +68,7 @@ void beep(unsigned long freq, unsigned long time);
 //void cons_chbuffer(unsigned char *buffer, font *f, int width, int height);
 
 /* Added for shared memory */
-void *shm_created(const char*);
+void *shm_create(const char*);
 void *shm_acquire(const char*);
 void shm_release(const char*);
 
