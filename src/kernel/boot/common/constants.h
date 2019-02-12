@@ -1,6 +1,15 @@
-# See LICENSE for license details.
-#pragma once
+#
+# Projet PCSEA RISC-V
+#
+# Benoît Wallon <benoit.wallon@grenoble-inp.org> - 2019
+# Mathieu Barbe <mathieu@kolabnow.com> - 2019
+#
+# See license for license details.
+#
 
+ #pragma once
+
+.equ REGBYTES, 8
 .equ MAX_HARTS,    4
 .equ SAVE_REGS,    16
 .equ STACK_SIZE,   1024
