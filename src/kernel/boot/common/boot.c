@@ -8,25 +8,24 @@
  */
 
 #include "stdlib.h"
+#include "assert.h"
 
 #include "encoding.h"
-#include "machine.h"
+#include "csr.h"
 #include "info.h"
 #include "trap.h"
 
-extern void strap_entry();
-
-
 // Prototypes externes
 // kernel/start.c
-int kernel_start();
-// boot/$(MACHINE)/setup.c
-void arch_setup();
+extern int kernel_start();
+// kernel/boot/$(MACHINE)/setup.c
+extern void arch_setup();
+// kernel/trap/supervisor_trap_entry.S
+extern void strap_entry();
 
 // send S-mode interrupts and most exceptions straight to S-mode
 static void delegate_traps()
 {
-
 	uintptr_t interrupts = MIP_SSIP | MIP_STIP | MIP_SEIP;
 	uintptr_t exceptions =
 			(1U << CAUSE_MISALIGNED_FETCH) |
@@ -36,10 +35,10 @@ static void delegate_traps()
 			(1U << CAUSE_STORE_PAGE_FAULT) |
 			(1U << CAUSE_USER_ECALL);
 
-	write_csr(mideleg, interrupts);
-	write_csr(medeleg, exceptions);
-	assert(read_csr(mideleg) == interrupts);
-//	assert(read_csr(medeleg) == exceptions);
+	csr_write(mideleg, interrupts);
+	csr_write(medeleg, exceptions);
+	assert(csr_read(mideleg) == interrupts);
+//	assert(csr_read(medeleg) == exceptions);
 // Commenté car pour la zybo, on ne peut délèguer les exceptions de mémoire virtuelle (pas de VM)
 }
 
@@ -68,7 +67,7 @@ static inline void enter_supervisor_mode()
 	// csrw mie modifi mstatus mpp à 0
 	// on neva en mode user plutôt quand mode supervisor
 	// set the previous context in mstatus
-	set_csr(mstatus, MSTATUS_MPP & MSTATUS_MPP_S);
+	csr_set(mstatus, MSTATUS_MPP & MSTATUS_MPP_S);
 
 	__asm__ __volatile__ (
 	"la t0, 1f\n"
@@ -90,10 +89,10 @@ __attribute__((noreturn)) void boot_riscv()
 
 	// On active les intéruption software et timer
 	// todo a comprendre : Si m software non actif, on peut quand même utiliser mcall
-	write_csr(mie, MIP_MSIP | MIP_MTIP);
+	csr_write(mie, MIP_MSIP | MIP_MTIP);
 
 	// Désactivation temporaire de la mémoire virtuelle (bare memory)
-	write_csr(satp, 0);
+	csr_write(satp, 0);
 
 	delegate_traps();
 
@@ -101,11 +100,11 @@ __attribute__((noreturn)) void boot_riscv()
 // todo comprendre à quel mement il est configuré
 
 	// Configuration de supervisor trap vector (direct mode)
-	write_csr(stvec, (unsigned long) strap_entry | 0UL);
+	csr_write(stvec, (unsigned long) strap_entry | 0UL);
 
 	// Mise à zéro des registres s
-	write_csr(sscratch, 0);
-	write_csr(sie, 0);
+	csr_write(sscratch, 0);
+	csr_write(sie, 0);
 
 	enter_supervisor_mode();
 	exit(kernel_start());
