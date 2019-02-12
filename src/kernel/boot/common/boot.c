@@ -18,8 +18,10 @@
 // Prototypes externes
 // kernel/start.c
 extern int kernel_start();
+
 // kernel/boot/$(MACHINE)/setup.c
 extern void arch_setup();
+
 // kernel/trap/supervisor_trap_entry.S
 extern void strap_entry();
 
@@ -37,9 +39,6 @@ static void delegate_traps()
 
 	csr_write(mideleg, interrupts);
 	csr_write(medeleg, exceptions);
-	assert(csr_read(mideleg) == interrupts);
-//	assert(csr_read(medeleg) == exceptions);
-// Commenté car pour la zybo, on ne peut délèguer les exceptions de mémoire virtuelle (pas de VM)
 }
 
 static inline void setup_pmp(void)
@@ -59,14 +58,14 @@ static inline void setup_pmp(void)
 
 static inline void enter_supervisor_mode()
 {
-
 	setup_pmp();
 
-	// bug hardware zybo ici :
-	// si on configure mstatus/mpp avant mie,
-	// csrw mie modifi mstatus mpp à 0
-	// on neva en mode user plutôt quand mode supervisor
-	// set the previous context in mstatus
+	// Configuration du mode à utiliser lors du mret
+	/* bug hardware zybo ici :
+	* si on configure le champ mstatus/mpp avant le csr mie,
+	* csrw mie modifi le champ mstatus mpp à 0
+	* conséquence : on va en mode user plutôt quand mode supervisor
+	 */
 	csr_set(mstatus, MSTATUS_MPP & MSTATUS_MPP_S);
 
 	__asm__ __volatile__ (
@@ -77,9 +76,13 @@ static inline void enter_supervisor_mode()
 	);
 }
 
-
-// this function is called by entry.S
-// Only the interrupt vector is set up and we are still in machine mode
+/*
+ * boot_riscv
+ *
+* Cette fonction est appelée depuis crtm.S
+* seulement le vecteur de trap machine est configuré
+ * Le processeur est encore en mode machine
+ */
 __attribute__((noreturn)) void boot_riscv()
 {
 	// Configuration spécifique à la machine utilisé, (uart / htif).
@@ -87,22 +90,15 @@ __attribute__((noreturn)) void boot_riscv()
 
 	display_info_proc();
 
-	// On active les intéruption software et timer
-	// todo a comprendre : Si m software non actif, on peut quand même utiliser mcall
-	csr_write(mie, MIP_MSIP | MIP_MTIP);
-
-	// Désactivation temporaire de la mémoire virtuelle (bare memory)
+	// Désactivation temporaire de la mémoire virtuelle (bare memory) (normallement déjà désactivée)
 	csr_write(satp, 0);
 
 	delegate_traps();
 
-	// Configuration du plic
-// todo comprendre à quel mement il est configuré
+	// Configuration de supervisor trap vector (direct mode bit 0 à 0)
+	csr_write(stvec, (unsigned long) strap_entry);
 
-	// Configuration de supervisor trap vector (direct mode)
-	csr_write(stvec, (unsigned long) strap_entry | 0UL);
-
-	// Mise à zéro des registres s
+	// Mise à zéro des registres supervisor important (pas forcement nécessaire)
 	csr_write(sscratch, 0);
 	csr_write(sie, 0);
 
