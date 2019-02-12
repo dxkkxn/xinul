@@ -55,7 +55,7 @@ int64_t kernel_tests(void *arg)
 	return 0;
 }
 
-int main()
+int kernel_start()
 {
 	printf("\n= OSON Initialization =\n");
 

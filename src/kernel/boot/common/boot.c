@@ -1,4 +1,13 @@
-// See LICENSE for license details.
+/*
+ * Projet PCSEA RISC-V
+ *
+ * Benoît Wallon <benoit.wallon@grenoble-inp.org> - 2019
+ * Mathieu Barbe <mathieu@kolabnow.com> - 2019
+ *
+ * See license for license details.
+ */
+
+#include "stdlib.h"
 
 #include "encoding.h"
 #include "machine.h"
@@ -8,8 +17,11 @@
 extern void strap_entry();
 
 
-int main();
-
+// Prototypes externes
+// kernel/start.c
+int kernel_start();
+// boot/$(MACHINE)/setup.c
+void arch_setup();
 
 // send S-mode interrupts and most exceptions straight to S-mode
 static void delegate_traps()
@@ -96,6 +108,6 @@ __attribute__((noreturn)) void boot_riscv()
 	write_csr(sie, 0);
 
 	enter_supervisor_mode();
-	exit(main());
+	exit(kernel_start());
 	__builtin_unreachable();
 }

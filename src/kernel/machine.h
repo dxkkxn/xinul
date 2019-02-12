@@ -8,8 +8,7 @@
 #include "stdio.h"
 #include "assert.h"
 
-void arch_setup();
-void exit(int status) __attribute__((noreturn));
+
 
 #define read_const_csr(reg) ({ unsigned long __tmp; \
   __asm__ ("csrr %0, " #reg : "=r"(__tmp)); __tmp; })
