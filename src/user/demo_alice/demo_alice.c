@@ -11,16 +11,16 @@ int main(void *arg)
 	char buf[10];
 
 
-	printf("Anne : Salut, je suis Anne et mon père m'a donné le chiffre %ld\nPar combien voulez-vous que je le multiplie?\n",
+	printf("\t[Alice] Salut, je suis Alice et mon père m'a donné le chiffre %ld\n\tPar combien voulez-vous que je le multiplie?\n",
 		   nombre);
 	cons_read(buf, 5);
 	int facteur = strtol(buf, NULL, 10);
 	int resultat = nombre * facteur;
-	printf("je fais donc %ld x %d = %d et je le dis à mon frère par mémoire partagée\n", nombre, facteur, resultat);
+	printf("\t[Alice] Je fais donc %ld x %d = %d et je le dis à mon frère par mémoire partagée\n", nombre, facteur, resultat);
 	volatile int *msg = shm_acquire("demo");
 assert(msg != 0);
 	*msg = resultat;
-	puts("Anne : fin");
+	puts("\t[Alice] Fin");
 	return 0;
 
 }

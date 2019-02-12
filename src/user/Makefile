@@ -61,7 +61,7 @@ LDFLAGS = $(CFLAGS) $(ARCH_LDFLAGS)
 # Apps
 #
 
-APPS_NAMES      = hello console
+APPS_NAMES      = hello console demo demo_alice demo_bob
 APP_CFLAGS := $(CFLAGS)
 APP_LDFLAGS := $(LDFLAGS) -T build/apps.lds
 
