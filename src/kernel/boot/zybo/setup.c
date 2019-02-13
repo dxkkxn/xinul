@@ -1,4 +1,11 @@
-// See LICENSE for license details.
+/*
+ * Projet PCSEA RISC-V
+ *
+ * Benoît Wallon <benoit.wallon@grenoble-inp.org> - 2019
+ * Mathieu Barbe <mathieu@kolabnow.com> - 2019
+ *
+ * See license for license details.
+ */
 
 #include "stdint.h"
 #include "string.h"
@@ -8,6 +15,7 @@
 extern uint64_t tohost;
 extern uint64_t fromhost;
 
+char default_program = "";
 auxval_t __auxv[] = {
 		{RISCV_HTIF_BASE_ADDR, 0},
 		{0,                    0}

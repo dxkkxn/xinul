@@ -1,4 +1,11 @@
-// See LICENSE for license details.
+/*
+ * Projet PCSEA RISC-V
+ *
+ * Benoît Wallon <benoit.wallon@grenoble-inp.org> - 2019
+ * Mathieu Barbe <mathieu@kolabnow.com> - 2019
+ *
+ * See license for license details.
+ */
 
 #include "stdint.h"
 #include "string.h"
@@ -9,7 +16,8 @@
 
 extern uint64_t tohost;
 extern uint64_t fromhost;
-extern char default_program[20];
+
+char default_program = "autotest";
 
 auxval_t __auxv[] = {
 		{RISCV_HTIF_BASE_ADDR, 0},
@@ -22,7 +30,6 @@ void arch_setup()
 	register_console(&console_htif);
 	register_poweroff(&poweroff_htif);
 	register_clint(&spike_clint);
-	strncpy(default_program, "autotest", 20);
 
 	// activation des compteurs de performances
 	csr_write(mcounteren, -1);
