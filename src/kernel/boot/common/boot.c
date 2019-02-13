@@ -62,9 +62,9 @@ static inline void enter_supervisor_mode()
 
 	// Configuration du mode à utiliser lors du mret
 	/* bug hardware zybo ici :
-	* si on configure le champ mstatus/mpp avant le csr mie,
-	* csrw mie modifi le champ mstatus mpp à 0
-	* conséquence : on va en mode user plutôt quand mode supervisor
+	 * si on configure le champ mstatus/mpp avant le csr mie,
+	 * csrw mie modifie le champ mstatus mpp à 0
+	 * conséquence : on va en mode user plutôt qu'en mode supervisor
 	 */
 	csr_set(mstatus, MSTATUS_MPP & MSTATUS_MPP_S);
 
@@ -79,8 +79,8 @@ static inline void enter_supervisor_mode()
 /*
  * boot_riscv
  *
-* Cette fonction est appelée depuis crtm.S
-* seulement le vecteur de trap machine est configuré
+ * Cette fonction est appelée depuis crtm.S
+ * seulement le vecteur de trap machine est configuré
  * Le processeur est encore en mode machine
  */
 __attribute__((noreturn)) void boot_riscv()
@@ -93,7 +93,7 @@ __attribute__((noreturn)) void boot_riscv()
 	// Activation des interruption machine timer
 	csr_set(mip, MIP_STIP);
 
-	// Désactivation temporaire de la mémoire virtuelle (bare memory) (normallement déjà désactivée)
+	// Désactivation temporaire de la mémoire virtuelle (bare memory) (normalement déjà désactivée)
 	csr_write(satp, 0);
 
 	delegate_traps();
@@ -101,7 +101,7 @@ __attribute__((noreturn)) void boot_riscv()
 	// Configuration de supervisor trap vector (direct mode bit 0 à 0)
 	csr_write(stvec, (unsigned long) strap_entry);
 
-	// Mise à zéro des registres supervisor important (pas forcement nécessaire)
+	// Mise à zéro des registres supervisor importants (pas forcement nécessaire)
 	csr_write(sscratch, 0);
 	csr_write(sie, 0);
 

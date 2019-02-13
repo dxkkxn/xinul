@@ -16,7 +16,7 @@ _start:
     la      t0, mtrap_entry
     csrw    mtvec, t0
 
-    # Mise en place des stacks en fonction du hart (~core)
+    # Mise en place des piles (stacks) en fonction du hart (~core)
     csrr    t0, mhartid
     slli    t0, t0, STACK_SHIFT
     la      sp, stacks + STACK_SIZE
@@ -26,7 +26,7 @@ _start:
     csrw mscratch, sp
 
 
-    # On parc les harts autre que le premié pour booter sur un seul core.
+    # On parque les harts autres que le premier pour booter sur un seul core.
     csrr    a0, mhartid
     bnez    a0, park
 

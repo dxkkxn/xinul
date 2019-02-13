@@ -7,13 +7,13 @@
 .align 2
 crt_user_process:
     # Quand le programme se termine on doit appeler sched_exit() pour libérer correctement le processus.
-    # L'adresse de la fonction a été provisoirement placée dans S0.
+    # L'adresse de la fonction a été provisoirement placée dans s0.
     mv ra, s0
 
-    # On charge le paramètre arg du programme provisoirement placé dans S1.
+    # On charge le paramètre arg du programme provisoirement placé dans s1.
     mv a0, s1
 
-    # On enregistre la pile kernel placé dans S2
+    # On enregistre la pile kernel placée dans s2
     csrw sscratch, s2
 
     # On indique que le mode à utiliser lors du sret est le mode user (SPP=0)

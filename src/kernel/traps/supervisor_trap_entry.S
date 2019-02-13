@@ -53,8 +53,8 @@
     .endm
 
 
-	.text
-	.align 2
+    .text
+    .align 2
 .globl strap_entry
 strap_entry:
     # On récupère la pile kernel sauvgardée dans sscratch
@@ -64,14 +64,14 @@ strap_entry:
     csrr sp, sscratch
 1:
     # Sauvegarde du contexte
-    addi	sp, sp, -36*8
+    addi sp, sp, -36*8
     save_trap_frame
     # On récupère la cause et on regarde si c'est un syscall
     csrr t0, scause
     li t1, 8 # user_ecall
     beq t0, t1, syscall_entry
     mv a0, sp
-    jal		strap_handler
+    jal strap_handler
     # Comme on est pas dans un syscall, on peut restaurer a0 (retval)
     ld a0, 8(sp)
 
@@ -85,10 +85,10 @@ restore_context:
     csrw sscratch, t0
 
 1:
-        csrw sepc, s1
-        ld t1, 31*8(sp)
+    csrw sepc, s1
+    ld t1, 31*8(sp)
     csrw sstatus, t1
-    # estor_regs:
+    # restore_regs:
     ld ra, 0(sp)
     # Skip A0 : On restore A0 seulement dans le cas d'une interruption.
     ld a1, 2*8(sp)
@@ -105,7 +105,7 @@ restore_context:
     ld t4, 13*8(sp)
     ld t5, 14*8(sp)
     ld t6, 15*8(sp)
-ld s0, 16*8(sp)
+    ld s0, 16*8(sp)
     ld s1, 17*8(sp)
     ld s2, 18*8(sp)
     ld s3, 19*8(sp)
