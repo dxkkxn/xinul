@@ -15,7 +15,7 @@
 #include "encoding.h"
 #include "csr.h"
 
-char default_program = "console";
+char * default_program = "console";
 
 auxval_t __auxv[] = {
 		{UART0_CLOCK_FREQ,       32000000},

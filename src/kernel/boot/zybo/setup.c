@@ -15,7 +15,7 @@
 extern uint64_t tohost;
 extern uint64_t fromhost;
 
-char default_program = "";
+char * default_program = "";
 auxval_t __auxv[] = {
 		{RISCV_HTIF_BASE_ADDR, 0},
 		{0,                    0}
