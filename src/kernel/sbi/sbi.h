@@ -1,3 +1,12 @@
+/*
+ * Projet PCSEA RISC-V
+ *
+ * Benoît Wallon <benoit.wallon@grenoble-inp.org> - 2019
+ * Mathieu Barbe <mathieu@kolabnow.com> - 2019
+ *
+ * See license for license details.
+ */
+
 #ifndef _KERNEL_SBI_H_
 #define _KERNEL_SBI_H_
 
@@ -5,12 +14,9 @@
 
 // SBI numbers
 #define SBI_SET_TIMER 0
-#define SBI_CONFIGURE_TIMER 1
-
-
-void handle_mtimer_interrupt();
 
 uint64_t handle_sbi_call(uint64_t call_no, uintptr_t arg0, uintptr_t arg1, uintptr_t arg2);
+void clock_handler();
 
 #define SBI_CALL(call_no, arg0, arg1, arg2) ({                    \
     register uintptr_t a0 __asm__ ("a0") = (uintptr_t)(arg0);    \
@@ -30,7 +36,18 @@ uint64_t handle_sbi_call(uint64_t call_no, uintptr_t arg0, uintptr_t arg1, uintp
 #define SBI_CALL_3(call_no, arg0, arg1, arg2) \
     SBI_CALL(call_no, arg0, arg1, arg2)
 
-// value is given in ms
-void sbi_call_set_timer(uint64_t value);
+
+/*
+ * sbi_call_set_timer
+ *
+ * Cette fonction configure la prochaine interruption timer machine delta ms dans le future.
+ *
+ * Cette appel sbi va :
+ * - activer les interruption timer machine;
+ * - configurer les registre du clint.
+ *
+ *@param delta : réglage de la prochaine interruption à cur + delta ms.
+ */
+void sbi_call_set_timer(uint64_t delta);
 
 #endif /* _KERNEL_SBI_H_ */

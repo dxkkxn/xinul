@@ -90,6 +90,9 @@ __attribute__((noreturn)) void boot_riscv()
 
 	display_info_proc();
 
+	// Activation des interruption machine timer
+	csr_set(mip, MIP_STIP);
+
 	// Désactivation temporaire de la mémoire virtuelle (bare memory) (normallement déjà désactivée)
 	csr_write(satp, 0);
 

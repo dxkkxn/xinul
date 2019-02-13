@@ -9,6 +9,7 @@
 #include "scheduler.h"
 #include "kbd.h"
 #include "timer.h"
+#include "sbi.h"
 
 typedef void (*trap_handler)(struct trap_frame *);
 

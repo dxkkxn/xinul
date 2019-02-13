@@ -1,13 +1,19 @@
+/*
+ * Projet PCSEA RISC-V
+ *
+ * Benoît Wallon <benoit.wallon@grenoble-inp.org> - 2019
+ * Mathieu Barbe <mathieu@kolabnow.com> - 2019
+ *
+ * See license for license details.
+ */
+
 #include <machine.h>
 #include "machine_trap.h"
 #include "trap.h"
 #include "sbi.h"
-
 #include "csr.h"
 #include "context.h"
-
-char machine_stack[1024] = {0};
-char * msp = machine_stack + 1024;
+#include "timer.h"
 
 
 const char * riscv_excp_names[16] = {

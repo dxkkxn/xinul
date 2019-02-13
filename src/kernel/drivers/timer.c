@@ -13,6 +13,17 @@ static link blocked_processes = LIST_HEAD_INIT(blocked_processes);
 
 int clock_free_processes();
 
+
+void handle_mtimer_interrupt()
+{
+	// trigger a supervisor timer interrupt
+	csr_set(mip, MIP_STIP);
+	// disable machine timer interrupt (or else we would go back here right
+	// after the ret instruction)
+	csr_clear(mie, MIP_MTIP);
+}
+
+
 void clock_handler()
 {
 	uint64_t delta = 1000 / CLK_IT_FREQ; // ms
