@@ -24,7 +24,7 @@
 #include "kbd.h"
 
 // Programme par défaut en fonction de la machine, cf kernel/bot/$(MACHINE)/setup.c
-char default_program[20];
+extern char * default_program;
 
 int64_t launcher(void *arg)
 {
