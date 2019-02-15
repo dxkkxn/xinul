@@ -23,6 +23,7 @@ ZYBO_MDP = root
 #
 
 GDB=riscv64-unknown-elf-gdb
+GDB_OPTS = -q -iex "set auto-load safe-path ."
 
 #
 # Qemu
@@ -93,7 +94,7 @@ kill_qemu:
 
 # GDB : Lancement de GDB
 gdb:
-	$(GDB) $(KERNEL_BIN)
+	$(GDB) $(GDB_OPTS) $(KERNEL_BIN)
 
 #
 # Target Docker
