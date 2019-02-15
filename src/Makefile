@@ -48,7 +48,7 @@ QEMU_NO_GRAPH_OPTS = -nographic
 # Docker
 #
 
-DK_MAKEFILE_DIR = ../docker/riscv/
+DK_MAKEFILE_DIR = ../docker/
 DK_SHARE_DIR = $(PWD)
 
 #
