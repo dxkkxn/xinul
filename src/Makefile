@@ -1,3 +1,12 @@
+#
+# Global Makefile
+#
+# See LICENSE for license details.
+# 
+# Mathieu Barbe <mathieu.barbe@grenoble-inp.org> - 2018 - 2019
+#
+# To view commands use: make V=1
+#
 
 KERNEL_NAME = kernel.bin
 BUILD_DIR = build
@@ -9,6 +18,7 @@ KERNEL_BIN = $(BUILD_DIR)/$(KERNEL_NAME)
 
 MACHINE ?= sifive_u
 #MACHINE ?= spike
+#MACHINE ?= zybo
 
 #
 # Hardware plateforme
@@ -23,7 +33,8 @@ ZYBO_MDP = root
 #
 
 GDB=riscv64-unknown-elf-gdb
-GDB_OPTS = -q -iex "set auto-load safe-path ."
+GDBINIT_PATH = ./gdbinit
+GDB_OPTS = -q -x $(GDBINIT_PATH)
 
 #
 # Qemu
