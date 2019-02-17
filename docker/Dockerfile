@@ -15,30 +15,30 @@ apt-get clean && \
 mkdir /tools /riscv-src/ && cd /riscv-src && \
 
 # Build and install RISCV-tools into /tools directory
-## Install gny-toolchain
+## Install gnu-toolchain
 cd /riscv-src && \
 git clone --recurse-submodules -j8 https://github.com/riscv/riscv-gnu-toolchain && \
 cd /riscv-src/riscv-gnu-toolchain && mkdir build && cd build && \
 ../configure --prefix=$RISCV && \
 make && \
-cd / && rm -rf /riscv-src/riscv-gnu-toolchain
+rm -rf /riscv-src/riscv-gnu-toolchain
 
 ## Install riscv-fesvr
-RUN cd /riscv-src && cd /riscv-src && \
+RUN cd /riscv-src && \
 git clone https://github.com/riscv/riscv-fesvr && \
 cd riscv-fesvr && mkdir build && cd build && \
 ../configure --prefix=$RISCV --target=riscv64-unknown-elf && \
 make install && \
-cd / && rm -rf /riscv-src/riscv-fesvr
+rm -rf /riscv-src/riscv-fesvr && \
 
 ## Spike
-RUN apt-get install -y device-tree-compiler && apt-get clean && \
+apt-get install -y device-tree-compiler && apt-get clean && \
 cd /riscv-src && \
 git clone https://github.com/riscv/riscv-isa-sim && \
 cd riscv-isa-sim && mkdir build && cd build && \
 ../configure --prefix=$RISCV --with-fesvr=$RISCV && \
 make install && \
-cd / && rm -rf /riscv-src/riscv-isa-sim && \
+rm -rf /riscv-src/riscv-isa-sim && \
 
 ## Install pk (Proxy Kernel)
 cd /riscv-src && \
@@ -46,14 +46,17 @@ git clone https://github.com/riscv/riscv-pk && \
 cd /riscv-src/riscv-pk && mkdir build && cd build && \
 ../configure --prefix=$RISCV --host=riscv64-unknown-elf && \
 make install && \
-cd / && rm -rf /riscv-src/riscv-pk
+rm -rf /riscv-src/riscv-pk
 
 # Install Qemu from RISCV-QEMU source
-RUN apt-get update && apt-get install -y git python libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev libsdl1.2-dev && \
+RUN cd /riscv-src && \
+apt-get update && apt-get install -y git python libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev libsdl1.2-dev && apt-get clean && \
 git clone https://github.com/riscv/riscv-qemu/ && \
 cd riscv-qemu && mkdir build && cd build && \
-../configure --prefix=$RISCV --target-list=riscv64-softmmu,riscv64-linux-user | tee /$(RISCV)/qemu-configure-log.txt && \ 
+../configure --prefix=$RISCV --target-list=riscv64-softmmu | tee /$(RISCV)/qemu-configure-log.txt && \ 
 make && make install && \
-apt-get clean && \
-rm -rf /riscv-src 
+rm -rf /riscv-src
+
+EXPOSE 1234
+
 

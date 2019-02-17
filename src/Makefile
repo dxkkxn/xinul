@@ -1,9 +1,8 @@
 #
-# Global Makefile
-#
-# See LICENSE for license details.
+# Top Makefile
 # 
 # Mathieu Barbe <mathieu.barbe@grenoble-inp.org> - 2018 - 2019
+# See LICENSE for license details.
 #
 # To view commands use: make V=1
 #
@@ -33,8 +32,13 @@ ZYBO_MDP = root
 #
 
 GDB=riscv64-unknown-elf-gdb
-GDBINIT_PATH = ./gdbinit
-GDB_OPTS = -q -x $(GDBINIT_PATH)
+GDB_TARGET_HOST = localhost
+GDB_TARGET_PORT = 1234
+GDB_TARGET_REMOTE = $(GDB_TARGET_HOST):$(GDB_TARGET_PORT)
+GDBINIT_FILE = ./gdbinit
+GDB_OPTS = -q \
+    -ex "target remote $(GDB_TARGET_REMOTE)" \
+    -ex "source $(GDBINIT_FILE)"
 
 #
 # Qemu
@@ -61,7 +65,7 @@ QEMU_NO_GRAPH_OPTS = -nographic
 #
 
 DK_MAKEFILE_DIR = ../docker/
-DK_SHARE_DIR = $(PWD)
+DK_GATEWAY = 172.17.0.1
 
 #
 # Targets
@@ -103,7 +107,7 @@ go-graphic: all
 kill_qemu:
 	killall -9 $(QEMU) 
 
-# GDB : Lancement de GDB
+# GDB : Lancement de GDB avec connection automatique et lecture de GDBINIT_FILE
 gdb:
 	$(GDB) $(GDB_OPTS) $(KERNEL_BIN)
 
@@ -111,7 +115,7 @@ gdb:
 # Target Docker
 #
 
-dk-image-dl: $(DK_MAKEFILE_DIR)/Makefile
+dk-image-dl dk-image-pull: : $(DK_MAKEFILE_DIR)/Makefile
 	make -C $(DK_MAKEFILE_DIR) pull
 
 dk-image-build: $(DK_MAKEFILE_DIR)/Makefile
@@ -126,7 +130,14 @@ dk-all: $(DK_MAKEFILE_DIR)/Makefile
 dk-go: $(DK_MAKEFILE_DIR)/Makefile
 	make -C $(DK_MAKEFILE_DIR) CMD="make go" exec
 
-dk-rm-image: $(DK_MAKEFILE_DIR)/Makefile
+dk-run: $(DK_MAKEFILE_DIR)/Makefile
+	make -C $(DK_MAKEFILE_DIR) DK_OPTS="-p $(GDB_TARGET_PORT):$(GDB_TARGET_PORT)" CMD="make run" exec
+
+dk-gdb: $(DK_MAKEFILE_DIR)/Makefile
+	make -C $(DK_MAKEFILE_DIR) CMD="make GDB_TARGET_HOST=$(DK_GATEWAY) gdb" exec
+
+
+dk-image-rm: $(DK_MAKEFILE_DIR)/Makefile
 	make -C $(DK_MAKEFILE_DIR) CMD="make clean" exec
 
 #

@@ -1,57 +1,72 @@
-# Docker
+# Docker PCSEA RISC-V
 
-L'image Docker attaché au projet OSON permet d'avoir un environnement stable dans le but de pouvoir compiler facilement et simuler notre OS sur l'architecture RISC-V.
-Elle devrait également servir dans un second temps pour réaliser des tests automatiques à travers le pipeline de Gitlab. Avec cette solution il sera possible de vérifier la non régression à chaque commit.
+L'image Docker attaché au projet PCSEA RISC-V permet de profiter
+rapidement d'un environnement de cross-compilation  fonctionnel pour
+l’architecture RISC-V.
 
-Cette image permet avant tout une compilation croisée et un lancement rapide de l'OS sans altérer le système invité.
+Avec elle il est possible de :
 
-## Dépendences
+* Cross-compiler le le système d'exploitation, parties user et kernel;
+* simuler le kernel avec Qemu;
+* débuger le kernel avec GDB et Qemu;
+* cross-compiler un programme RISC-V elf et l’exécuter sur une machine
+host grâce à Spike et PK;
+* lancer un bash pour utiliser l'environnement librement.
+
+
+Cette image peut également servir dans un second temps pour réaliser des
+tests automatiques à travers le pipeline de Gitlab. Avec cette solution,
+il serait possible de vérifier la non régression à chaque commit.
+
+Cette image permet avant tout une compilation croisée et un lancement
+rapide de l'OS sans altérer le système invité.
+
+## Dépendances
 
 * Programme Docker;
-* Très optionel : Pour pouvoir clonner les dépôts du projet il est nécessaire d'ajouter la partie privé de la clef RSA utilisée dans votre compte Gitlab de l'école. La clef de doit pas être chiffrée;
 
-## Les images
-### riscv 
+## Image RISC-V
 
 Cette image est basée sur Debian testing et contient :
 
-* ridcv-gnu-toolchain
+* riscv-gnu-toolchain
 * riscv-pk
 * riscv-spike
 * riscv-fesvr
 * riscv-qemu
 
-### riscv-gitlab-src
+## Makefile
 
-En plus de l'image riscv celle-ci télécharge en plus les sources du projet sur gitlab.
+* build : construit l'image Docker depuis le fichier Dockerfile. Va
+télécharger Debian testing puis clonner et compiler les sources.
+* dl ou pull : télécharge l'image depuis le site de Docker hub (<2Go)
+mais pas besoins de compiler. Vous aurez les version des programmes au
+moment où l'image a été générée et la compilation du projet a été vérifiée.
+* CMD=ma_commande exec : Exécute la commande CMD dans un container Docker
+* bash : lance un bash dans un container Docker;
+* clean : supprime l'image RISC-V dans Docker.
 
-## Utilisation de l'image Docker avec le make
+Dans le dossier src du projet, le Makefile contient également des
+targets particulières dans le but de compiler, télécharger et lancer la
+compilation du projet.
 
-$ make … 
-
-* build : construit l'image Docker depuis le fichier Dockerfile. Va télécharger Debian testing puis clonner et compiler les sources.
-* dl ou pull : télécharge l'image depuis internet (2Go) mais pas besoind de compiler.
-* bash : lance un bash dans un container Docker.
-
-Dans le dossier src le Makefile contient également ces target dans le but de compiler, télécharger et lancer la compilation du projet à partir d'un container Docker.
-
-# Manipulation à la main
-## Création de l'image
+## Manipulation sans Makefile
+### Création de l'image
 
 Ce placer dans le dossier docker puis:
 
     docker image build -t riscv .
-    
-Vous pouvez aller boire un café!
 
-## Lancement du conteneur
+Vous pouvez aller boire un café (un allongé) !
+
+### Lancement du conteneur
 
 Pour lancer le conteneur Docker:
 
-    docker container run -ti --name env-riscv riscv /bin/b        
+    docker container run -ti --name env-riscv riscv /bin/b
 
 
-## Clean
+### Clean
 
 Supprimer le conteneur:
 
