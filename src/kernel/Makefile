@@ -76,6 +76,7 @@ DEPFILES = $(OBJS:.o=.d)
 #
 
 include ../riscv_flags.config
+include ../toolchain.config
 
 #
 # CFlags
@@ -108,7 +109,7 @@ LDFLAGS += $(addprefix -T, $(LD_SCRIPTS))
 # Targets
 #
 
-CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config boot/boot.mk build/apps-integration.mk
+CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config boot/boot.mk build/apps-integration.mk ../toolchain.config
 
 # Remove every implicite rules
 .suffixe:

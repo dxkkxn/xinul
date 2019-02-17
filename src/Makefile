@@ -8,8 +8,15 @@
 #
 
 KERNEL_NAME = kernel.bin
+STDLIB_NAME = lib
 BUILD_DIR = build
 KERNEL_BIN = $(BUILD_DIR)/$(KERNEL_NAME)
+
+#
+# Import GNU toolchain configuration
+#
+
+include toolchain.config
 
 #
 # Machine
@@ -31,7 +38,6 @@ ZYBO_MDP = root
 # GDB
 #
 
-GDB=riscv64-unknown-elf-gdb
 GDB_TARGET_HOST = localhost
 GDB_TARGET_PORT = 1234
 GDB_TARGET_REMOTE = $(GDB_TARGET_HOST):$(GDB_TARGET_PORT)
@@ -71,9 +77,9 @@ DK_GATEWAY = 172.17.0.1
 # Targets
 #
 
-.PHONY: clean kernel $(KERNEL_BIN) user
+.PHONY: clean kernel $(KERNEL_BIN) user lib
 
-all: kernel
+all $(KERNEL_BIN) : kernel
 
 kernel: user
 	make MACHINE=$(MACHINE) -C kernel/ all
@@ -81,7 +87,7 @@ kernel: user
 user:
 	make -C user
 
-stdlib:
+lib:
 	make -C $(STDLIB_NAME)
 
 clean:

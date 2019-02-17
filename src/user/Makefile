@@ -16,7 +16,7 @@
 SHELL = /bin/sh
 BUILD_DIR ?= ../build
 OUTPUT ?= $(BUILD_DIR)/user
-CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config
+CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config ../toolchain.config
 
 user_space: apps
 
@@ -52,6 +52,8 @@ ULIB_DEPFILES = $(ULIB_OBJS:.o=.d)
 
 # Import specific architecture  parameters :
 include ../riscv_flags.config
+include ../toolchain.config
+
 CFLAGS = $(ARCH_CFLAGS)
 USER_INCLUDES = $(LIB_INCLUDES) $(ULIB_DIR)
 CFLAGS += $(addprefix -I, $(USER_INCLUDES))

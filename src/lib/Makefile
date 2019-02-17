@@ -38,6 +38,8 @@ LIB_CFLAGS ?= -O0 -g
 
 # Import common cros-compile properties : tools, CFlags and  LDFlags
 include ../riscv_flags.config
+include ../toolchain.config
+
 LIB_CFLAGS += $(ARCH_CFLAGS)
 
 # Add specific libc C flags
