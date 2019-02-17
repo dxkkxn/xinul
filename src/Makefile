@@ -71,7 +71,7 @@ DK_GATEWAY = 172.17.0.1
 # Targets
 #
 
-.PHONY: clean $(KERNEL_BIN) user
+.PHONY: clean kernel $(KERNEL_BIN) user
 
 all: kernel
 
@@ -115,7 +115,7 @@ gdb:
 # Target Docker
 #
 
-dk-image-dl dk-image-pull: : $(DK_MAKEFILE_DIR)/Makefile
+dk-image-dl dk-image-pull: $(DK_MAKEFILE_DIR)/Makefile
 	make -C $(DK_MAKEFILE_DIR) pull
 
 dk-image-build: $(DK_MAKEFILE_DIR)/Makefile
