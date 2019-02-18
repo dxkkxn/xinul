@@ -21,10 +21,12 @@ _start:
     slli    t0, t0, STACK_SHIFT
     la      sp, stacks + STACK_SIZE
     add     sp, sp, t0
-    # On place dans mscratch le haut de la pile machine
-    # elle sera réutilisée lors d'une interruption machine
-    csrw mscratch, sp
 
+    # On place dans mscratch le haut de la pile machine trap
+    # elle sera réutilisée lors d'une interruption machine
+    la      t1, mtrap_stacks + STACK_SIZE
+    add     t0, t0, t1
+    csrw mscratch, t0
 
     # On parque les harts autres que le premier pour booter sur un seul core.
     csrr    a0, mhartid
@@ -43,4 +45,10 @@ park:
     .align 4
     .global stacks
 stacks:
+    .skip STACK_SIZE * MAX_HARTS
+
+
+.align 4
+    .global mtrap_stacks
+mtrap_stacks:
     .skip STACK_SIZE * MAX_HARTS
