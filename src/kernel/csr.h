@@ -20,7 +20,7 @@
 	__asm__ __volatile__ ("csrw " #csr ", %0" : : "rK" (__v) : "memory");	\
 })
 
-// value is a bit mask that specifies bit position to be setted (high bit)
+// value is a bit mask that specifies bit position to be set (high bit)
 #define csr_set(csr, value)													\
 ({																			\
 	register uint64_t __v = (uint64_t)(value);								\

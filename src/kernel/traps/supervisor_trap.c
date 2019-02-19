@@ -116,7 +116,7 @@ static void handle_fault_store(struct trap_frame *tf)
 void strap_handler(struct trap_frame *tf)
 {
 	const static trap_handler strap_handlers[] = {
-	[CAUSE_MISALIGNED_FETCH] = handle_misaligned_fetch,
+			[CAUSE_MISALIGNED_FETCH] = handle_misaligned_fetch,
 			[CAUSE_FETCH_ACCESS] = handle_instruction_access_fault,
 			[CAUSE_ILLEGAL_INSTRUCTION] = handle_load_access_fault,
 			[CAUSE_STORE_ACCESS] = handle_store_access_fault,
