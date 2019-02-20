@@ -1,6 +1,20 @@
+/*
+ * Projet PCSEA RISC-V
+ *
+ * Benoît Wallon <benoit.wallon@grenoble-inp.org> - 2019
+ * Mathieu Barbe <mathieu@kolabnow.com> - 2019
+ *
+ * See license for license details.
+ */
 
-#ifndef SRC_TRAP_H
-#define SRC_TRAP_H
+#pragma once
+
+#include "stdint.h"
+
+#define ENABLE_SUPERVISOR_INTERRUPTS() csr_set(sstatus, MSTATUS_SIE);
+#define DISABLE_SUPERVISOR_INTERRUPTS() csr_reset(mstatus, MSTATUS_SIE);
+
+#define INTERRUPT_CAUSE_FLAG (1UL << 63)
 
 enum exception_cause_flag {
 	CAUSE_MISALIGNED_FETCH = 0x0,
@@ -36,8 +50,21 @@ enum interruption_cause_flag {
 };
 
 
+extern const char *interruption_names[16];
+
+
 struct trap_frame {
+	// General purpose registers
+	uint64_t zero;
 	uint64_t ra;
+	uint64_t sp;
+	uint64_t gp;
+	uint64_t tp;
+	uint64_t t0;
+	uint64_t t1;
+	uint64_t t2;
+	uint64_t s0;
+	uint64_t s1;
 	uint64_t a0;
 	uint64_t a1;
 	uint64_t a2;
@@ -46,15 +73,6 @@ struct trap_frame {
 	uint64_t a5;
 	uint64_t a6;
 	uint64_t a7;
-	uint64_t t0;
-	uint64_t t1;
-	uint64_t t2;
-	uint64_t t3;
-	uint64_t t4;
-	uint64_t t5;
-	uint64_t t6;
-	uint64_t s0;
-	uint64_t s1;
 	uint64_t s2;
 	uint64_t s3;
 	uint64_t s4;
@@ -65,17 +83,21 @@ struct trap_frame {
 	uint64_t s9;
 	uint64_t s10;
 	uint64_t s11;
-	uint64_t tp;
-	uint64_t gp;
-	uint64_t sp;
-
+	uint64_t t3;
+	uint64_t t4;
+	uint64_t t5;
+	uint64_t t6;
 	// csr
-	uint64_t sstatus;
-	uint64_t sepc;
-	uint64_t stval;
-	uint64_t scause;
-	uint32_t insn;
+	uint64_t mstatus;
+	uint64_t mepc;
+	uint64_t mtval;
+	uint64_t mcause;
+	uint64_t satp;
 };
 
+// Prototype
+// blue_screen.c
+void blue_screen(struct trap_frame *tp);
 
-#endif //SRC_TRAP_H
+
+

@@ -5,7 +5,7 @@
 #include "csr.h"
 #include "machine.h"
 
-#include "supervisor_trap.h"
+#include "trap.h"
 #include "vmm.h"
 #include "program.h"
 #include "crt_process.h"

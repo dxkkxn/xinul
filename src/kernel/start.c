@@ -15,7 +15,6 @@
 #include "scheduler.h"
 #include "program.h"
 #include "tests.h"
-#include "supervisor_trap.h"
 #include "vmm.h"
 #include "hmm.h"
 #include "shm.h"

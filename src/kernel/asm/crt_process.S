@@ -13,12 +13,5 @@ crt_process:
     # On charge le paramètre arg du programme provisoirement placé dans s1.
     mv a0, s1
 
-    # On indique qu'on travail seulement avec une pile kernel.
-    csrw sscratch, zero
-
-    # On indique que le mode à utiliser lors du sret est le mode superviseur (SPP=1)
-    li t0, SSTATUS_SPP
-    csrs sstatus, t0
-
     sret
 

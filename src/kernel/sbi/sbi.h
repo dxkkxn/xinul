@@ -7,8 +7,7 @@
  * See license for license details.
  */
 
-#ifndef _KERNEL_SBI_H_
-#define _KERNEL_SBI_H_
+#pragma once
 
 #include "stdint.h"
 
@@ -16,7 +15,6 @@
 #define SBI_SET_TIMER 0
 
 uint64_t handle_sbi_call(uint64_t call_no, uintptr_t arg0, uintptr_t arg1, uintptr_t arg2);
-void clock_handler();
 
 #define SBI_CALL(call_no, arg0, arg1, arg2) ({                    \
     register uintptr_t a0 __asm__ ("a0") = (uintptr_t)(arg0);    \
@@ -50,4 +48,3 @@ void clock_handler();
  */
 void sbi_call_set_timer(uint64_t delta);
 
-#endif /* _KERNEL_SBI_H_ */
