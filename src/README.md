@@ -23,7 +23,7 @@ Point d'entré du projet sur le wiki <https://gitlab.ensimag.fr/pcserv/documenta
     * ./include/ : fichiers d'en-tête de la lib.
     * Un dossier par `.h` qui contient un fichier `.c` par fonction contenue dans le header.
 * build : sortie de la compilation
-* gdbinit : les commande présent dans ce fichier seront exécutées au lancement de GDB (pratique pour un scénario de debug à rejouer).
+* gdbinit : les commandes présentent dans ce fichier seront exécutées au lancement de GDB (pratique pour un scénario de debug à rejouer).
 * toolchain.config : configuration du nom des outils de la toolchain.
 * riscv_flags.config : options de compilation et d'édition de lien (utilisés dans lib, user et kernel).
 * Makefile : permet de compiler l'ensemble du projet et bien plus (voir section target).

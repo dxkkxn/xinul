@@ -17,7 +17,7 @@ crt_user_process:
     csrw sscratch, s2
 
     # On indique que le mode à utiliser lors du sret est le mode user (SPP=0)
-    # Note : les interruption superviseur (bit SIE) sont toujours activées dans le mode user.
+    # Note : les interruptions superviseur (bit SIE) sont toujours activées dans le mode user.
     li t0, SSTATUS_SPP
     csrc sstatus, t0
 
