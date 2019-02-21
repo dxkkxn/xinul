@@ -1,7 +1,7 @@
 #include "it.h"
 
 #include "csr.h"
-#include "encoding.h"
+#include "riscv.h"
 
 // iteration with a nop to catch the pending irq
 void test_it()

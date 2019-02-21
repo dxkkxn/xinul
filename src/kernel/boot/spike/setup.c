@@ -11,7 +11,7 @@
 #include "string.h"
 #include "auxval.h"
 #include "device.h"
-#include "encoding.h"
+#include "riscv.h"
 #include "csr.h"
 
 extern uint64_t tohost;

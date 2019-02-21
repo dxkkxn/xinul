@@ -12,7 +12,7 @@
 #include "string.h"
 #include "auxval.h"
 #include "device.h"
-#include "encoding.h"
+#include "riscv.h"
 #include "csr.h"
 
 char * default_program = "console";

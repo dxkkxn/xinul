@@ -10,7 +10,7 @@
 #pragma once
 
 #include "stdint.h"
-#include "encoding.h"
+#include "riscv.h"
 
 #define ENABLE_SUPERVISOR_INTERRUPTS() csr_set(sstatus, MSTATUS_SIE);
 #define DISABLE_SUPERVISOR_INTERRUPTS() csr_reset(mstatus, MSTATUS_SIE);

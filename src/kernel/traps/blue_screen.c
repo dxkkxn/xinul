@@ -8,7 +8,7 @@
 
 #include "stdio.h"
 #include "stdlib.h"
-#include "encoding.h"
+#include "riscv.h"
 
 #include "trap.h"
 

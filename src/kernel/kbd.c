@@ -13,7 +13,7 @@
 #include "mem.h"
 
 #include "cons_write.h"
-#include "encoding.h"
+#include "riscv.h"
 #include "assert.h"
 #include "stdio.h"
 #include "queue.h"

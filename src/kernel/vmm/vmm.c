@@ -6,7 +6,7 @@
  */
 
 #include "stdio.h"
-#include "encoding.h"
+#include "riscv.h"
 #include "stdlib.h"
 #include "assert.h"
 #include "mem.h"

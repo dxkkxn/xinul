@@ -1,6 +1,6 @@
 
 #include <stdio.h>
-#include "encoding.h"
+#include "riscv.h"
 
 #include "context.h"
 #include "vmm.h"

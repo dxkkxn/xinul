@@ -1,7 +1,7 @@
 #include "timer.h"
 
 #include "csr.h"
-#include "encoding.h"
+#include "riscv.h"
 #include "device.h"
 #include "stdio.h"
 
