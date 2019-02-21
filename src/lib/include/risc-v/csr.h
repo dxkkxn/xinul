@@ -31,6 +31,7 @@
 	__asm__ __volatile__ ("csrc " #csr ", %0" : : "rK" (__v) : "memory");	\
 })
 
+static inline void wfi() { __asm__ __volatile__ ("wfi" ::: "memory"); }
 
 #define CLINT_MTIME 0xbff8
 #define CLINT_MTIMECMP 0x4000

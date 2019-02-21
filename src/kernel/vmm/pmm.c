@@ -11,7 +11,9 @@
 #include "hmm.h"
 #include "mapper.h"
 #include "process.h"
+
 #include "stddef.h"
+#include "assert.h"
 #include "stdio.h"
 #include "mem.h"
 #include "string.h"

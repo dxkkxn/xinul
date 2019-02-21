@@ -3,6 +3,8 @@
 #include "csr.h"
 #include "encoding.h"
 #include "device.h"
+#include "stdio.h"
+
 #include "sbi.h"
 #include "scheduler.h"
 

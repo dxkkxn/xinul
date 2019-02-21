@@ -3,7 +3,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "csr.h"
-#include "machine.h"
+#include "assert.h"
 
 #include "trap.h"
 #include "vmm.h"

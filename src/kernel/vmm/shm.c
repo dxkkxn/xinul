@@ -6,6 +6,7 @@
  */
 
 #include "stddef.h"
+#include "assert.h"
 #include "hash.h"
 #include "hmm.h"
 #include "mapper.h"

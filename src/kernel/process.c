@@ -9,6 +9,8 @@
 #include "string.h"
 #include "stdio.h"
 #include "mem.h"
+#include "csr.h"
+#include "assert.h"
 
 #include "vmm.h"
 #include "pmm.h"
@@ -16,7 +18,6 @@
 #include "userspace_apps.h"
 #include "context.h"
 #include "crt_process.h"
-#include "csr.h"
 
 
 process_t *processes[NBPROC];

@@ -1,5 +1,8 @@
 #include "tests.h"
 
+#include "stdio.h"
+#include "assert.h"
+
 #include "scheduler.h"
 
 int64_t proc_kill(void* arg)

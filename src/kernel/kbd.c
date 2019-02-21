@@ -6,21 +6,20 @@
  * Traitement des entrées clavier.
  */
 
-//#include "cpu.h"
-//#include "interrupt.h"
+#include "buf.h"
+#include "stddef.h"
+#include "csr.h"
+#include "string.h"
+#include "mem.h"
+
+#include "cons_write.h"
+#include "encoding.h"
+#include "assert.h"
+#include "stdio.h"
+#include "queue.h"
+
 #include "kbd.h"
 #include "scheduler.h"
-#include "buf.h"
-#include "queue.h"
-//#include "terminal.h"
-#include "stddef.h"
-#include "mem.h"
-#include "string.h"
-#include "stdio.h"
-#include "cons_write.h"
-
-#include "csr.h"
-#include "encoding.h"
 
 #define KBD_DATA_PORT           0x60
 #define KBD_CMD_PORT            0x64
