@@ -1,3 +1,10 @@
+/*
+ * Projet PCSEA RISC-V
+ *
+ * Mathieu Barbe <mathieu@kolabnow.com> - 2019
+ *
+ * See license for license details.
+ */
 
 #pragma once
 
@@ -26,6 +33,7 @@ typedef struct context {
 	void *satp;
 	void *sepc;
 	void *sscratch;
+	void *sstatus;
 } context_t;
 
 struct caller_context {

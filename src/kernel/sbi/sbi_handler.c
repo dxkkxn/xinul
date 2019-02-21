@@ -9,7 +9,6 @@
 
 #include "assert.h"
 
-#include "machine_trap.h"
 #include "encoding.h"
 #include "csr.h"
 #include "sbi.h"

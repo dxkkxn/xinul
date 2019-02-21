@@ -19,11 +19,14 @@ ctx_sw:
 	sd s11, 104(a0)
 	csrr t0, satp
 	sd t0, 112(a0)
-	csrr t0, sepc
-	sd t0, 120(a0)
+	csrr t1, sepc
+	sd t1, 120(a0)
 	# Sauvegarde du SP user dans sscratch
-	csrr t0, sscratch
-	sd t0, 128(a0)
+	csrr t2, sscratch
+	sd t2, 128(a0)
+		csrr t3, sstatus
+    	sd t3, 136(a0)
+
 	
 	# Restauration du contexte
 	ld sp, 0(a1)
@@ -42,11 +45,13 @@ ctx_sw:
 	ld s11, 104(a1)
 	ld t0, 112(a1)
 	csrw satp, t0
-	ld t0, 120(a1)
-	csrw sepc, t0
+	ld t1, 120(a1)
+	csrw sepc, t1
 	# restoration du SP user dans sscratch
-	ld t0, 128(a1)
-	csrw sscratch, t0
+	ld t2, 128(a1)
+	csrw sscratch, t2
+ld t3, 136(a1)
+	csrw sstatus, t3
 
 	# on passe la main au nouveau processus
 	ret

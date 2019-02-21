@@ -1,4 +1,10 @@
-// See LICENSE for license details.
+/*
+ * Projet PCSEA RISC-V
+ *
+ * Mathieu Barbe <mathieu@kolabnow.com> - 2019
+ *
+ * See license for license details.
+ */
 
 #pragma once
 

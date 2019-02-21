@@ -23,7 +23,7 @@ void handle_mtimer_interrupt() {
 }
 
 
-void clock_handler() {
+void handle_stimer_interrupt() {
     static uint64_t delta = 1000 / CLK_IT_FREQ; // ms
 
     timer++;

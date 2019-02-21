@@ -3,6 +3,8 @@
 #define CLK_IT_FREQ 100
 
 void handle_mtimer_interrupt();
+void handle_stimer_interrupt();
+
 void wait_clock(unsigned long clock);
 
 int clock_free_processes();
