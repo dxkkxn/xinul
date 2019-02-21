@@ -18,7 +18,7 @@ LIB_TARGET ?= $(BUILD_DIR)/$(LIB_NAME).a
 # Objects and include headers directories
 #
 
-LIB_INCLUDES = include include/arch/riscv
+LIB_INCLUDES = include include/risc-v
 LIB_INCLUDES := $(addprefix ../$(LIB_NAME)/, $(LIB_INCLUDES)) # Useful if this Makefile is imported to an other.
 
 LIB_SRC_DIRS = stdin stdlib stdio string drivers hash arch/rv64

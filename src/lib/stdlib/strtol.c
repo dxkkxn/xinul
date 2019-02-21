@@ -15,8 +15,16 @@
  * not, write to the FSF, 59 Temple Place #330, Boston, MA 02111-1307, USA.
  */
 
-#include <ctype.h>
 #include <string.h>
+
+
+
+static inline int isspace(int c) {
+	return ((c) == ' ') || ((c) == '\f')
+		   || ((c) == '\n') || ((c) == '\r')
+		   || ((c) == '\t') || ((c) == '\v');
+}
+
 
 long strtol(const char *p, char **out_p, int base)
 {
