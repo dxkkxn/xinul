@@ -8,7 +8,7 @@
  */
 
 #include "assert.h"
-#include "csr.h"
+#include "riscv.h"
 
 #include "trap.h"
 #include "timer.h"

@@ -8,7 +8,7 @@
 
 #include "buf.h"
 #include "stddef.h"
-#include "csr.h"
+#include "riscv.h"
 #include "string.h"
 #include "mem.h"
 

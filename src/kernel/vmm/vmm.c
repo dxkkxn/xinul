@@ -10,7 +10,7 @@
 #include "stdlib.h"
 #include "assert.h"
 #include "mem.h"
-#include "csr.h"
+#include "riscv.h"
 
 #include "vmm.h"
 #include "hmm.h"

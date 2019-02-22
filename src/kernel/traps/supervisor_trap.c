@@ -8,7 +8,7 @@
 
 #include "assert.h"
 #include "encoding.h"
-#include "csr.h"
+#include "riscv.h"
 
 #include "trap.h"
 #include "context.h"

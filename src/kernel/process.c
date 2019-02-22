@@ -9,7 +9,7 @@
 #include "string.h"
 #include "stdio.h"
 #include "mem.h"
-#include "csr.h"
+#include "riscv.h"
 #include "assert.h"
 
 #include "vmm.h"

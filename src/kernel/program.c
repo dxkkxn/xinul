@@ -3,7 +3,7 @@
 #include "stdio.h"
 #include "assert.h"
 #include "stdint.h"
-#include "csr.h"
+#include "riscv.h"
 
 #include "scheduler.h"
 #include "program.h"

@@ -1,7 +1,7 @@
 #include "info.h"
 
 #include "stdio.h"
-#include "csr.h"
+#include "riscv.h"
 
 void display_info_proc()
 {
