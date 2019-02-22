@@ -5,7 +5,7 @@
 #include "stddef.h"
 #include "stdint.h"
 #include "device.h"
-#include "arch/riscv/atomic.h"
+#include "riscv/atomic.h"
 
 volatile uint64_t tohost __attribute__((section(".htif")));
 volatile uint64_t fromhost __attribute__((section(".htif")));
