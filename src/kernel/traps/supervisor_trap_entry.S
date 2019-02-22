@@ -1,4 +1,3 @@
-
 #include "encoding.h"
 
 .text
@@ -10,15 +9,14 @@ strap_entry:
     # Si elle est null, c'est que l'on a déjà la pile kernel
     bnez sp, 1f
     csrrw sp, sscratch, sp
-1:
     # Sauvegarde du contexte
-    addi sp, sp, -16*8
+1:  addi sp, sp, -16*8
     sd ra, 0*8(sp)
     sd a0, 1*8(sp)
     sd a1, 2*8(sp)
     sd a2, 3*8(sp)
     sd a3, 4*8(sp)
-sd a4, 5*8(sp)
+    sd a4, 5*8(sp)
     sd a5, 6*8(sp)
     sd a6, 7*8(sp)
     sd a7, 8*8(sp)
@@ -40,7 +38,6 @@ sd a4, 5*8(sp)
     jal strap_handler
     # Comme on ne traite pas un syscall, on doit restaurer a0 (retval)
     ld a0, 8(sp)
-
 
 restore_context:
     ld ra, 0(sp)
@@ -65,9 +62,7 @@ restore_context:
     # Si la pile user est null on est dans un processus kernel, on récupère la pile kernel
     bnez sp, 1f
     csrrw sp, sscratch, sp
-1:
-    sret
-
+1:  sret
 
 syscall_entry:
     la t0, sysc_handlers

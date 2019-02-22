@@ -2,7 +2,7 @@
 .globl ctx_sw
 .align 2
 ctx_sw:
-	# sauvegarde du contexte de l'ancien processus
+	# Sauvegarde du contexte de l'ancien processus
 	sd sp, 0(a0)
 	sd ra, 8(a0)
 	sd s0, 16(a0)
@@ -24,10 +24,9 @@ ctx_sw:
 	# Sauvegarde du SP user dans sscratch
 	csrr t2, sscratch
 	sd t2, 128(a0)
-		csrr t3, sstatus
-    	sd t3, 136(a0)
+	csrr t3, sstatus
+	sd t3, 136(a0)
 
-	
 	# Restauration du contexte
 	ld sp, 0(a1)
 	ld ra, 8(a1)
@@ -47,12 +46,11 @@ ctx_sw:
 	csrw satp, t0
 	ld t1, 120(a1)
 	csrw sepc, t1
-	# restoration du SP user dans sscratch
+	# Restoration du SP user dans sscratch
 	ld t2, 128(a1)
 	csrw sscratch, t2
-ld t3, 136(a1)
+	ld t3, 136(a1)
 	csrw sstatus, t3
-
-	# on passe la main au nouveau processus
+	# On passe la main au nouveau processus
 	ret
 

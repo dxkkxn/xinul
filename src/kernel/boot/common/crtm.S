@@ -39,16 +39,13 @@ park:
     wfi
     j       park
 
-
-
     .bss
     .align 4
     .global stacks
 stacks:
     .skip STACK_SIZE * MAX_HARTS
 
-
-.align 4
+    .align 4
     .global mtrap_stacks
 mtrap_stacks:
     .skip STACK_SIZE * MAX_HARTS

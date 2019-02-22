@@ -10,12 +10,12 @@
 /*
  * Appels systèmes avec 0 à 5 paramètres
  */
-#define SYSCALL(name)                     \
-    .globl name;                            \
-    name:                                   \
-        li    a5, SYSC_##name;         \
-        ecall;                        \
-        ret
+#define SYSCALL(name)            \
+.globl name;                 \
+name:                        \
+    li    a5, SYSC_##name;   \
+    ecall;                   \
+    ret
 
 SYSCALL(chprio)
 SYSCALL(clock_settings)
