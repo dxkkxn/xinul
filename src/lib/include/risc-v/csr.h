@@ -33,6 +33,12 @@
 
 static inline void wfi() { __asm__ __volatile__ ("wfi" ::: "memory"); }
 
+__attribute__((noreturn)) static inline void mret()
+{
+	__asm__ __volatile__ ("mret");
+	__builtin_unreachable();
+}
+
 #define CLINT_MTIME 0xbff8
 #define CLINT_MTIMECMP 0x4000
 
