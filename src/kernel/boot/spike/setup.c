@@ -12,7 +12,7 @@
 #include "auxval.h"
 #include "device.h"
 #include "encoding.h"
-#include "csr.h"
+#include "riscv.h"
 
 extern uint64_t tohost;
 extern uint64_t fromhost;

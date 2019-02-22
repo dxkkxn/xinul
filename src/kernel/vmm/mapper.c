@@ -8,8 +8,8 @@
  */
 
 #include "stddef.h"
+#include "assert.h"
 
-#include "machine.h"
 #include "hmm.h"
 
 #include "mapper.h"

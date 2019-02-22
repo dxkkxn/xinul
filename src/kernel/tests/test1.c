@@ -1,5 +1,8 @@
 #include "tests.h"
 
+#include "stdio.h"
+#include "assert.h"
+
 #include "scheduler.h"
 
 int64_t dummy1(void* arg)

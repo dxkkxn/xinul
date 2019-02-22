@@ -7,9 +7,12 @@
  */
 
 #include "syscall.h"
+
+#include "stddef.h"
+#include "assert.h"
+
 #include "scheduler.h"
 #include "process.h"
-#include "stddef.h"
 #include "cons_write.h"
 #include "kbd.h"
 #include "timer.h"

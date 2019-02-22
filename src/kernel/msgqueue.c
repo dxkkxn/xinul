@@ -6,10 +6,11 @@
  * Files de messages.
  */
 
-#include "msgqueue.h"
 #include "mem.h"
 #include "stddef.h"
+#include "assert.h"
 
+#include "msgqueue.h"
 
 int msg_init(msgqueue_t *mq, int size)
 {

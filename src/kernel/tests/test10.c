@@ -1,5 +1,8 @@
 #include "tests.h"
 
+#include "stdio.h"
+#include "assert.h"
+
 #include "string.h"
 #include "msgqueue.h"
 

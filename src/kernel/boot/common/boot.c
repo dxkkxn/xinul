@@ -11,7 +11,7 @@
 #include "assert.h"
 
 #include "encoding.h"
-#include "csr.h"
+#include "riscv.h"
 #include "info.h"
 #include "trap.h"
 

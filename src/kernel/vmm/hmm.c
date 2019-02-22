@@ -12,7 +12,8 @@
 #include "mem.h"
 #include "queue.h"
 #include "string.h"
-#include "machine.h"
+#include "assert.h"
+#include "stdint.h"
 
 
 struct frame_elem {

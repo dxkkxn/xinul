@@ -1,5 +1,8 @@
 #include "tests.h"
 
+#include "stdio.h"
+#include "assert.h"
+
 #include "it.h"
 #include "scheduler.h"
 

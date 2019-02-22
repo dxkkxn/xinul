@@ -1,10 +1,7 @@
-#ifndef SCHEDULER_H
-#define SCHEDULER_H
-
+#pragma once
 
 #include "queue.h"
 #include "process.h"
-#include "machine.h"
 #include "stdint.h"
 
 #define SCHED_FREQ 50
@@ -101,4 +98,3 @@ int sched_chprio(int pid, int newprio);
  */
 int sched_printstatus(process_t *p, char *buffer, unsigned int size);
 
-#endif

@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include "encoding.h"
 
 #include "context.h"
 #include "vmm.h"

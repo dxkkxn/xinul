@@ -6,10 +6,12 @@
  */
 
 #include "stdio.h"
+#include "encoding.h"
 #include "stdlib.h"
+#include "assert.h"
 #include "mem.h"
+#include "riscv.h"
 
-#include "machine.h"
 #include "vmm.h"
 #include "hmm.h"
 #include "mapper.h"
@@ -30,7 +32,7 @@ struct vmm_area {
 
 bool is_virtual_memory_enable()
 {
-	satp_csr satp = {.ureg = read_csr(satp)};
+	satp_csr satp = {.ureg = csr_read(satp)};
 	if (satp.field.MODE == SATP_MODE_SV39)
 		return true;
 	else return false;
@@ -71,10 +73,10 @@ int8_t init_virtual_memory()
 	kernel_satp.field.ASID = 0;
 	kernel_satp.field.PPN = (uint64_t) kernel_pgdir >> 12;
 
-	write_csr(satp, kernel_satp.reg);
+	csr_write(satp, kernel_satp.reg);
 
 	// On authorise le superviseur à accéder au page user (Voir 4.3.1 Addressing and Memory Protection ISA Priv)
-	set_csr(sstatus, SSTATUS_SUM);
+	csr_set(sstatus, SSTATUS_SUM);
 
 	return 0;
 }
@@ -121,7 +123,7 @@ pagetable_t get_directory(satp_csr satp)
 pagetable_t get_current_directory(void)
 {
 	satp_csr satp;
-	satp.reg = (void *) read_csr(satp);
+	satp.reg = (void *) csr_read(satp);
 	return get_directory(satp);
 }
 

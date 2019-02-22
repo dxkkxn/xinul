@@ -1,8 +1,10 @@
 #include "timer.h"
 
-#include "csr.h"
+#include "riscv.h"
 #include "encoding.h"
 #include "device.h"
+#include "stdio.h"
+
 #include "sbi.h"
 #include "scheduler.h"
 
