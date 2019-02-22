@@ -7,7 +7,7 @@
  */
 
 #include "assert.h"
-#include "riscv.h"
+#include "encoding.h"
 #include "csr.h"
 
 #include "trap.h"

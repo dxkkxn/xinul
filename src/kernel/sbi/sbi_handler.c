@@ -9,7 +9,7 @@
 
 #include "assert.h"
 
-#include "riscv.h"
+#include "encoding.h"
 #include "csr.h"
 #include "sbi.h"
 #include "device.h"

@@ -1,6 +1,6 @@
 # See LICENSE for license details.
 
-#include "riscv.h"
+#include "encoding.h"
 
 .text
 .align 2
