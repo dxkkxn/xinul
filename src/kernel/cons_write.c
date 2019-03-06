@@ -8,11 +8,6 @@ __inline__ static int kputchar(int ch)
 	return console_dev->putchar(ch);
 }
 
-int putchar(int ch)
-{
-	return kputchar(ch);
-}
-
 int cons_write(const char *str, long size)
 {
 	int res = 0;
