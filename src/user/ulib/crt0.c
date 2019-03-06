@@ -15,7 +15,5 @@ void _start(void *arg) __attribute__((section(".text.init")));
 
 void _start(void *arg)
 {
-	int retval = main(arg);
-	exit(retval);
-
+	exit(main(arg));
 }
