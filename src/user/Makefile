@@ -99,11 +99,11 @@ $(ULIB): $(ULIB_OBJS)
 	$(AR) cr $@ $^)
 
 $(OUTPUT_ULIB)/%.o: %.S $(CONFIG_DEPENDENCIES)
-	$(call cmd,CC ULIB $<, $(dir $@), \
+	$(call cmd,AS ULIB $<, $(dir $@), \
 	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
 
 $(OUTPUT_ULIB)/%.o: %.c $(CONFIG_DEPENDENCIES)
-	$(call cmd,AS ULIB $<, $(dir $@), \
+	$(call cmd,CC ULIB $<, $(dir $@), \
 	$(AS) -c $< -o $@ $(CFLAGS) -MMD -MP)
 
 ### Standard output directory ###
