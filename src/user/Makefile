@@ -78,7 +78,7 @@ include build/apps.mk
 #
 
 TESTS_DIR     := tests
-TESTS_OPTIONS := CONS_READ_LINE WITH_MSG
+TESTS_OPTIONS := CONS_READ_LINE WITH_MSG USER_SPACE
 include build/tests.mk
 
 #
