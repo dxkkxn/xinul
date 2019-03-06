@@ -1,9 +1,6 @@
 // See LICENSE for license details.
 
-#include <stdio.h>
-#include <stddef.h>
-
-extern int cons_write(const char *str, long size);
+#include "sysapi.h"
 
 #define alloca(sz) __builtin_alloca(sz)
 

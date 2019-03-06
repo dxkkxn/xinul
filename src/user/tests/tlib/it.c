@@ -2,18 +2,16 @@
  * Unmask interrupts for those who are working in kernel mode
  ******************************************************************************/
 
-#include "stdint.h"
-
 #define csr_set(csr, value)													\
 ({																			\
-	register uint64_t __v = (uint64_t)(value);								\
+	register unsigned long int __v = (uint64_t)(value);								\
 	__asm__ __volatile__ ("csrs " #csr ", %0" : : "rK" (__v) : "memory");	\
 })
 
 // value is a bit mask that specifies bit position to be cleared (high bit)
 #define csr_clear(csr, value)												\
 ({																			\
-	register uint64_t __v = (uint64_t)(value);								\
+	register unsigned long int __v = (uint64_t)(value);								\
 	__asm__ __volatile__ ("csrc " #csr ", %0" : : "rK" (__v) : "memory");	\
 })
 

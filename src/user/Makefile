@@ -1,11 +1,9 @@
-##
-# # User space compile tool chain.
+#
+# User space Makefile
 #
 # See LICENSE for license details.
-# 
-# Copyright (C) 
-# 2012-2014 - Damien Dejean <dam.dejean@gmail.com>
-# 2018 - Mathieu Barbe <mathieu.barbe@grenoble-inp.org> - 2018
+#
+# Maintainer : Mathieu Barbe <mathieu.barbe@grenoble-inp.org> - 2018
 #
 # This Makefile use sub makefiles in build/ to build and link each app and
 # the standard library for our custom kernel/userspace environment.
@@ -16,7 +14,7 @@
 SHELL = /bin/sh
 BUILD_DIR ?= ../build
 OUTPUT ?= $(BUILD_DIR)/user
-CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config ../toolchain.config
+CONFIG_DEPENDENCIES = Makefile ../riscv_flags.config ../toolchain.config build/apps.mk build/apps.lds build/tests.mk
 
 user_space: apps
 
@@ -28,8 +26,20 @@ include build/utils.mk
 # Import standard library build toolchain
 #
 
-STDLIB_NAME ?= lib
+STDLIB_NAME = lib
 include ../$(STDLIB_NAME)/Makefile
+
+#
+# Common cflags and ldflags
+#
+
+# Import specific architecture  parameters :
+include ../riscv_flags.config
+include ../toolchain.config
+
+CFLAGS = $(ARCH_CFLAGS)
+APP_INCLUDES = $(LIB_INCLUDES) $(ULIB_DIR)
+LDFLAGS = $(CFLAGS) $(ARCH_LDFLAGS)
 
 #
 # User lib configuration
@@ -46,29 +56,18 @@ ULIB_OBJS = $(sort $(ULIB_SRC:.c=.o)) $(sort $(ULIB_ASM:.S=.o))
 ULIB_OBJS := $(addprefix $(OUTPUT_ULIB)/, $(ULIB_OBJS))
 ULIB_DEPFILES = $(ULIB_OBJS:.o=.d)
 
-#
-# Common cflags and ldflags
-#
-
-# Import specific architecture  parameters :
-include ../riscv_flags.config
-include ../toolchain.config
-
-CFLAGS = $(ARCH_CFLAGS)
-USER_INCLUDES = $(LIB_INCLUDES) $(ULIB_DIR)
-CFLAGS += $(addprefix -I, $(USER_INCLUDES))
-LDFLAGS = $(CFLAGS) $(ARCH_LDFLAGS)
+ULIB_CFLAGS = $(CFLAGS) $(addprefix -I, $(APP_INCLUDES))
 
 #
 # Apps
 #
 
 APPS_NAMES      = hello console demo demo_alice demo_bob
-APP_CFLAGS := $(CFLAGS)
+APP_CFLAGS = $(CFLAGS) $(addprefix -I, $(APP_INCLUDES))
+
 APP_LDFLAGS := $(LDFLAGS) -T build/apps.lds
 
 # Configure and import userspace program build toolchain
-APPS_STD_INC    = $(USER_INCLUDES)
 APPS_STD_LIB = $(BUILD_DIR)/$(STDLIB_NAME).a $(ULIB)
 APPS_STD_TARGET := $(LIB_TARGET) $(ULIB)
 include build/apps.mk
@@ -100,11 +99,11 @@ $(ULIB): $(ULIB_OBJS)
 
 $(OUTPUT_ULIB)/%.o: %.S $(CONFIG_DEPENDENCIES)
 	$(call cmd,AS ULIB $<, $(dir $@), \
-	$(CC) -c $< -o $@ $(CFLAGS) -MMD -MP)
+	$(CC) -c $< -o $@ $(ULIB_CFLAGS) -MMD -MP)
 
 $(OUTPUT_ULIB)/%.o: %.c $(CONFIG_DEPENDENCIES)
 	$(call cmd,CC ULIB $<, $(dir $@), \
-	$(AS) -c $< -o $@ $(CFLAGS) -MMD -MP)
+	$(AS) -c $< -o $@ $(ULIB_CFLAGS) -MMD -MP)
 
 ### Standard output directory ###
 $(OUTPUT):

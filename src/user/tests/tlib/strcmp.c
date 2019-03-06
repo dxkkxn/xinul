@@ -1,6 +1,6 @@
 // See LICENSE for license details.
 
-#include <stddef.h>
+#include "sysapi.h"
 
 int strcmp(const char *s1, const char *s2)
 {

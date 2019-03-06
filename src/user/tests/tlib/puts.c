@@ -1,10 +1,6 @@
 // See LICENSE for license details.
 
-#include <stdio.h>
-#include "stdint.h"
-#include "string.h"
-
-extern int cons_write(const char *str, long size);
+#include "sysapi.h"
 
 int puts(const char *s)
 {

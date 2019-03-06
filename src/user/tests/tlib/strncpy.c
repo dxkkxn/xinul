@@ -1,6 +1,6 @@
 // See LICENSE for license details.
 
-#include <stddef.h>
+#include "sysapi.h"
 
 char *strncpy(char *dst, const char *src, size_t n)
 {

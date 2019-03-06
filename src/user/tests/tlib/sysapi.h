@@ -9,23 +9,32 @@
 #define _SYSAPI_H_
 
 #define NULL ((void*)0)
+typedef __SIZE_TYPE__ size_t;
 
 /*******************************************************************************
- * Gestion de liste d'arguments de taille variable (printf)
+ * var args
  ******************************************************************************/
+
+typedef __builtin_va_list va_list;
+#define va_start(v,l)   __builtin_va_start(v,l)
+#define va_end(v)       __builtin_va_end(v)
+#define va_arg(v,l)     __builtin_va_arg(v,l)
+#define va_copy(d,s)    __builtin_va_copy(d,s)
+
+
+/*******************************************************************************
+ * stdio
+ ******************************************************************************/
+
+int getchar(void);
 int printf(const char *, ...);
 int puts(const char *);
-typedef void *__gnuc_va_list;
-typedef __gnuc_va_list va_list;
+int sprintf(char *, const char *, ...);
+int snprintf(char *, size_t, const char *, ...);
 int vprintf(const char *, va_list);
-#define va_arg(AP, TYPE)                                                \
- (AP = (__gnuc_va_list) ((char *) (AP) + __va_rounded_size (TYPE)),     \
-  *((TYPE *) (void *) ((char *) (AP) - __va_rounded_size (TYPE))))
-#define __va_rounded_size(TYPE)  \
-  (((sizeof (TYPE) + sizeof (int) - 1) / sizeof (int)) * sizeof (int))
-#define va_start(AP, LASTARG)                                           \
- (AP = ((__gnuc_va_list) __builtin_next_arg (LASTARG)))
-#define va_end(AP)      ((void)0)
+int vsprintf(char *, const char *, va_list);
+int vsnprintf(char *, size_t, const char *, va_list);
+#define fprintf(f, ...) printf(__VA_ARGS__)
 
 /*******************************************************************************
  * Printf macros
@@ -62,7 +71,7 @@ int vprintf(const char *, va_list);
 #define NR_PHILO 5
 // Prototype des appels systeme de la spec
 int chprio(int pid, int newprio);
-void cons_write(const char *str, unsigned long size);
+ int cons_write(const char *str, unsigned long size);
 #if defined CONS_READ_LINE
 unsigned long cons_read(char *string, unsigned long length);
 #elif defined CONS_READ_CHAR

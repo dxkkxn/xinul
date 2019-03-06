@@ -1,6 +1,6 @@
 // See LICENSE for license details.
 
-#include <stddef.h>
+#include "sysapi.h"
 
 size_t strlen(const char* s)
 {
