@@ -39,7 +39,7 @@ bool is_virtual_memory_enable()
 }
 
 /* init virtual memory
-* returns -1 if a error occurred.
+* returns -1 if an error occurred.
 */
 int8_t init_virtual_memory()
 {
