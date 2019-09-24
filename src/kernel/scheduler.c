@@ -149,7 +149,13 @@ int64_t idle(void *arg)
 	(void) arg;
 
 	while (1) {
-		ENABLE_SUPERVISOR_INTERRUPTS();
+		/*
+		 * Enabling globally the supervisor interrupts is
+		 * not needed:
+		 * - wfi does not honor this bit
+		 * - it however honors the individual interrupt mask
+		 *   bits, so we probably should unmask those
+		 */
 		wfi();
 	}
 
