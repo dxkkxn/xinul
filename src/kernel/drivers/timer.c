@@ -13,6 +13,20 @@ static unsigned long timer = 0;
 
 static link blocked_processes = LIST_HEAD_INIT(blocked_processes);
 
+/* Affiche le temps écoulé depuis le démarrage du noyau */
+#ifdef PRINT_TIME
+static void print_time(void)
+{
+    unsigned sec = timer / CLK_IT_FREQ;
+    unsigned min = sec / 60;
+    unsigned hrs = min / 60;
+    printf("%02d:%02d:%02d\r",
+           hrs,
+           min % 60,
+           sec % 60);
+}
+#endif
+
 int clock_free_processes();
 
 
@@ -39,8 +53,11 @@ void handle_stimer_interrupt() {
      */
     sbi_call_set_timer(delta);
 
+#ifdef PRINT_TIME
     if (timer % 100 == 0) // 1 seconde
-       afficher_horloge();
+       print_time();
+#endif
+
     // unblock if it's time or if a process is freed
     if (timer % (CLK_IT_FREQ / SCHED_FREQ) == 0 || clock_free_processes()) {
         schedule();
@@ -92,21 +109,6 @@ void do_for_seconds(int sec, void (*callback)()) {
     unsigned int timeout = timer + sec * CLK_IT_FREQ;
     while (timer < timeout)
         callback();
-}
-
-static void print_callback(void) {
-    unsigned sec = timer / CLK_IT_FREQ;
-    unsigned min = sec / 60;
-    unsigned hrs = min / 60;
-    printf("%02d:%02d:%02d\r",
-           hrs,
-           min % 60,
-           sec % 60);
-}
-
-/* affiche le temps écoulé depuis le démarrage du noyau */
-void afficher_horloge() {
-    print_callback();
 }
 
 // initialise l'horloge
