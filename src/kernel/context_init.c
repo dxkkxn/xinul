@@ -15,8 +15,12 @@ void context_init(context_t *c, void *arg)
 	/* sstatus :
 	 * SUM désactivé
 	 * SPP : retour en mode user par défaut
+         *
 	 */
-	c->sstatus = (void*) SSTATUS_SUM;
+        
+        // Addition de MSTATUS_SIE pour que les tâches soient sensibles aux événements
+        // externes et aux interruptions du timer
+	c->sstatus = (void *) ((uint64_t) c->sstatus | SSTATUS_SUM | MSTATUS_SIE);
 }
 
 void context_kernel_init(

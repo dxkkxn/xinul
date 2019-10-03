@@ -84,7 +84,6 @@ int kernel_start()
 		printf("\r\t\t\t\t\t\t\t[OK]\n");
 
 		sched_kstart(launcher, 10, "Launcher", 0);
-
 	} else {
 		printf("\r\t\t\t\t\t\t\t[NOT AVAILABLE]\n");
 		printf("# Virtual memory not available, start kernel tests\n");

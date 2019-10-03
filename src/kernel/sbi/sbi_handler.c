@@ -17,7 +17,7 @@
 /*
  * sbi_call_set_timer
  *
- * Cette fonction configure la prochaine interruption timer machine delta ms dans le future.
+ * Cette fonction configure la prochaine interruption timer machine delta ms dans le futur.
  *
  * Cette fonction traite l'appel sbi set timer
  *
@@ -27,6 +27,9 @@ void handle_sbi_set_timer(uint64_t delta)
 {
 	set_mtimecmp(get_mtime() + delta * (clint_dev->clk_freq / 1000));
 	csr_set(mie, MIP_MTIP);
+        // Il faut acquiter l'interruption ici car SIP_STIP est read-only en mode
+        // superviseur
+	csr_clear(mip, MIP_STIP);
 }
 
 uint64_t handle_sbi_call(

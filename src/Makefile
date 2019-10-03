@@ -22,6 +22,7 @@ include toolchain.config
 # Machine
 #
 
+#MACHINE ?= virt
 MACHINE ?= sifive_u
 #MACHINE ?= spike
 #MACHINE ?= zybo
@@ -53,14 +54,15 @@ GDB_OPTS = -q \
 QEMU = qemu-system-riscv64
 ifeq ("$(MACHINE)", "spike")
 	QEMU_MACHINE=spike_v1.10
+else ifeq ("$(MACHINE)", "sifive_u")
+	QEMU_MACHINE=sifive_u
+else ifeq ("$(MACHINE)", "virt")
+	QEMU_MACHINE=virt
 else
-	ifeq ("$(MACHINE)", "sifive_u")
-		QEMU_MACHINE=sifive_u
-	else
-		$(error Machine unknown)
-	endif
+	$(error Machine unknown)
 endif
 
+#Starting with QEMU 4.1.0, we must add the '-bios none' flag
 QEMU_OPTS = -machine $(QEMU_MACHINE) -kernel $(KERNEL_BIN) -rtc base=localtime -k fr -m 256M
 QEMU_GDB_OPTS = -s -S
 # Pour afficher l'affichage VGA en console, marche à travers ssh

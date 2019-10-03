@@ -50,7 +50,10 @@ void kbd_init(void)
 	INIT_LIST_HEAD(&waitq);
 
 	// keyboard interruption already unmasked in PLIC in machine mode
-	csr_set(sie, MIP_SEIP);
+        //Shall we accept keyboard interrupts only when in wfi ? I guess 
+        //not, in which case we should add the following line
+        //csr_set(sstatus, MSTATUS_SIE);
+	csr_set(sie,     MIP_SEIP);
 }
 
 /* Traitant clavier */

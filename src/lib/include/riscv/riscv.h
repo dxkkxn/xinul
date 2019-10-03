@@ -31,7 +31,10 @@
 	__asm__ __volatile__ ("csrc " #csr ", %0" : : "rK" (__v) : "memory");	\
 })
 
-static inline void wfi() { __asm__ __volatile__ ("wfi" ::: "memory"); }
+static inline void wfi()
+{
+   __asm__ __volatile__ ("wfi" ::: "memory");
+}
 
 __attribute__((noreturn)) static inline void mret()
 {

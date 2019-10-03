@@ -147,15 +147,21 @@ static inline int sched_waitpid_full(int pid, int64_t *retvalp, int nohang)
 int64_t idle(void *arg)
 {
 	(void) arg;
+        // Enable supervisor external interrupts
 
 	while (1) {
 		/*
-		 * Enabling globally the supervisor interrupts is
-		 * not needed:
+		 * Doc says on wfi that enabling globally the supervisor
+                 * interrupts is not needed:
 		 * - wfi does not honor this bit
 		 * - it however honors the individual interrupt mask
 		 *   bits, so we probably should unmask those
+                 *
+                 * But this is a lie, at least for now in the QEMU
+                 * implementation
 		 */
+
+                ENABLE_SUPERVISOR_INTERRUPTS();
 		wfi();
 	}
 

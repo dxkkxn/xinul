@@ -19,14 +19,14 @@ int clock_free_processes();
 void handle_mtimer_interrupt() {
     // trigger a supervisor timer interrupt
     csr_set(mip, MIP_STIP);
-    // disable machine timer interrupt (or else we would go back here right
+    // disable machine timer interrupt (or otherwise we would go back here right
     // after the ret instruction)
     csr_clear(mie, MIP_MTIP);
 }
 
 
 void handle_stimer_interrupt() {
-    static uint64_t delta = 1000 / CLK_IT_FREQ; // ms
+    const uint64_t delta = 1000 / CLK_IT_FREQ; // ms
 
     timer++;
 
@@ -34,12 +34,13 @@ void handle_stimer_interrupt() {
      * - configuration de mtimecmp 10 delta dans le future;
      * - va automatiquement acquitter MTIP;
      * - réactivation des interruptions timer machine.
+     * - acquittement de l'interruption timer supervisor car le bit
+     *   correspondant dans sip est read-only en mode superviseur
      */
     sbi_call_set_timer(delta);
 
-    // Acquittement de l'interruption timer supervisor
-    csr_clear(sip, MIP_STIP);
-
+    if (timer % 100 == 0) // 1 seconde
+       afficher_horloge();
     // unblock if it's time or if a process is freed
     if (timer % (CLK_IT_FREQ / SCHED_FREQ) == 0 || clock_free_processes()) {
         schedule();
@@ -97,7 +98,7 @@ static void print_callback(void) {
     unsigned sec = timer / CLK_IT_FREQ;
     unsigned min = sec / 60;
     unsigned hrs = min / 60;
-    printf("%02d:%02d:%02d",
+    printf("%02d:%02d:%02d\r",
            hrs,
            min % 60,
            sec % 60);
@@ -111,15 +112,13 @@ void afficher_horloge() {
 // initialise l'horloge
 void clock_init() {
     // On programme la première interruption machine timer
-    uint64_t delta = 1000 / CLK_IT_FREQ; // ms
+    const uint32_t delta = 1000 / CLK_IT_FREQ; // ms
     /* Appel SBI set timer :
      * - Configuration du registre mtimecmp dans le future
      * - Activation des interruptions timer machine
      */
     sbi_call_set_timer(delta);
 
-    // Acquittement de l'interruption timer supervisor (au cas où).
-    csr_clear(sip, MIP_STIP);
     // Activation des interruption timer supervisor
     csr_set(sie, MIP_STIP);
 }
