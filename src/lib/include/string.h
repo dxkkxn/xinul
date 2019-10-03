@@ -12,6 +12,7 @@ void *memcpy(void *, const void *, size_t);
 void *memset(void *, int, size_t);
 char *strchr(const char *s, int c);
 int strcmp(const char *, const char *);
+int strcpy(const char *, const char *);
 size_t strlen(const char *);
 int strncmp(const char *, const char *, size_t);
 char *strncpy(char *, const char *, size_t);
