@@ -20,7 +20,7 @@ void context_init(context_t *c, void *arg)
         
         // Addition de MSTATUS_SIE pour que les tâches soient sensibles aux événements
         // externes et aux interruptions du timer
-	c->sstatus = (void *) ((uint64_t) c->sstatus | SSTATUS_SUM | MSTATUS_SIE);
+	c->sstatus = (void *) ((uint64_t)c->sstatus | SSTATUS_SUM);
 }
 
 void context_kernel_init(
