@@ -68,11 +68,9 @@ void process_cmd(char *command) {
 
 
 int main(void) {
-	//cons_echo(0);
-	//process_cmd("boot");
 	cons_echo(1);
 	while (1) {
-		printf("user@oson $ ");
+		printf("\x1b[95muser\x1b[91m@\x1b[34moson \x1b[0m$ ");
 		cons_read(command, LINE_SIZE);
 		process_cmd(command);
 		save_command(command);
