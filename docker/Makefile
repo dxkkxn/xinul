@@ -1,11 +1,11 @@
 #
 # Docker RISC-V Makefile
 # 
-# Mathieu Barbe <mathieu.barbe@grenoble-inp.org> - 2018 - 2019
+# Mathieu Barbe <mathieu.barbe@grenoble-inp.org> - 2018 - 2020
 # See LICENSE for license details.
 #
 
-IMAGE_NAME = raifer/risc-v
+IMAGE_NAME = barbem/risc-v_cep
 DOCKERFILE_DIR = .
 DK_MNT_DIR = /mnt/host
 UID != id -u
