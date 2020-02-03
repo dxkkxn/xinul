@@ -1,7 +1,7 @@
 #
 # Top Makefile
 # 
-# Mathieu Barbe <mathieu.barbe@grenoble-inp.org> - 2018 - 2019
+# Mathieu Barbe <mathieu.barbe@grenoble-inp.org> - 2018 - 2020
 # See LICENSE for license details.
 #
 # To view commands use: make V=1
@@ -23,9 +23,10 @@ include toolchain.config
 #
 
 #MACHINE ?= virt
-MACHINE ?= sifive_u
+#MACHINE ?= sifive_u
 #MACHINE ?= spike
 #MACHINE ?= zybo
+MACHINE ?= cep
 
 #
 # Hardware plateforme
@@ -58,12 +59,14 @@ else ifeq ("$(MACHINE)", "sifive_u")
 	QEMU_MACHINE=sifive_u
 else ifeq ("$(MACHINE)", "virt")
 	QEMU_MACHINE=virt
+else ifeq ("$(MACHINE)", "cep")
+	QEMU_MACHINE=cep
 else
 	$(error Machine unknown)
 endif
 
 #Starting with QEMU 4.1.0, we must add the '-bios none' flag
-QEMU_OPTS = -machine $(QEMU_MACHINE) -kernel $(KERNEL_BIN) -rtc base=localtime -k fr -m 256M
+QEMU_OPTS = -machine $(QEMU_MACHINE) -kernel $(KERNEL_BIN) -rtc base=localtime -k fr -m 32M
 QEMU_GDB_OPTS = -s -S
 # Pour afficher l'affichage VGA en console, marche à travers ssh
 QEMU_NO_GRAPH_OPTS = -nographic
