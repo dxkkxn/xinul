@@ -24,17 +24,17 @@ git clone --recurse-submodules -j8 https://github.com/riscv/riscv-gnu-toolchain 
 
 mkdir /src/riscv-gnu-toolchain/build && cd /src/riscv-gnu-toolchain/build && \
 ../configure --prefix=$RISCV && \
-make && \
+make -j8 && \
 rm -rf /src
 
 #
 # Install Qemu RISC-V CEP machine
 RUN mkdir -p /src && cd /src && \
 apt-get update && apt-get install -y git python libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev libsdl1.2-dev && apt-get clean && \
-git clone https://github.com/raifer/qemu-cep.git --branch=riscv_cep_4.1.0 && \
+git clone -j8 https://github.com/raifer/qemu-cep.git --branch=riscv_cep_4.1.0 && \
 mkdir -p /src/qemu-cep/build && cd /src/qemu-cep/build && \
 ../configure --prefix=$RISCV --target-list=riscv64-softmmu | tee $RISCV/qemu-configure-log.txt && \
-make && make install && \
+make -j8 && make install && \
 rm -rf /src
 
 ## Install riscv-fesvr
@@ -42,7 +42,7 @@ RUN mkdir -p /src && cd /src && \
 git clone https://github.com/riscv/riscv-fesvr && \
 mkdir -p /src/riscv-fesvr/build && cd /src/riscv-fesvr/build && \
 ../configure --prefix=$RISCV --target=riscv64-unknown-elf && \
-make install && \
+make -j8 && make install && \
 rm -rf /src
 
 
@@ -52,7 +52,7 @@ mkdir -p /src && cd /src && \
 git clone https://github.com/riscv/riscv-isa-sim && \
 mkdir -p /src/riscv-isa-sim/build && cd /src/riscv-isa-sim/build && \
 ../configure --prefix=$RISCV --with-fesvr=$RISCV && \
-make install && \
+make -j8 && make install && \
 rm -rf /src
 
 ## Install pk (Proxy Kernel)
@@ -60,7 +60,7 @@ RUN mkdir -p /src && cd /src && \
 git clone https://github.com/riscv/riscv-pk && \
 mkdir -p /src/riscv-pk/build && cd /src/riscv-pk/build && \
 ../configure --prefix=$RISCV --host=riscv64-unknown-elf && \
-make install && \
+make -j8 && make install && \
 rm -rf /src
 
 EXPOSE 1234
