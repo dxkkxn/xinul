@@ -66,7 +66,7 @@ else
 endif
 
 #Starting with QEMU 4.1.0, we must add the '-bios none' flag
-QEMU_OPTS = -machine $(QEMU_MACHINE) -kernel $(KERNEL_BIN) -rtc base=localtime -k fr -m 32M
+QEMU_OPTS = -sdl -serial mon:stdio -machine $(QEMU_MACHINE) -kernel $(KERNEL_BIN) -rtc base=localtime -k fr -m 32M
 QEMU_GDB_OPTS = -s -S
 # Pour afficher l'affichage VGA en console, marche à travers ssh
 QEMU_NO_GRAPH_OPTS = -nographic
