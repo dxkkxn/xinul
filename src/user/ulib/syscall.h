@@ -8,6 +8,8 @@
  */
 #ifndef ___SYSCALL_H___
 #define ___SYSCALL_H___
+
+#ifndef STUDENT
 #include "stdint.h"
 
 int chprio(int pid, int newprio);
@@ -72,5 +74,5 @@ void *shm_create(const char*);
 void *shm_acquire(const char*);
 void shm_release(const char*);
 
+#endif // STUDENT
 #endif
-

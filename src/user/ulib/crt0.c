@@ -13,7 +13,24 @@ extern int main(void *);
 /* Tell the compiler the function is in a special section */
 void _start(void *arg) __attribute__((section(".text.init")));
 
+#ifndef STUDENT
+
 void _start(void *arg)
 {
 	exit(main(arg));
 }
+
+#else // STUDENT
+void _start(void *arg)
+{
+	/*
+	* Call the "developper" entry point of the application and just
+	* ignore the return value. This is the right place to handle this
+	* value and call standard library functions if needed.
+	*/
+
+	main(arg);
+}
+#endif // END STUDENT
+
+
