@@ -9,11 +9,18 @@ PATTERN = 'STUDENT'
 
 closeFetch = [
 	'#ifndef %s\n' %PATTERN,
+	'#else // END %s\n' %PATTERN,
 ]
+
 openFetch = [
-	'##endif // %s\n' %PATTERN,
+	'#ifdef %s\n' %PATTERN,
+	'#else // %s\n' %PATTERN,
+	'#endif // %s\n' %PATTERN,
 	]
 
+removeLine = [
+	'#endif // END %s\n' % PATTERN,
+]
 
 class FatalError(RuntimeError):
 	"""
@@ -40,12 +47,26 @@ def operationFunc(args):
 	fetch = True
 	
 	for src in args.inputs:
-		print('%s' % src.name)
+		print('Extract %s' % src.name)
+		# Make sure that the output directory is created
+		outputDir = os.path.abspath(os.path.dirname(os.path.join(args.outputDir, src.name)))
+		if not os.path.exists(outputDir):
+			try:
+				os.makedirs(outputDir)
+			except OSError as exc:
+				if exc.errno != errno.EEXIST:
+					raise
+		elif not os.path.isdir(outputDir):
+			raise InputError("%s exists and it is not a directory!" % outputDir)
+		
 		# Open output
 		with open(os.path.join(args.outputDir, src.name), 'w') as out:
+			print(out.name)
 			for l in src.readlines():
 				if l in closeFetch:
 					fetch = False
+					continue
+				if l in removeLine:
 					continue
 				if l in openFetch:
 					fetch = True
@@ -80,19 +101,6 @@ def main(custom_commandline = None):
 	                    default = PATTERN)
 	
 	args = parser.parse_args()
-	
-	# Make sure that the output directory is created
-	outputDir = os.path.abspath(args.outputDir)
-	if not os.path.exists(outputDir):
-		try:
-			os.makedirs(outputDir)
-		except OSError as exc:
-			if exc.errno != errno.EEXIST:
-				raise
-	elif not os.path.isdir(outputDir):
-		raise InputError("%s exists and it is not a directory!" %outputDir)
-		
-	
 	operationFunc(args)
 
 	
