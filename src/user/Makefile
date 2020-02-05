@@ -61,8 +61,11 @@ ULIB_CFLAGS = $(CFLAGS) $(addprefix -I, $(APP_INCLUDES))
 #
 # Apps
 #
+APPS_NAMES = hello
+#ifndef STUDENT
+APPS_NAMES += console demo demo_alice demo_bob
+#endif // STUDENT
 
-APPS_NAMES      = hello console demo demo_alice demo_bob
 APP_CFLAGS = $(CFLAGS) $(addprefix -I, $(APP_INCLUDES))
 
 APP_LDFLAGS := $(LDFLAGS) -T build/apps.lds
