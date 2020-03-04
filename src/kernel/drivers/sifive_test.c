@@ -18,12 +18,8 @@ static void sifive_test_init()
 
 static void sifive_test_poweroff(int status)
 {
-#if 0
-    *test = SIFIVE_TEST_PASS;
-    while (1) {
-        __asm__ __volatile__("");
-    }
-#endif
+	*test = (status << 16) | SIFIVE_TEST_FAIL;
+	while (1);
 }
 
 poweroff_device_t poweroff_sifive_test = {

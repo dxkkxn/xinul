@@ -22,7 +22,7 @@ struct frame_elem {
 };
 
 static void *frame_start;
-static void * frame_end;
+static void *frame_end;
 
 #define FRAME_SIZE_MASK         0xFFFFF000
 #define FRAME_SIZE              0x1000
@@ -37,8 +37,7 @@ void *hmm_frame_retain(void)
 {
 	if (frame_count == 0)
 		assert(0 && "No frame available");
-	void *f = queue_out(&free_frames,
-	struct frame_elem, linker);
+	void *f = queue_out(&free_frames, struct frame_elem, linker);
 	memset(f, 0, FRAME_SIZE);
 	frame_count--;
 	return f;
@@ -81,6 +80,7 @@ void hmm_init(void *start, void *end)
 
 
 
-int hmm_is_one_of_ours(void *frame) {
+int hmm_is_one_of_ours(void *frame)
+{
 	return (((uint64_t)frame_start <= (uint64_t) frame) && ((uint64_t) frame < (uint64_t)frame_end));
 }
