@@ -46,7 +46,7 @@ L'ensemble des fichiers de sorties sont placés dans le dossier build.
 #### Simulation
 
 * go : lance le kernel avec Qemu dans le terminal. (Dépendance : target all);
-* run : lance le kernel avec Qemu dans le terminal et attend la connexion avec GDB. (Dépendance : target all);
+* debug : lance le kernel avec Qemu dans le terminal et attend la connexion avec GDB. (Dépendance : target all);
 * gdb : lance le debuger qui va se connecter à Qemu.
 Une fois la connexion établie, les commandes du fichier `./gdbinit` seront évaluées et la main vous sera restituée afin d'entrer des commandes complémentaires.
 
@@ -58,7 +58,7 @@ dk-image-rm : supprime l'image riscv de Docker;
 * dk-bash : ouvrir un bash dans un container riscv;
 * dk-all : compile le kernel dans un container, les fichiers de sortie seront toujours dans le dossier `./build/`;
 * dk-go : lance le kernel avec Qemu dans un container (Dépendance : target all);
-* dk-run : lance un container avec Qemu dans une optique de debug. Qemu attend gdb pour continuer. Le port 1234 de la machine host est mapé avec Qemu (Dépendance : target all);
+* dk-debug : lance un container avec Qemu dans une optique de debug. Qemu attend gdb pour continuer. Le port 1234 de la machine host est mapé avec Qemu (Dépendance : target all);
 * dk-gdb : lance un second container avec gdb et se connecte au port 1234 du host.
 
 

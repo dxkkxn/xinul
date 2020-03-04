@@ -102,23 +102,23 @@ clean:
 # Simulation
 #
 
-# Go :Lance l'OS avec QEmu dans le terminal
+# go :Lance l'OS avec QEmu dans le terminal
 go: all
 	$(QEMU) $(QEMU_OPTS) $(QEMU_NO_GRAPH_OPTS)
 
-# Run : Lance l'OS dans un terminal avec QEmu et attend gdb.
-run: all
+# debug : Lance l'OS dans un terminal avec QEmu et attend gdb.
+debug: all
 	$(QEMU) $(QEMU_OPTS) $(QEMU_GDB_OPTS) $(QEMU_NO_GRAPH_OPTS)
 
-# Go-graphic : Lance l'OS avec QEmu en mode graphique
-go-graphic: all
+# go-graphic : Lance l'OS avec QEmu en mode graphique
+go_graphic: all
 	$(QEMU) $(QEMUOPTS)
 
 # kill QEmu si CTRL-A, X ne fonctionne pas.
 kill_qemu:
 	killall -9 $(QEMU) 
 
-# GDB : Lancement de GDB avec connection automatique et lecture de GDBINIT_FILE
+# gdb : Lancement de GDB avec connection automatique et lecture de GDBINIT_FILE
 gdb:
 	$(GDB) $(GDB_OPTS) $(KERNEL_BIN)
 
@@ -141,8 +141,8 @@ dk-all: $(DK_MAKEFILE_DIR)/Makefile
 dk-go: $(DK_MAKEFILE_DIR)/Makefile
 	make -C $(DK_MAKEFILE_DIR) CMD="make go" exec
 
-dk-run: $(DK_MAKEFILE_DIR)/Makefile
-	make -C $(DK_MAKEFILE_DIR) DK_OPTS="-p $(GDB_TARGET_PORT):$(GDB_TARGET_PORT)" CMD="make run" exec
+dk-debug: $(DK_MAKEFILE_DIR)/Makefile
+	make -C $(DK_MAKEFILE_DIR) DK_OPTS="-p $(GDB_TARGET_PORT):$(GDB_TARGET_PORT)" CMD="make debug" exec
 
 dk-gdb: $(DK_MAKEFILE_DIR)/Makefile
 	make -C $(DK_MAKEFILE_DIR) CMD="make GDB_TARGET_HOST=$(DK_GATEWAY) gdb" exec

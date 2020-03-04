@@ -7,7 +7,6 @@
 
 IMAGE_NAME = barbem/risc-v_cep
 DOCKERFILE_DIR = .
-DK_MNT_DIR = /mnt/host
 UID != id -u
 GID != id -g
 DK_SHARE_DIR = $(PWD)
@@ -16,10 +15,10 @@ RUN_OPTS = \
 -ti \
 -u $(UID):$(GID) \
 --rm \
--v $(DK_SHARE_DIR):$(DK_MNT_DIR) \
--w $(DK_MNT_DIR)
+-v $(DK_SHARE_DIR):$(DK_SHARE_DIR) \
+-w $(DK_SHARE_DIR)
 
-build: .image-built 
+build: .image-built
 
 .image-built: $(DOCKERFILE_DIR)/Dockerfile Makefile
 	docker image build -t $(IMAGE_NAME) $(DOCKERFILE_DIR)
