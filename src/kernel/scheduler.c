@@ -29,23 +29,23 @@ static link dustbin;                    /* processes to be deallocated */
 static context_t dummy;
 
 /* ====      Macros use to simplify the code      ==== */
-#define STATUS_QUEUE_ADD(ptr, new_status)                                       \
-({                                                                               \
-    ptr->current_queue = &processes[new_status];                               \
-    ptr->status = new_status;                                                   \
-    queue_add(                                                                   \
-            ptr, &processes[new_status], process_t, status_link, prio           \
-    );                                                                           \
+#define STATUS_QUEUE_ADD(ptr, new_status)                               \
+({                                                                      \
+    ptr->current_queue = &processes[new_status];                        \
+    ptr->status = new_status;                                           \
+    queue_add(                                                          \
+            ptr, &processes[new_status], process_t, status_link, prio   \
+    );                                                                  \
 })
 
 #define STATUS_QUEUE_DELETE(ptr)                                        \
-({                                                                        \
+({                                                                      \
                 ptr->current_queue = NULL;                              \
                 queue_del(ptr, status_link);                            \
 })
 
 /* Process family handling */
-#define FAMILY_QUEUE_ADD(ptr, parent)                                    \
+#define FAMILY_QUEUE_ADD(ptr, parent)                                   \
     queue_add(ptr, &parent->children, process_t, family_link, prio)
 
 #define FAMILY_QUEUE_DELETE(ptr)                                        \
@@ -53,7 +53,7 @@ static context_t dummy;
 
 /* ====      Internal functions      ==== */
 
-/* 
+/*
  * Iterate of the process children and destroy the zombies, mark others as
  * orphans
  */
@@ -156,12 +156,12 @@ int64_t idle(void *arg)
 		 * - wfi does not honor this bit
 		 * - it however honors the individual interrupt mask
 		 *   bits, so we probably should unmask those
-                 *
-                 * But this is a lie, at least for now in the QEMU
-                 * implementation
+		 *
+		 * But this is a lie, at least for now in the QEMU
+		 * implementation
 		 */
 
-                ENABLE_SUPERVISOR_INTERRUPTS();
+		ENABLE_SUPERVISOR_INTERRUPTS();
 		wfi();
 	}
 
@@ -289,7 +289,7 @@ void schedule(void)
 	active->status = ACTIVE;
 	old_ctx = (old != NULL) ? &old->context : &dummy;
 	new_ctx = &active->context;
-/*
+#if 0
 	printf("\nscheduling... ");
 	if (old) printf("%s [%d]", old->name, old->pid);
 	else printf("null proc");
@@ -297,7 +297,7 @@ void schedule(void)
 	if (active) printf("%s [%d]", active->name, active->pid);
 	else printf("null proc");
 	printf("\n");
-*/
+#endif
 	ctx_sw(old_ctx, new_ctx);
 
 	// Destroy the marked processes

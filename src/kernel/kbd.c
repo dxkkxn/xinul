@@ -49,10 +49,12 @@ void kbd_init(void)
 	INIT_BUFFER(&buffer, buffer_data, KBD_BUFFER_SIZE);
 	INIT_LIST_HEAD(&waitq);
 
-	// keyboard interruption already unmasked in PLIC in machine mode
-        //Shall we accept keyboard interrupts only when in wfi ? I guess 
-        //not, in which case we should add the following line
-        //csr_set(sstatus, MSTATUS_SIE);
+	// Keyboard interruption already unmasked in PLIC in machine mode
+        // Shall we accept keyboard interrupts only when in wfi ? I guess 
+        // not, in which case we should add the following line
+#if 0
+        csr_set(sstatus, MSTATUS_SIE);
+#endif
 	csr_set(sie,     MIP_SEIP);
 }
 
