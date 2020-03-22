@@ -1,7 +1,10 @@
 #pragma once
 
+#include "stdint.h"
+
 #define CLK_IT_FREQ 100
 
+void set_machine_timer_interrupt(uint64_t delta_ms);
 void handle_mtimer_interrupt();
 void handle_stimer_interrupt();
 

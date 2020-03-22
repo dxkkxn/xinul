@@ -10,15 +10,14 @@
 #include "sbi.h"
 
 /*
- * sbi_call_set_timer
+ * sbi call set timer
+ * Configuration de la prochaine interruption timer supervisor delta ms dans le future.
  *
- * Cette fonction configure la prochaine interruption timer machine delta ms dans le future.
+ * Cette appel sbi depuis le mode supervisor a pour but de:
+ * - aquitter l'interruption timer supervisor (opération seulement possible en mode machine);
+ * - programmer une interruption timer supervisor delta ms dans le futur.
  *
- * Cette appel sbi va :
- * - activer les interruption timer machine;
- * - configurer les registre du clint.
- *
- *@param delta : réglage de la prochaine interruption à cur + delta ms.
+ * @param delta : réglage de la prochaine interruption à cur + delta ms.
  */
 void sbi_call_set_timer(uint64_t delta)
 {
