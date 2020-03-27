@@ -15,8 +15,8 @@
 #  APPS_OBJS: The application object files
 
 # Defines build environment
-GEN_SECTIONS := build/generate-link-sections.sh
-GEN_TABLE    := build/generate-symbols-table.sh
+GEN_SECTIONS := /bin/bash build/generate-link-sections.sh
+GEN_TABLE    := /bin/bash build/generate-symbols-table.sh
 
 
 BIN_DIRS := $(BIN_DIR)
