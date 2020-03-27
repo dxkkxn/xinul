@@ -22,8 +22,7 @@ all: $(KERNEL_BIN)
 # Architecture and hardware selection
 #
 
-DEFAULT_MACHINE = spike
-#DEFAULT_MACHINE = sifive_u
+DEFAULT_MACHINE = cep
 MACHINE ?= $(DEFAULT_MACHINE)
 
 #
