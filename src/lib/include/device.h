@@ -53,3 +53,4 @@ extern clint_device_t cep_clint;
 
 extern plic_device_t plic_none;
 extern plic_device_t cep_plic;
+extern plic_device_t sifive_plic;
