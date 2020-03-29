@@ -1,6 +1,6 @@
 FROM debian
 
-LABEL maintainer="Mathieu Barbe <mathieu@kolabnow.com>"
+LABEL maintainer="Mathieu Barbe <mathieu@barbe.io>"
 LABEL Description="This image is used to cross compile and run Qemu for RISC-V project"
 
 # Set RISC-V env
@@ -31,7 +31,7 @@ rm -rf /src
 # Install Qemu RISC-V CEP machine
 RUN mkdir -p /src && cd /src && \
 apt-get update && apt-get install -y git python libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev libsdl1.2-dev && apt-get clean && \
-git clone -j8 https://github.com/raifer/qemu-cep.git --branch=riscv_cep_4.1.0 && \
+git clone -j8 https://gitlab.com/barbem/qemu_for_cep.git --branch=riscv_cep_4.1.0 && \
 mkdir -p /src/qemu-cep/build && cd /src/qemu-cep/build && \
 ../configure --prefix=$RISCV --target-list=riscv64-softmmu | tee $RISCV/qemu-configure-log.txt && \
 make -j8 && make install && \
