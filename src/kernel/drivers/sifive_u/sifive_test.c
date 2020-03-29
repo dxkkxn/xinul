@@ -4,9 +4,7 @@
 #include "stdint.h"
 #include "auxval.h"
 
-enum {
-	SIFIVE_TEST_EXIT  = 0x5555
-};
+#define SIFIVE_TEST_EXIT  0x5555
 
 static volatile uint32_t *test;
 
