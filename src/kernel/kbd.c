@@ -15,8 +15,8 @@
 #include "cons_write.h"
 #include "encoding.h"
 #include "assert.h"
-#include "stdio.h"
 #include "queue.h"
+#include "drivers/getchar.h"
 
 #include "kbd.h"
 #include "scheduler.h"

@@ -4,7 +4,6 @@
 #include <stddef.h>
 
 
-int getchar(void);
 int printf(const char *, ...);
 int puts(const char *);
 int sprintf(char *, const char *, ...);
