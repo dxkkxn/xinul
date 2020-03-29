@@ -5,8 +5,7 @@
 #include "auxval.h"
 
 enum {
-	SIFIVE_TEST_FAIL = 0x3333,
-	SIFIVE_TEST_PASS = 0x5555,
+	SIFIVE_TEST_EXIT  = 0x5555
 };
 
 static volatile uint32_t *test;
@@ -18,7 +17,7 @@ static void sifive_test_init()
 
 static void sifive_test_poweroff(int status)
 {
-	*test = (status << 16) | SIFIVE_TEST_FAIL;
+	*test = (status << 16) | SIFIVE_TEST_EXIT;
 	while (1);
 }
 
