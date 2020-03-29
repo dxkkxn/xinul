@@ -47,6 +47,9 @@ include build/apps-integration.mk
 
 KERNEL_SRC_DIRS = . $(sort $(dir $(wildcard */)))
 
+# Specific machine driver
+KERNEL_SRC_DIRS += drivers/$(MACHINE)
+
 #
 # Include headers directories
 #
