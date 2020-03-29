@@ -17,7 +17,7 @@ enum {
     CEP_CLINT_CTRL_ADDR     = 0x66660000,
     CEP_CLIC_CRTL_ADDR      = 0x66660001,
     CEP_UART0_CTRL_ADDR     = 0x66660010,
-    CEP_TEST_CTRL_ADDR      = 0x66660002,
+    CEP_POWEROFF_CTRL_ADDR      = 0x66660002,
 };
 
 typedef struct auxval {

@@ -13,13 +13,16 @@ static volatile uint32_t *test;
 
 static void cep_test_init()
 {
-	test = (uint32_t *) (void *) getauxval(CEP_TEST_CTRL_ADDR);
+	test = (uint32_t *) (void *) getauxval(CEP_POWEROFF_CTRL_ADDR);
 }
 
 static void cep_test_poweroff(int status)
 {
 	*test = (status << 16) | CEP_TEST_FAIL;
-	while (1);
+	while (1)
+	{
+		__asm__ __volatile__("");
+	}
 }
 
 poweroff_device_t cep_poweroff = {

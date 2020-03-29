@@ -21,7 +21,7 @@ auxval_t __auxv[] = {
 		{UART0_CLOCK_FREQ,    32000000},
 		{UART0_BAUD_RATE,     115200},
 		{CEP_UART0_CTRL_ADDR, 0x10013000},
-		{CEP_TEST_CTRL_ADDR,  0x100000},
+		{CEP_POWEROFF_CTRL_ADDR,  0x10000000},
 		{0,                   0}
 };
 
