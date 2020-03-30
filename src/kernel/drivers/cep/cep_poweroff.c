@@ -4,7 +4,7 @@
 #include "stdint.h"
 #include "auxval.h"
 
-#define CEP_VALUE_EXIT  0x5555
+#define CEP_VALUE_EXIT  0x3333
 
 static volatile uint32_t *test;
 
@@ -16,10 +16,7 @@ static void cep_test_init()
 static void cep_test_poweroff(int status)
 {
 	*test = (status << 16) | CEP_VALUE_EXIT;
-	while (1)
-	{
-		__asm__ __volatile__("");
-	}
+	while (1);
 }
 
 poweroff_device_t cep_poweroff = {
