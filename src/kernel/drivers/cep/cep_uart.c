@@ -1,8 +1,15 @@
-// See LICENSE for license details.
+/*
+ * Projet PCSEA RISC-V
+ *
+ * Benoît Wallon <benoit.wallon@grenoble-inp.org> - 2019
+ * Mathieu Barbe <mathieu@kolabnow.com> - 2019 - 2020
+ *
+ * See license for license details.
+ */
 
 #include "stdint.h"
-#include "auxval.h"
-#include "device.h"
+#include "drivers/auxval.h"
+#include "drivers/console.h"
 
 enum {
 	/* UART Registers */

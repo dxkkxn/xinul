@@ -1,5 +1,6 @@
-#include "device.h"
 #include "stdint.h"
+
+#include "drivers/plic.h"
 
 #define SIFIVE_PLIC_BASE          0xc000000
 #define SIFIVE_PLIC_ENABLE_OFFSET 0x2000

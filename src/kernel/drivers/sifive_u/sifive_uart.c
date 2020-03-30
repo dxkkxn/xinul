@@ -1,8 +1,9 @@
 // See LICENSE for license details.
 
 #include "stdint.h"
-#include "auxval.h"
-#include "device.h"
+
+#include "drivers/auxval.h"
+#include "drivers/console.h"
 
 enum {
     /* UART Registers */

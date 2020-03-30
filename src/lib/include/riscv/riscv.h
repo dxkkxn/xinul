@@ -2,7 +2,7 @@
 
 #include "stdint.h"
 
-#include "device.h"
+#include "encoding.h"
 
 #define csr_read(csr)														\
 ({																			\
@@ -41,16 +41,4 @@ __attribute__((noreturn)) static inline void mret()
 	__asm__ __volatile__ ("mret");
 	__builtin_unreachable();
 }
-
-#define CLINT_MTIME 0xbff8
-#define CLINT_MTIMECMP 0x4000
-
-#define get_mtime() (*(uint64_t*)((uint64_t)clint_dev->base_addr + CLINT_MTIME))
-
-#define get_mtimecmp() (*(uint64_t*)((uint64_t)clint_dev->base_addr + CLINT_MTIMECMP))
-
-#define set_mtimecmp(value)													\
-({																			\
-	*(uint64_t*)(CLINT_BASE + CLINT_MTIMECMP) = (uint64_t)(value);			\
-})
 

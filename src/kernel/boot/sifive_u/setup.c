@@ -10,10 +10,13 @@
 
 #include "stdint.h"
 #include "string.h"
-#include "auxval.h"
-#include "device.h"
-#include "encoding.h"
 #include "riscv.h"
+
+#include "drivers/auxval.h"
+#include "drivers/plic.h"
+#include "drivers/clint.h"
+#include "drivers/poweroff.h"
+#include "drivers/console.h"
 
 char * default_program = "console";
 

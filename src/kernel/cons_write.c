@@ -1,12 +1,7 @@
 // See LICENSE for license details.
 
 #include <stdio.h>
-#include <device.h>
-
-__inline__ static int kputchar(int ch)
-{
-	return console_dev->putchar(ch);
-}
+#include "drivers/console.h"
 
 int cons_write(const char *str, long size)
 {

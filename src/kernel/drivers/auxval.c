@@ -1,6 +1,6 @@
 // See LICENSE for license details.
 
-#include "auxval.h"
+#include "drivers/auxval.h"
 
 unsigned long getauxval(unsigned long key)
 {

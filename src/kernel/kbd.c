@@ -11,15 +11,13 @@
 #include "riscv.h"
 #include "string.h"
 #include "mem.h"
-
-#include "cons_write.h"
-#include "encoding.h"
 #include "assert.h"
 #include "queue.h"
-#include "drivers/getchar.h"
 
-#include "kbd.h"
+#include "drivers/console.h"
+#include "cons_write.h"
 #include "scheduler.h"
+#include "kbd.h"
 
 #define KBD_DATA_PORT           0x60
 #define KBD_CMD_PORT            0x64

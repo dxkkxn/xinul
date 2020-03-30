@@ -1,5 +1,16 @@
-#include "device.h"
+/*
+ * Projet PCSEA RISC-V
+ *
+ * Benoît Wallon <benoit.wallon@grenoble-inp.org> - 2019
+ * Mathieu Barbe <mathieu@kolabnow.com> - 2019 - 2020
+ *
+ * See license for license details.
+ */
+
 #include "stdint.h"
+
+#include "drivers/plic.h"
+
 
 #define CEP_PLIC_BASE          0xc000000
 #define CEP_PLIC_ENABLE_OFFSET 0x2000
