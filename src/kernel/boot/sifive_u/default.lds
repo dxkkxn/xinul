@@ -46,6 +46,7 @@ SECTIONS
   .bss :{
     PROVIDE(_bss_start = .);
     *(.sbss .sbss.*) *(.bss .bss.*)
+    *(scommon COMMON)
     PROVIDE(_bss_end = .);
 
     . = ALIGN(4096);
