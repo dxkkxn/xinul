@@ -9,8 +9,11 @@
 
 #include "stdint.h"
 #include "string.h"
-#include "auxval.h"
-#include "device.h"
+
+#include "drivers/auxval.h"
+#include "drivers/clint.h"
+#include "drivers/poweroff.h"
+#include "drivers/console.h"
 
 extern uint64_t tohost;
 extern uint64_t fromhost;

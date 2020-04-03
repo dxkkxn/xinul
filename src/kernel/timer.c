@@ -1,12 +1,10 @@
-#include "timer.h"
-
 #include "riscv.h"
-#include "encoding.h"
-#include "device.h"
 #include "stdio.h"
 
 #include "sbi.h"
 #include "scheduler.h"
+#include "drivers/clint.h"
+#include "timer.h"
 
 // Compteur de temps
 static unsigned long timer = 0;

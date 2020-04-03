@@ -4,8 +4,10 @@
 
 #include "stddef.h"
 #include "stdint.h"
-#include "device.h"
 #include "riscv/atomic.h"
+
+#include "drivers/console.h"
+#include "drivers/poweroff.h"
 
 volatile uint64_t tohost __attribute__((section(".htif")));
 volatile uint64_t fromhost __attribute__((section(".htif")));

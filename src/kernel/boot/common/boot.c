@@ -10,7 +10,6 @@
 #include "stdlib.h"
 #include "assert.h"
 
-#include "encoding.h"
 #include "riscv.h"
 #include "info.h"
 #include "trap.h"

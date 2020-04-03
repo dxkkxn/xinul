@@ -1,6 +1,6 @@
-#include "device.h"
+#include "drivers/clint.h"
 
 clint_device_t spike_clint = {
-	10000000,
-	0x2000000
+	.base_addr = 10000000,
+	.clk_freq = 0x2000000
 };

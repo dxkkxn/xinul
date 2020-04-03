@@ -1,8 +1,16 @@
-// See LICENSE for license details.
+/*
+ * Projet PCSEA RISC-V
+ *
+ * Benoît Wallon <benoit.wallon@grenoble-inp.org> - 2019
+ * Mathieu Barbe <mathieu@kolabnow.com> - 2019 - 2020
+ *
+ * See license for license details.
+ */
 
-#include "device.h"
 #include "stdint.h"
-#include "auxval.h"
+#include "drivers/auxval.h"
+
+#include "drivers/poweroff.h"
 
 #define CEP_VALUE_EXIT  0x3333
 

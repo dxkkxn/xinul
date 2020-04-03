@@ -1,8 +1,8 @@
 // See LICENSE for license details.
 
-#include "device.h"
 #include "stdint.h"
-#include "auxval.h"
+#include "drivers/auxval.h"
+#include "drivers/poweroff.h"
 
 #define SIFIVE_TEST_EXIT  0x5555
 
