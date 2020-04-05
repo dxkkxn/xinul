@@ -21,7 +21,7 @@ GEN_TABLE    := /bin/bash build/generate-symbols-table.sh
 
 BIN_DIRS := $(BIN_DIR)
 APPS_BIN := $(foreach d, $(BIN_DIRS), $(wildcard $(d)/*.bin))
-APPS_OUT  := $(OUTPUT)/kernel/apps
+APPS_OUT  := $(BUILD_DIR)/kernel/apps
 APPS_OBJS := $(APPS_BIN:$(BIN_DIR)/%=$(APPS_OUT)/%.o)
 
 APPS_OBJS  += $(APPS_OUT)/symbols-table.o
@@ -30,7 +30,7 @@ vpath %.bin $(dir $(APPS_BIN))
 # Transform binary files in linkable files
 # Bug avec call cmd,  comprend pas pourquoi ça marche pas!
 # plante aussi si on met le echo avant le objcopy...
-$(APPS_OUT)/%.bin.o: $(OBJ_DIR)/empty.o $(OUTPUT)/user/%.bin | $(APPS_OUT)
+$(APPS_OUT)/%.bin.o: $(OBJ_DIR)/empty.o $(BUILD_DIR)/user/%.bin | $(APPS_OUT)
 	@$(OBJCOPY) $< \
 		--add-section=.$(notdir $*).bin=$(filter-out $<, $^) \
 		--set-section-flags=.$*.bin=contents,alloc,load,data $@

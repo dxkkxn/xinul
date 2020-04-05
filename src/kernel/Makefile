@@ -10,9 +10,9 @@
 
 SHELL = /bin/sh
 KERNEL_NAME ?= kernel.bin
-OUTPUT ?= ../build
-OBJ_DIR = $(OUTPUT)/kernel/objs
-KERNEL_BIN ?= $(OUTPUT)/$(KERNEL_NAME)
+BUILD_DIR ?= ../build
+OBJ_DIR = $(BUILD_DIR)/kernel/objs
+KERNEL_BIN ?= $(BUILD_DIR)/$(KERNEL_NAME)
 
 TESTS_OPTIONS ?= WITH_MSG
 
@@ -38,7 +38,7 @@ LIBS = $(LIB_TARGET) # Useful to compil stdlib from kernel Makefile
 # User apps
 #
 
-BIN_DIR = $(OUTPUT)/user
+BIN_DIR = $(BUILD_DIR)/user
 include build/apps-integration.mk
 
 #
