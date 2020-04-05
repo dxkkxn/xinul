@@ -47,7 +47,7 @@ def operationFunc(args):
 	fetch = True
 	
 	for src in args.inputs:
-		print('Extract %s' % src.name)
+		sys.stdout.write('Extract %s' % src.name)
 		# Make sure that the output directory is created
 		outputDir = os.path.abspath(os.path.dirname(os.path.join(args.outputDir, src.name)))
 		if not os.path.exists(outputDir):
@@ -61,7 +61,7 @@ def operationFunc(args):
 		
 		# Open output
 		with open(os.path.join(args.outputDir, src.name), 'w') as out:
-			print(out.name)
+			print(" to %s" % out.name)
 			for l in src.readlines():
 				if l in closeFetch:
 					fetch = False
