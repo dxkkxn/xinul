@@ -29,6 +29,7 @@ cp -r $TOP/src/lib $SRC_DIR
 #
 # user land
 #
+
 cd $TOP/src/user
 mkdir -p $USER_DIR
 $S2B -o $USER_DIR Makefile
@@ -36,3 +37,11 @@ cp -r build tests hello $USER_DIR/
 cd ulib
 $S2B -o $USER_DIR/ulib crt0.c sbrk.c syscall.h
 cp weak-syscall-stubs.S_ $USER_DIR/ulib/weak-syscall-stubs.S
+
+
+#
+# Kernel land
+#
+
+cd $TOP/src/kernel/boot
+$S2B -o $KERNEL_DIR/boot `find common -type f`
