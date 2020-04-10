@@ -25,7 +25,6 @@ void strap_handler(uint64_t scause, uint64_t sepc, struct caller_context *cc)
 				break;
 			case intr_s_external:
 				keyboard_handler();
-				csr_clear(sip, MIP_SEIP);
 				break;
 			default:
 				die(
