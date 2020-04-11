@@ -60,7 +60,7 @@ void kbd_init(void)
 void keyboard_handler()
 {
 	char s[2];
-	int scancode = getchar();
+	int scancode = kgetchar();
 	if (scancode != -1) {
 		s[0] = (char) scancode;
 		s[1] = '\0';

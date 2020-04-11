@@ -14,7 +14,7 @@ typedef struct console_device {
  */
 extern console_device_t *console_dev;
 
-static inline int getchar()
+static inline int kgetchar()
 {
 	return console_dev->getchar();
 }
