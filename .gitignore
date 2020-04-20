@@ -1,4 +1,5 @@
 src/build/
+src/.image-built
 .lvimrc
 tags
 .idea/
