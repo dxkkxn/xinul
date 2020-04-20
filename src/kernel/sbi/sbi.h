@@ -40,9 +40,12 @@ uint64_t handle_sbi_call(uint64_t call_no, uintptr_t arg0, uintptr_t arg1, uintp
  *
  * Cette fonction configure la prochaine interruption timer machine delta ms dans le future.
  *
- * Cette appel sbi va :
- * - activer les interruption timer machine;
- * - configurer les registre du clint.
+ * Cette appel sbi fournit  un service de timer pour le mode supervisor.
+ * Celui-ci sera notifié delta ms dans le future par la levé d'une interruption timer supervisor (STI).
+ *
+ * Plus précisément, cette appel sbi depuis le mode supervisor a pour but de:
+ * - aquitter l'interruption timer supervisor (opération seulement possible en mode machine) (bit STIP);
+ * - programmer une interruption timer supervisor delta ms dans le futur.
  *
  *@param delta : réglage de la prochaine interruption à cur + delta ms.
  */

@@ -10,9 +10,10 @@
 #include "assert.h"
 #include "riscv.h"
 
-#include "trap.h"
+#include "traps/trap.h"
 #include "timer.h"
 #include "sbi.h"
+
 const char *interruption_names[16] = {
 		"u_software",
 		"s_software",

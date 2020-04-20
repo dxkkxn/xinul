@@ -7,10 +7,16 @@
 
 #include "string.h"
 #include "stdio.h"
+#include "assert.h"
+
 #include "userspace_apps.h"
 
 const struct uapps *find_app(const char *name)
 {
+#ifdef STUDENT
+	assert(0 && "Not yet implemented.");
+	return NULL;
+#else // END STUDENT
         const struct uapps *app = symbols_table;
 
         while (app->name != NULL) {
@@ -20,5 +26,6 @@ const struct uapps *find_app(const char *name)
                 app++;
         }
         return NULL;
+#endif // STUDENT
 }
 

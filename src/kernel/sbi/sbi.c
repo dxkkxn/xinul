@@ -7,17 +7,21 @@
  * See license for license details.
  */
 
-#include "sbi.h"
+#include "sbi/sbi.h"
 
 /*
- * sbi call set timer
- * Configuration de la prochaine interruption timer supervisor delta ms dans le future.
+ * sbi_call_set_timer
  *
- * Cette appel sbi depuis le mode supervisor a pour but de:
- * - aquitter l'interruption timer supervisor (opération seulement possible en mode machine);
+ * Cette fonction configure la prochaine interruption timer machine delta ms dans le future.
+ *
+ * Cette appel sbi fournit  un service de timer pour le mode supervisor.
+ * Celui-ci sera notifié delta ms dans le future par la levé d'une interruption timer supervisor (STI).
+ *
+ * Plus précisément, cette appel sbi depuis le mode supervisor a pour but de:
+ * - aquitter l'interruption timer supervisor (opération seulement possible en mode machine) (bit STIP);
  * - programmer une interruption timer supervisor delta ms dans le futur.
  *
- * @param delta : réglage de la prochaine interruption à cur + delta ms.
+ *@param delta : réglage de la prochaine interruption à cur + delta ms.
  */
 void sbi_call_set_timer(uint64_t delta)
 {

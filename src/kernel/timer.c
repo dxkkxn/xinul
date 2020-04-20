@@ -1,10 +1,11 @@
 #include "riscv.h"
 #include "stdio.h"
 
-#include "sbi.h"
-#include "scheduler.h"
+#include "sbi/sbi.h"
 #include "drivers/clint.h"
 #include "timer.h"
+#ifndef STUDENT
+#include "scheduler.h"
 
 // Compteur de temps
 static unsigned long timer = 0;
@@ -27,6 +28,8 @@ static void print_time(void)
 
 int clock_free_processes();
 
+#endif // STUDENT
+
 /*
  * Set machine timer
  *
@@ -44,16 +47,24 @@ void set_machine_timer_interrupt(uint64_t delta_ms)
 	 * - clint_dev->clk_freq indique la fréquence d'incrémentations du registre time.
 	 * - clint_dev->base_addr indique l'adresse où est mapé la base des registres du clint.
 	 *
-	 * Les macros set_mtimecmp et get_mtime de riscv.h sont données pour lire et écrire les registres de ce composant.
+	 * Les macros get_mtime() et set_mtimecmp(x) de "riscv.h" sont données pour lire et écrire les registres de ce composant.
 	 */
+
+#ifndef STUDENT
 	set_mtimecmp(get_mtime() + delta_ms * (clint_dev->clk_freq / 1000));
 
 	// Activation du timer machine
 	csr_set(mie, MIP_MTIP);
+
+#endif // STUDENT
 }
 
 void handle_mtimer_interrupt()
 {
+#ifdef STUDENT
+	printf("Tic ");
+#else // END STUDENT
+
 	// trigger a supervisor timer interrupt
 	csr_set(mip, MIP_STIP);
 
@@ -62,10 +73,16 @@ void handle_mtimer_interrupt()
 	 * would go back here right after the ret instruction)
 	 */
 	csr_clear(mie, MIP_MTIP);
+#endif // STUDENT
+
 }
 
 void handle_stimer_interrupt()
 {
+#ifdef STUDENT
+	printf("Toc ");
+#else // END STUDENT
+
 	const uint64_t delta = 1000 / CLK_IT_FREQ; // ms
 
 	timer++;
@@ -89,8 +106,10 @@ void handle_stimer_interrupt()
 	{
 		schedule();
 	}
+#endif // STUDENT
 }
 
+#ifndef STUDENT
 // Endors le processus tant que "clock" n'est pas passée.
 void wait_clock(unsigned long clock)
 {
@@ -169,3 +188,5 @@ unsigned long current_clock(void)
 {
 	return timer;
 }
+
+#endif // STUDENT

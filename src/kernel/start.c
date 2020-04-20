@@ -14,16 +14,17 @@
 #include "stdint.h"
 #include "string.h"
 
+#include "drivers/splash.h"
+#ifndef STUDENT
 #include "scheduler.h"
 #include "program.h"
-#include "tests.h"
-#include "vmm.h"
-#include "hmm.h"
+#include "tests/tests.h"
+#include "vmm/vmm.h"
+#include "vmm/hmm.h"
 #include "shm.h"
 #include "syscall.h"
 #include "timer.h"
 #include "kbd.h"
-#include "splash.h"
 
 // Programme par défaut en fonction de la machine, cf kernel/bot/$(MACHINE)/setup.c
 extern char * default_program;
@@ -51,15 +52,14 @@ int64_t kernel_tests(void *arg)
 	return 0;
 }
 
-/* VGA fonts */
-#include "font.h"
-
+#endif // STUDENT
 
 int kernel_start()
 {
 	splash_screen();
 	splash_vga_screen();
 
+#ifndef STUDENT
 	printf("Keyboard initialization...");
 	kbd_init();
 	printf("\r\t\t\t\t\t\t\t[  \x1b[2mOK\x1b[0m  ]\n");
@@ -100,5 +100,7 @@ int kernel_start()
 		sched_kstart(kernel_tests, 10, "Launcher", 0);
 	}
 
-	assert(0 && "end of main");
+#endif // STUDENT
+	puts("Hello world!");
+exit(0);
 }

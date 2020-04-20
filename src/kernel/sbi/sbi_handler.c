@@ -10,35 +10,40 @@
 #include "assert.h"
 #include "riscv.h"
 
-#include "sbi.h"
+#include "sbi/sbi.h"
 #include "timer.h"
 
 /*
  * SBI handlers
  *
- * Les fonctions ce fichier sont appelées suite à un appel SBI.
+ * Les fonctions de ce fichier sont appelées suite à un appel SBI (passage du mode supervisor au mode machine).
  * Ces fonctions doivent donc être exécutées en mode machine.
  */
 
 /*
  * sbi handler set_timer
  *
- * Cette fonction configure la prochaine interruption timer supervisor delta ms dans le future.
+ * Cette appel sbi fournit  un service de timer pour le mode supervisor.
+ * Celui-ci sera notifié delta ms dans le future par la levé d'une interruption timer supervisor (STI).
  *
- * Elle a pour but :
- * - aquitter l'interruption timer supervisor (opération seulement possible en mode machine);
- * - programmer une interruption timer supervisor delta ms dans le futur.
+ * Plus précisément, cette appel sbi depuis le mode supervisor a pour but de:
+ * - aquitter l'interruption timer supervisor (opération seulement possible en mode machine) (bit STIP);
+ * - programmer une interruption timer supervisor delta ms dans le futur par l'intermédiaire d'une interruption timer machine.
  *
  *@param delta : réglage de la prochaine interruption à cur + delta ms.
  */
 void handle_sbi_set_timer(uint64_t delta)
 {
+#ifndef STUDENT
 	set_machine_timer_interrupt(delta);
-	
+#endif // STUDENT
+
 	/*
-	 * Il faut acquiter l'interruption ici car SIP_STIP est read-only en mode superviseur
+	 * Il faut acquiter l'interruption timer supervisor ici car SIP_STIP est read-only en mode superviseur
 	 */
+#ifndef STUDENT
 	csr_clear(mip, MIP_STIP);
+#endif // STUDENT
 }
 
 uint64_t handle_sbi_call(
