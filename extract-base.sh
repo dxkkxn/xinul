@@ -10,13 +10,13 @@ SRC_DIR=$BASE_DIR/src
 USER_DIR=$SRC_DIR/user
 KERNEL_DIR=$SRC_DIR/kernel
 
-rm -rf $BASE_DIR
+#rm -rf $BASE_DIR
 mkdir -p $SRC_DIR
 
 #
 # Top dir
 #
-cp -r .gitignore README.md docker $BASE_DIR
+cp -r .gitignore README.md docker docs $BASE_DIR
 
 #
 # src
