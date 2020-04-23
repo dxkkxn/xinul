@@ -69,6 +69,6 @@ $S2B -o $KERNEL_DIR start.c mem.c timer.c timer.h userspace_apps.c userspace_app
 # GIT
 cd $BASE_DIR
 git init
-git add *
+git add * .gitignore
 git commit -m "Xinul skeleton"
 
