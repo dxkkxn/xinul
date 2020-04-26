@@ -7,8 +7,8 @@
 
 #include "scheduler.h"
 #include "program.h"
-#include "tests.h"
-#include "sbi.h"
+#include "tests/tests.h"
+#include "sbi/sbi.h"
 
 int64_t hello_user(void* arg)
 {

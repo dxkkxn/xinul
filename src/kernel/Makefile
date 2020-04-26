@@ -56,7 +56,7 @@ KERNEL_SRC_DIRS += drivers/$(MACHINE)
 
 INCLUDE_DIRS = \
 	$(LIB_INCLUDES) \
-	$(KERNEL_SRC_DIRS) \
+	. \
 	boot/common \
 
 #

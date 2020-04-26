@@ -17,7 +17,7 @@
 #include "kbd.h"
 #include "timer.h"
 #include "msgqueue.h"
-#include "shm.h"
+#include "vmm/shm.h"
 
 extern char userspace_end[];
 

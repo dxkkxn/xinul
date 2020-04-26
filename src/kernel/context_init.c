@@ -3,8 +3,8 @@
 #include "encoding.h"
 
 #include "context.h"
-#include "vmm.h"
-#include "crt_process.h"
+#include "vmm/vmm.h"
+#include "asm/crt_process.h"
 #include "scheduler.h"
 
 void context_init(context_t *c, void *arg)

@@ -5,10 +5,10 @@
 #include "riscv.h"
 #include "assert.h"
 
-#include "trap.h"
-#include "vmm.h"
+#include "traps/trap.h"
+#include "vmm/vmm.h"
 #include "program.h"
-#include "crt_process.h"
+#include "asm/crt_process.h"
 #include "mem.h"
 
 

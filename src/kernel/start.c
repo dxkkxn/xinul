@@ -21,7 +21,7 @@
 #include "tests/tests.h"
 #include "vmm/vmm.h"
 #include "vmm/hmm.h"
-#include "shm.h"
+#include "vmm/shm.h"
 #include "syscall.h"
 #include "timer.h"
 #include "kbd.h"

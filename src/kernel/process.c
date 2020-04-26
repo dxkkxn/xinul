@@ -8,16 +8,16 @@
 
 #include "string.h"
 #include "stdio.h"
-#include "mem.h"
 #include "riscv.h"
 #include "assert.h"
 
-#include "vmm.h"
-#include "pmm.h"
-#include "shm.h"
+#include "mem.h"
+#include "vmm/vmm.h"
+#include "vmm/pmm.h"
+#include "vmm/shm.h"
 #include "userspace_apps.h"
 #include "context.h"
-#include "crt_process.h"
+#include "asm/crt_process.h"
 
 
 process_t *processes[NBPROC];

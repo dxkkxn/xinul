@@ -12,7 +12,7 @@
 
 #include "traps/trap.h"
 #include "timer.h"
-#include "sbi.h"
+#include "sbi/sbi.h"
 
 const char *interruption_names[16] = {
 		"u_software",

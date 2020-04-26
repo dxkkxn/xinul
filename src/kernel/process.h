@@ -10,13 +10,13 @@
 
 #include "context.h"
 #include "queue.h"
-#include "pmm.h"
+#include "vmm/pmm.h"
 
 
 typedef struct __process_st process_t;
 
 #include "scheduler.h"
-#include "vmm.h"
+#include "vmm/vmm.h"
 
 
 typedef struct list_head list_process_t;
