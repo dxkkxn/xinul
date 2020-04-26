@@ -46,6 +46,7 @@ include build/apps-integration.mk
 #
 
 KERNEL_SRC_DIRS = . $(sort $(dir $(wildcard */)))
+KERNEL_SRC_DIRS := $(KERNEL_SRC_DIRS:/=)
 
 # Specific machine driver
 KERNEL_SRC_DIRS += drivers/$(MACHINE)
