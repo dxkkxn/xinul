@@ -11,5 +11,7 @@
 
 clint_device_t cep_clint = {
 		.clk_freq = 10000000,
-		.base_addr = 0x2000000
+		.base_addr = 0x2000000,
+		.supervisor_clint_available = true,
+		.user_clint_available = true,
 };
