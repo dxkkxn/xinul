@@ -10,13 +10,14 @@ DOCKERFILE_DIR = .
 UID != id -u
 GID != id -g
 DK_SHARE_DIR = $(PWD)
+DK_WORKING_DIR = /src
 RUN_CMD = docker run
 RUN_OPTS = \
 -ti \
 -u $(UID):$(GID) \
 --rm \
--v $(DK_SHARE_DIR):$(DK_SHARE_DIR) \
--w $(DK_SHARE_DIR)
+-v $(DK_SHARE_DIR):$(DK_WORKING_DIR) \
+-w $(DK_WORKING_DIR)
 
 build: .image-built
 
