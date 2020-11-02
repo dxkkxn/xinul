@@ -47,7 +47,7 @@ void set_machine_timer_interrupt(uint64_t delta_ms)
 	 * - clint_dev->clk_freq indique la fréquence d'incrémentations du registre time.
 	 * - clint_dev->base_addr indique l'adresse où est mapé la base des registres du clint.
 	 *
-	 * Les macros get_mtime() et set_mtimecmp(x) de "riscv.h" sont données pour lire et écrire les registres de ce composant.
+	 * Les macros get_mtime() et set_mtimecmp(x) de "drivers/clint.h" sont données pour lire et écrire les registres de ce composant.
 	 */
 
 #ifndef STUDENT
@@ -83,18 +83,25 @@ void handle_stimer_interrupt()
 	printf("Toc ");
 #else // END STUDENT
 
-	const uint64_t delta = 1000 / CLK_IT_FREQ; // ms
+	const uint64_t delta_ms = 1000 / CLK_IT_FREQ;
 
 	timer++;
 
-	/* Configuration de la prochaine interruption timer machine :
-	 * - configuration de mtimecmp 10 delta dans le future;
-	 * - va automatiquement acquitter MTIP;
-	 * - réactivation des interruptions timer machine.
+	/*
+	 * Configuration de la prochaine interruption timer.
+	 * - configuration de timecmp delta_ms dans le future;
+	 * - va automatiquement acquitter XTIP;
+	 * - réactivation des interruptions timer.
 	 * - acquittement de l'interruption timer supervisor car le bit
 	 *   correspondant dans sip est read-only en mode superviseur
 	 */
-	sbi_call_set_timer(delta);
+	if (clint_dev->supervisor_clint_available)
+	{
+		set_stimecmp(get_stime() + delta_ms * (clint_dev->clk_freq / 1000));
+	} else
+	{
+		sbi_call_set_timer(delta_ms);
+	}
 
 #ifdef PRINT_TIME
 	if (timer % 100 == 0) // 1 seconde
@@ -167,12 +174,18 @@ void do_for_seconds(int sec, void (*callback)())
 void clock_init()
 {
 	// On programme la première interruption machine timer
-	const uint32_t delta = 1000 / CLK_IT_FREQ; // ms
-	/* Appel SBI set timer :
-	 * - Configuration du registre mtimecmp dans le future
-	 * - Activation des interruptions timer machine
-	 */
-	sbi_call_set_timer(delta);
+	const uint32_t delta_ms = 1000 / CLK_IT_FREQ;
+	if(clint_dev->supervisor_clint_available)
+	{
+		set_stimecmp(get_stime() + delta_ms * (clint_dev->clk_freq / 1000));
+	} else
+	{
+		/* Appel SBI set timer :
+		 * - Configuration du registre mtimecmp dans le future
+		 * - Activation des interruptions timer machine
+		 */
+		sbi_call_set_timer(delta_ms);
+	}
 
 	// Activation des interruption timer supervisor
 	csr_set(sie, MIP_STIP);
