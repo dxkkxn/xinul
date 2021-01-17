@@ -21,6 +21,9 @@
 
 extern char userspace_end[];
 
+/* Tableau des traitants */
+void *sysc_handlers[NB_SYSCALLS];
+
 /*
  * Vérification des pointeurs
  */
