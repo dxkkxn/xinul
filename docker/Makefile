@@ -23,21 +23,22 @@ build: .image-built
 
 .image-built: $(DOCKERFILE_DIR)/Dockerfile Makefile
 	docker image build -t $(IMAGE_NAME) $(DOCKERFILE_DIR)
-	touch .image-built
+	touch .image-built .image-available
 
+.image-available: pull
 .PHONY: dl, pull
-dl pull : 
+dl pull :
 	docker pull $(IMAGE_NAME):latest
-	touch .image-built
+	touch .image-available
 
-bash:.image-built
+bash:.image-available
 	$(RUN_CMD) $(RUN_OPTS) $(IMAGE_NAME) /bin/bash
 
 # Exécuter une commande avec un container
 # DK_OPTS et CMD défnie par l'appelant
-exec:.image-built
+exec:.image-available
 	$(RUN_CMD) $(RUN_OPTS) $(DK_OPTS) $(IMAGE_NAME) $(CMD)
 
 clean:
 	docker image rm $(IMAGE_NAME); \
-	rm -f .image-built
+	rm -f .image-built .image-available
