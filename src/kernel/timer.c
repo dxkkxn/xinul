@@ -1,10 +1,10 @@
 #include "riscv.h"
 #include "stdio.h"
 
-#include "sbi/sbi.h"
 #include "drivers/clint.h"
 #include "timer.h"
 #ifndef STUDENT
+#include "sbi/sbi.h"
 #include "scheduler.h"
 
 // Compteur de temps

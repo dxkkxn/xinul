@@ -12,7 +12,9 @@
 
 #include "traps/trap.h"
 #include "timer.h"
+#ifndef STUDENT
 #include "sbi/sbi.h"
+#endif // STUDENT
 
 const char *interruption_names[16] = {
 		"u_software",
@@ -53,10 +55,12 @@ void mtrap_handler(uintptr_t mcause, void *mepc, struct trap_frame *tf)
 	} else {
 		// Exception cause
 		switch (mcause) {
+#ifndef STUDENT
 			case CAUSE_SUPERVISOR_ECALL:
 				// call the function with the saved registers a7, a0, a1 and a2
 				handle_sbi_call(tf->a7, tf->a0, tf->a1, tf->a2);
 				break;
+#endif // STUDENT
 			default:
 				blue_screen(tf);
 				// no return
