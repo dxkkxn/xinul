@@ -79,27 +79,28 @@ void handle_mtimer_interrupt()
 
 void handle_stimer_interrupt()
 {
-#ifdef STUDENT
-	printf("Toc ");
-#else // END STUDENT
-
+#ifndef STUDENT
 	const uint64_t delta_ms = 1000 / CLK_IT_FREQ;
 
 	timer++;
 
 	/*
 	 * Configuration de la prochaine interruption timer.
-	 * - configuration de timecmp delta_ms dans le future;
-	 * - va automatiquement acquitter XTIP;
-	 * - réactivation des interruptions timer.
-	 * - acquittement de l'interruption timer supervisor car le bit
-	 *   correspondant dans sip est read-only en mode superviseur
 	 */
 	if (clint_dev->supervisor_clint_available)
 	{
+		/*
+	 * - configuration de stimecmp delta_ms dans le future;
+	 * - va automatiquement acquitter STIP;
+	 */
 		set_stimecmp(get_stime() + delta_ms * (clint_dev->clk_freq / 1000));
 	} else
 	{
+		/*
+		 * Configuration du timer par SBI en mode machine
+		* L'acqittement de l'interruption timer supervisor doit être réalisée en mode machine
+		 * car le bit STIP dans sip est read-only en mode superviseur.
+		 */
 		sbi_call_set_timer(delta_ms);
 	}
 
