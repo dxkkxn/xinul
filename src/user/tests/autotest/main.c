@@ -5,7 +5,7 @@
 
 #include "sysapi.h"
 
-#define TESTS_NUMBER 12
+#define TESTS_NUMBER 16
 
 const char *tests[TESTS_NUMBER] = {
 		"test0",
@@ -20,6 +20,10 @@ const char *tests[TESTS_NUMBER] = {
         "test11",
         "test12",
         "test13",
+        "test14",
+        "test15",
+        "test16",
+        "test17",
 };
 
 /*
