@@ -16,7 +16,7 @@ mkdir -p $SRC_DIR
 #
 # Top dir
 #
-cp -r .gitignore README.md docker docs $BASE_DIR
+cp -r .gitignore README.md docker docs examples $BASE_DIR
 
 #
 # src
