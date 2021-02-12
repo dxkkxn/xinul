@@ -1,12 +1,12 @@
 # Docker PCSEA RISC-V
 
-L'image Docker attaché au projet PCSEA RISC-V permet de profiter
-rapidement d'un environnement de cross-compilation  fonctionnel pour
+L'image Docker attachée au projet PCSEA RISC-V permet de profiter
+rapidement d'un environnement de cross-compilation  et de simulation fonctionnel pour
 l’architecture RISC-V.
 
-Avec elle il est possible de :
+Avec cette image il est possible de :
 
-* Cross-compiler le le système d'exploitation, parties user et kernel;
+* Cross-compiler le système d'exploitation, parties user et kernel;
 * simuler le kernel avec Qemu;
 * débuger le kernel avec GDB et Qemu;
 * cross-compiler un programme RISC-V elf et l’exécuter sur une machine
@@ -14,9 +14,9 @@ host grâce à Spike et PK;
 * lancer un bash pour utiliser l'environnement librement.
 
 
-Cette image peut également servir dans un second temps pour réaliser des
+Cette image pourra également servir dans un second temps pour réaliser des
 tests automatiques à travers le pipeline de Gitlab. Avec cette solution,
-il serait possible de vérifier la non régression à chaque commit.
+il serait possible de vérifier la non régression après chaque commit.
 
 Cette image permet avant tout une compilation croisée et un lancement
 rapide de l'OS sans altérer le système invité.
@@ -27,10 +27,9 @@ rapide de l'OS sans altérer le système invité.
 
 ## Image RISC-V
 
-Cette image est basée sur Debian testing et contient :
+Cette image est basée sur Debian et contient :
 
 * riscv-gnu-toolchain
-* riscv-pk
 * riscv-spike
 * riscv-fesvr
 * riscv-qemu
@@ -38,7 +37,7 @@ Cette image est basée sur Debian testing et contient :
 ## Makefile
 
 * build : construit l'image Docker depuis le fichier Dockerfile. Va
-télécharger Debian testing puis clonner et compiler les sources.
+télécharger Debian puis clonner et compiler les sources.
 * dl ou pull : télécharge l'image depuis le site de Docker hub (<2Go)
 mais pas besoins de compiler. Vous aurez les version des programmes au
 moment où l'image a été générée et la compilation du projet a été vérifiée.
@@ -63,7 +62,7 @@ Vous pouvez aller boire un café (un allongé) !
 
 Pour lancer le conteneur Docker:
 
-    docker container run -ti --name env-riscv riscv /bin/b
+    docker container run -ti --name env-riscv riscv /bin/bash
 
 
 ### Clean
