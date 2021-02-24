@@ -47,6 +47,7 @@ static void delegate_traps()
 	/*
 	 * Délégations de certaines interruptions et exceptions vers le mode Supervisor.
 	 * A compléter au fur et à mesure du projet celon les besoins.
+	 * Rien à faire ici dans un premier temps!
 	 * CSR concernés: mideleg et medeleg.
 	 */
 #endif // STUDENT
