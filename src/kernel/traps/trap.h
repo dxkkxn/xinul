@@ -13,7 +13,7 @@
 #include "encoding.h"
 
 #define ENABLE_SUPERVISOR_INTERRUPTS()  csr_set(sstatus, MSTATUS_SIE);
-#define DISABLE_SUPERVISOR_INTERRUPTS() csr_clear(mstatus, MSTATUS_SIE);
+#define DISABLE_SUPERVISOR_INTERRUPTS() csr_clear(sstatus, MSTATUS_SIE);
 
 #define INTERRUPT_CAUSE_FLAG (1UL << 63)
 
