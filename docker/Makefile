@@ -7,8 +7,8 @@
 
 IMAGE_NAME = barbem/risc-v_cep
 DOCKERFILE_DIR = .
-UID != id -u
-GID != id -g
+UID = $(shell id -u)
+GID = $(shell id -g)
 DK_SHARE_DIR = $(PWD)
 DK_WORKING_DIR = /src
 RUN_CMD = docker run
