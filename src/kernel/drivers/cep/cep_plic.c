@@ -26,24 +26,24 @@
 static void cep_plic_init()
 {
 	// target 0 (cpu M mode) enable -> everything
-	uint64_t *plic_addr = (uint64_t *) CEP_PLIC_ENABLE;
+	uint32_t *plic_addr = (uint32_t *)CEP_PLIC_ENABLE;
 	*plic_addr = -1;
 	plic_addr++;
 	*plic_addr = -1;
 
 	// target 0 priority threshold (all interruption from source with prio > 0 will be raised
-	*((uint64_t *) CEP_PLIC_TARGET) = 0;
+	*((uint32_t *)CEP_PLIC_TARGET) = 0;
 
-	*((uint32_t *) (CEP_PLIC_SOURCE + CEP_UART0_IRQ * 0x4)) = 1; // source 1 priority (uart interrupt)
+	*((uint32_t *)(CEP_PLIC_SOURCE + CEP_UART0_IRQ * 0x4)) = 1; // source 1 priority (uart interrupt)
 
 	// target 1 (cpu S mode) enable -> everything
-	plic_addr = (uint64_t *) (CEP_PLIC_ENABLE + 0x80);
+	plic_addr = (uint32_t *)(CEP_PLIC_ENABLE + 0x80);
 	*plic_addr = -1;
 	plic_addr++;
 	*plic_addr = -1;
 
 	// target 1 priority threshold (all interruption from source with prio > 0 will be raised
-	*((uint64_t *) (CEP_PLIC_TARGET + 0x1000)) = 0;
+	*((uint32_t *)(CEP_PLIC_TARGET + 0x1000)) = 0;
 }
 
 plic_device_t cep_plic = {
