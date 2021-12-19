@@ -1,5 +1,8 @@
 /*** REMOVE LIBC DEPENDENCIES -- Simon Nieuviarts ***/
 
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#pragma GCC diagnostic ignored "-Wfree-nonheap-object"
+
 #define LACKS_UNISTD_H
 #define LACKS_SYS_PARAM_H
 #define HAVE_MMAP 0
