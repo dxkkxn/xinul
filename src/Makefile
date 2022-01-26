@@ -52,7 +52,7 @@ GDB_OPTS = -q \
 # Qemu
 #
 
-QEMU = qemu-system-riscv64
+QEMU = $(RISCV_ROOT)qemu-system-riscv64
 ifeq ("$(MACHINE)", "spike")
 	QEMU_MACHINE=spike_v1.10
 else ifeq ("$(MACHINE)", "sifive_u")
