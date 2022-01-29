@@ -47,7 +47,7 @@ RUN apt-get update && \
 #
 RUN cd /src && \
     apt-get update && \
-    apt-get install -y git python libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev libsdl1.2-dev && \
+    apt-get install -y git python libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev libsdl1.2-dev ninja-build && \
     apt-get autoclean && \
     git clone --depth 1 https://gitlab.com/barbem/qemu_for_cep.git --branch=xinul && \
     cd qemu_for_cep && \
