@@ -25,9 +25,13 @@ build: .image-built
 	docker image build -t $(IMAGE_NAME) $(DOCKERFILE_DIR)
 	touch .image-built .image-available
 
-.image-available: pull
-.PHONY: dl, pull
-dl pull :
+.PHONY: pull
+pull:
+	docker pull $(IMAGE_NAME):latest
+	touch .image-available
+
+dl: .image-available
+.image-available:
 	docker pull $(IMAGE_NAME):latest
 	touch .image-available
 
@@ -36,7 +40,7 @@ bash:.image-available
 
 # Exécuter une commande avec un container
 # DK_OPTS et CMD défnie par l'appelant
-exec:.image-available
+exec: .image-available
 	$(RUN_CMD) $(RUN_OPTS) $(DK_OPTS) $(IMAGE_NAME) $(CMD)
 
 clean:
