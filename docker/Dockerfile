@@ -29,17 +29,6 @@ RUN cd /src && \
     rm -r /src/riscv-gnu-toolchain
 
 #
-# riscv-fesvr
-#
-RUN cd /src && \
-    git clone https://github.com/riscv/riscv-fesvr && \
-    cd riscv-fesvr && \
-    ./configure --prefix=$RISCV --target=riscv64-unknown-elf && \
-    make -j8 && \
-    make install && \
-    rm -r /src/riscv-fesvr
-
-#
 # Spike
 #
 RUN apt-get update && \
