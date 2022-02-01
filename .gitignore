@@ -1,0 +1,7 @@
+src/build/
+docker/.image*
+.lvimrc
+tags
+.idea/
+cmake-build-debug/
+CMakeLists.txt
