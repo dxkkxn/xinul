@@ -8,9 +8,10 @@
 .section .text.init,"ax",@progbits
 .globl _start
 _start:
-    la      sp, mstack + 2040
+    # La pile pointe sur la dernière case occupée
+    la      sp, mstack + 512
     j       main
 
-# Réservons une pile de 1024 mots de 64 bits
+# Réservons une pile de 512 mots de 64 bits
 mstack:
     .skip 4096
