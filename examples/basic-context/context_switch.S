@@ -41,5 +41,5 @@ context_switch:
 	ld s10,  96(a1)
 	ld s11, 104(a1)
 	# On passe la main au nouveau processus
-	ret
+	jr ra
 
