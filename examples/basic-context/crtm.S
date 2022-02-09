@@ -9,7 +9,7 @@
 .globl _start
 _start:
     # La pile pointe sur la dernière case occupée
-    la      sp, mstack + 512
+    la      sp, mstack + 512 * 8
     j       main
 
 # Réservons une pile de 512 mots de 64 bits
