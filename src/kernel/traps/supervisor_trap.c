@@ -33,9 +33,24 @@ void strap_handler(uint64_t scause, uint64_t sepc, struct caller_context *cc)
 				);
 		}
 	} else {
+		switch (scause) {
+			case CAUSE_STORE_PAGE_FAULT:
+				printf("Kernel: Process %d killed due to a store page fault\n", sched_get_active_pid());
+				sched_exit(0);
+				break;
+			case CAUSE_FETCH_PAGE_FAULT:
+				printf("Kernel: Process %d killed due to a fetch page fault\n", sched_get_active_pid());
+				sched_exit(0);
+				break;
+			case CAUSE_LOAD_PAGE_FAULT:
+				printf("Kernel: Process %d killed due to a load page fault\n", sched_get_active_pid());
+				sched_exit(0);
+				break;
+			default:
 				die(
 						"supervisor mode: unhandable exception %ld @ 0x%lx",
 						scause, sepc
 				);
+		}
 	}
 }

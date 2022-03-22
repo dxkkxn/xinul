@@ -33,12 +33,12 @@ static void delegate_traps()
 #ifndef STUDENT
 	// send S-mode interrupts and most exceptions straight to S-mode
 	uintptr_t interrupts = MIP_SSIP | MIP_STIP | MIP_SEIP;
-	uintptr_t exceptions = (1U << CAUSE_USER_ECALL);
+	uintptr_t exceptions = (1U << CAUSE_USER_ECALL) |
+						   (1U << CAUSE_STORE_PAGE_FAULT) |
+						   (1U << CAUSE_LOAD_PAGE_FAULT) |
+						   (1U << CAUSE_FETCH_PAGE_FAULT);
 //			(1U << CAUSE_MISALIGNED_FETCH) |
-//			(1U << CAUSE_FETCH_PAGE_FAULT) |
 //			(1U << CAUSE_BREAKPOINT) |
-//			(1U << CAUSE_LOAD_PAGE_FAULT) |
-//			(1U << CAUSE_STORE_PAGE_FAULT) |
 
 	csr_write(mideleg, interrupts);
 	csr_write(medeleg, exceptions);
