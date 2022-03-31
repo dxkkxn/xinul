@@ -89,7 +89,7 @@ void handle_stimer_interrupt()
 	 */
 	if (clint_dev->supervisor_clint_available)
 	{
-		/*
+	/*
 	 * - configuration de stimecmp delta_ms dans le future;
 	 * - va automatiquement acquitter STIP;
 	 */
@@ -98,7 +98,7 @@ void handle_stimer_interrupt()
 	{
 		/*
 		 * Configuration du timer par SBI en mode machine
-		* L'acqittement de l'interruption timer supervisor doit être réalisée en mode machine
+		 * L'acqittement de l'interruption timer supervisor doit être réalisée en mode machine
 		 * car le bit STIP dans sip est read-only en mode superviseur.
 		 */
 		sbi_call_set_timer(delta_ms);
