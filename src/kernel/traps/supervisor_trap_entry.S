@@ -6,7 +6,7 @@
 strap_entry:
     # On récupère la pile kernel sauvgardée dans sscratch
     csrrw sp, sscratch, sp
-    # Si elle est null, c'est que l'on a déjà la pile kernel
+    # Si elle est non nulle, c'est que l'on a déjà la pile kernel
     bnez sp, 1f
     csrrw sp, sscratch, sp
     # Sauvegarde du contexte
