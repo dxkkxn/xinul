@@ -2,20 +2,47 @@
 #set -x
 set -e
 
-TOP=$PWD
+TOP=$PWD/extract_tmp
 S2B="python3 $TOP/src2base.py"
-DEST_DIR=$(realpath base)
-echo Base directory: $DEST_DIR
+DEST_DIR=$(realpath xinul)
 SRC_DIR=$DEST_DIR/src
 USER_DIR=$SRC_DIR/user
 KERNEL_DIR=$SRC_DIR/kernel
 
-#rm -rf $DEST_DIR
+# Check if output and TOP directories exist
+if [ -d $TOP ]; then
+  echo "Error - The directory $TOP already exist. Press y to remove."
+  read input
+  if [[ $input = y ]]; then
+    echo "Remove $TOP"
+    rm -rf $TOP
+else
+  exit 1
+fi
+fi
+
+if [ -d $DEST_DIR ]; then
+  echo "Error - The directory $DEST_DIR already exist. Press y to remove."
+  read input
+  if [[ $input = y ]]; then
+    echo "Remove $DEST_DIR"
+    rm -rf $DEST_DIR
+else
+  exit 1
+fi
+fi
+
+# Archive repo to avoid additional files copy.
+mkdir $TOP
+git archive --format=tar HEAD | \
+    tar x -C $TOP
+
 mkdir -p $SRC_DIR
 
 #
 # Top dir
 #
+cd $TOP
 cp -r .gitignore README.md docker docs examples $DEST_DIR
 
 #
