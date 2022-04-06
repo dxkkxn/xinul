@@ -86,6 +86,10 @@ $S2B -o $KERNEL_DIR `find drivers -type f`
 cd traps
 $S2B -o $KERNEL_DIR/traps machine_trap_entry.S machine_trap.c trap.h blue_screen.c
 cd ..
+# Tests
+cd tests
+$S2B -o $KERNEL_DIR/tests it.c it.h
+cd ..
 # kernel
 $S2B -o $KERNEL_DIR start.c mem.c timer.c timer.h userspace_apps.c userspace_apps.h empty.c cons_write.c cons_write.h
 
