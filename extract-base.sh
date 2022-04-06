@@ -4,19 +4,19 @@ set -e
 
 TOP=$PWD
 S2B="python3 $TOP/src2base.py"
-BASE_DIR=$(realpath base)
-echo Base directory: $BASE_DIR
-SRC_DIR=$BASE_DIR/src
+DEST_DIR=$(realpath base)
+echo Base directory: $DEST_DIR
+SRC_DIR=$DEST_DIR/src
 USER_DIR=$SRC_DIR/user
 KERNEL_DIR=$SRC_DIR/kernel
 
-#rm -rf $BASE_DIR
+#rm -rf $DEST_DIR
 mkdir -p $SRC_DIR
 
 #
 # Top dir
 #
-cp -r .gitignore README.md docker docs examples $BASE_DIR
+cp -r .gitignore README.md docker docs examples $DEST_DIR
 
 #
 # src
@@ -63,7 +63,7 @@ cd ..
 $S2B -o $KERNEL_DIR start.c mem.c timer.c timer.h userspace_apps.c userspace_apps.h empty.c cons_write.c cons_write.h
 
 # GIT
-cd $BASE_DIR
+cd $DEST_DIR
 git init
 git add * .gitignore
 git commit -m "Xinul skeleton"
