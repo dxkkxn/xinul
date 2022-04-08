@@ -66,7 +66,7 @@ void *mapper_unmap(pagetable_t pgdir, void *address)
 {
 	assert(pgdir != NULL);
 	pagetable_t pgdir2, ptable;
-	uint8_t pdi, pd2i, pti;
+	uint16_t pdi, pd2i, pti;
 
 	/* Set dir/table indexes */
 	pdi = (uint64_t) address >> 30;
