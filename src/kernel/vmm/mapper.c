@@ -62,6 +62,24 @@ void mapper_map(pagetable_t pdirectory, void *page, void *frame,
 	init_pagetable_entry(pte, frame, readable, writable, executable, user);
 }
 
+void *mapper_getmap(pagetable_t pgdir, void *address)
+{
+	assert(pgdir != NULL);
+	pagetable_t pgdir2, ptable;
+	uint16_t pdi, pd2i, pti;
+
+	/* Set dir/table indexes */
+	pdi = (uint64_t) address >> 30;
+	pd2i = (uint64_t) address >> 21 & 0x1FF;;
+	pti = ((uint64_t) address >> 12) & 0x3FF;
+
+	pgdir2 = get_pagetable_entry_target_address(pgdir + pdi);
+	ptable = get_pagetable_entry_target_address(pgdir2 + pd2i);
+	void *frame = get_pagetable_entry_target_address(ptable + pti);
+
+	return frame;
+}
+
 void *mapper_unmap(pagetable_t pgdir, void *address)
 {
 	assert(pgdir != NULL);

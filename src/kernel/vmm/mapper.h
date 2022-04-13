@@ -24,6 +24,14 @@
 void mapper_map(pagetable_t pdirectory, void *page, void *frame, uint8_t readable, uint8_t writable, uint8_t executable, uint8_t user);
 
 /**
+ * Get the frame corresponding to the specified virtual address.
+ *
+ * @param satp register to find page_dir the page directory to modify.
+ * @param address the address to unmap.
+ */
+ void *mapper_getmap(pagetable_t pgdir, void *address);
+
+/**
  * Unmap the specified virtual address.
  *
  * @param satp register to find page_dir the page directory to modify.
