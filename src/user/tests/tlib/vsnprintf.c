@@ -39,6 +39,25 @@ int vsnprintf(char * out, size_t n, const char* s, va_list vl)
                 format = 0;
                 break;
             }
+				case 'u': {
+					unsigned long num = longarg ? va_arg(vl,
+					unsigned long) : va_arg(vl,
+											unsigned int);
+					long digits = 1;
+					for (long nn = num; nn /= 10; digits++);
+					for (int i = digits - 1; i >= 0; i--)
+					{
+						if(out && pos + i < n)
+						{
+							out[pos + i] = '0' + (num % 10);
+						}
+						num /= 10;
+					}
+					pos += digits;
+					longarg = 0;
+					format = 0;
+					break;
+				}
             case 'd': {
                 long num = longarg ? va_arg(vl, long) : va_arg(vl, int);
                 if (num < 0) {

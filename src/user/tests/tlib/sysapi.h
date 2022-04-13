@@ -167,4 +167,14 @@ void *shm_create(const char*);
 void *shm_acquire(const char*);
 void shm_release(const char*);
 
+/*
+ * RISC-V asm
+ */
+#define csr_read(csr)														\
+({																			\
+	register unsigned long __v;													\
+	__asm__ __volatile__ ("csrr %0, " #csr : "=r" (__v) : : "memory");		\
+	__v;																	\
+})
+
 #endif /* _SYSAPI_H_ */
