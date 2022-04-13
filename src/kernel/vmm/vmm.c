@@ -88,8 +88,8 @@ satp_csr get_kernel_satp()
 }
 
 
-void init_pagetable_entry(struct pte *pte, void *frame_addr, uint8_t readable, uint8_t writable, uint8_t executable,
-						  uint8_t user)
+void init_pagetable_entry(struct pte *pte, void *frame_addr, uint8_t readable,
+			  uint8_t writable, uint8_t executable, uint8_t user)
 {
 	pte->V = 1;
 	pte->R = readable;
@@ -97,12 +97,12 @@ void init_pagetable_entry(struct pte *pte, void *frame_addr, uint8_t readable, u
 	pte->X = executable;
 	pte->U = user;
 	pte->G = 1;
-	pte->A = 1;
-	pte->D = 1;
+	pte->A = 0;
+	pte->D = 0;
 	pte->RSW = 0;
-	pte->PPN0 = (uint64_t) frame_addr >> 12;
-	pte->PPN1 = (uint64_t) frame_addr >> 21;
-	pte->PPN2 = (uint64_t) frame_addr >> 30;
+	pte->PPN0 = (uint64_t)frame_addr >> 12;
+	pte->PPN1 = (uint64_t)frame_addr >> 21;
+	pte->PPN2 = (uint64_t)frame_addr >> 30;
 }
 
 void init_pagetable_entry_node(struct pte *entry, void *pagetable)
