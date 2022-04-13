@@ -27,23 +27,23 @@ void strap_handler(uint64_t scause, uint64_t sepc, struct caller_context *cc)
 				keyboard_handler();
 				break;
 			default:
-				die(
-						"supervisor mode: unhandable interrupt %ld : %s @ 0x%lx",
-						scause & ~INTERRUPT_CAUSE_FLAG, interruption_names[scause & ~INTERRUPT_CAUSE_FLAG], sepc
-				);
+				die("supervisor mode: unhandable interrupt %ld : %s @ 0x%lx",
+					scause & ~INTERRUPT_CAUSE_FLAG,
+                    interruption_names[scause & ~INTERRUPT_CAUSE_FLAG],
+                    sepc);
 		}
 	} else {
 		switch (scause) {
 			case CAUSE_STORE_PAGE_FAULT:
-				printf("Kernel: Process %d killed due to a store page fault\n", sched_get_active_pid());
+				printf("Kernel: Process %d killed: store page fault at pc = %p\n", sched_get_active_pid(), (void *)sepc);
 				sched_exit(0);
 				break;
 			case CAUSE_FETCH_PAGE_FAULT:
-				printf("Kernel: Process %d killed due to a fetch page fault\n", sched_get_active_pid());
+				printf("Kernel: Process %d killed due to a fetch page fault at pc = %p\n", sched_get_active_pid(), (void *)sep);
 				sched_exit(0);
 				break;
 			case CAUSE_LOAD_PAGE_FAULT:
-				printf("Kernel: Process %d killed due to a load page fault\n", sched_get_active_pid());
+				printf("Kernel: Process %d killed due to a load page fault at pc = %p\n", sched_get_active_pid(), (void *)sep);
 				sched_exit(0);
 				break;
 			default:
