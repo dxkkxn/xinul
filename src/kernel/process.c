@@ -13,6 +13,7 @@
 
 #include "mem.h"
 #include "vmm/vmm.h"
+#include "vmm/mapper.h"
 #include "vmm/pmm.h"
 #include "vmm/shm.h"
 #include "userspace_apps.h"
@@ -28,17 +29,20 @@ static void process_copy_user_code(process_t *p, const struct uapps *app)
 	assert(p != NULL);
 	assert(app != NULL);
 
-	// Switch to process directory to copy code at 1GiB
-	satp_csr parent_satp = {.ureg = csr_read(satp)};
-	csr_write(satp, p->context.satp);
+	void *frame;
+	int size = app->end - app->start;
+	int d    = size / PAGE_SIZE;
+	int r    = size % PAGE_SIZE;
 
-	/* Copy the code */
-	memcpy((uint64_t *) PROCESS_CODE,
-		   (uint64_t *) app->start,
-		   (uint64_t) app->end - (uint64_t) app->start);
-
-	// Remise en place du directory appelant.
-	csr_write(satp, parent_satp.ureg);
+	/* Copy the code: might not be contiguous in physical memory */
+	for (int i = 0; i < d; i++) {
+		frame = mapper_getmap(p->page_dir,
+					(void *)PROCESS_CODE + i * PAGE_SIZE);
+		memcpy(frame, app->start + i * PAGE_SIZE, PAGE_SIZE);
+	}
+	frame = mapper_getmap(p->page_dir,
+				(void *)PROCESS_CODE + d * PAGE_SIZE);
+	memcpy(frame, app->start + d * PAGE_SIZE, r);
 }
 
 int process_create_code_space(process_t *p)
