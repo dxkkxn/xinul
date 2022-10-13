@@ -39,11 +39,11 @@ void strap_handler(uint64_t scause, uint64_t sepc, struct caller_context *cc)
 				sched_exit(0);
 				break;
 			case CAUSE_FETCH_PAGE_FAULT:
-				printf("Kernel: Process %d killed due to a fetch page fault at pc = %p\n", sched_get_active_pid(), (void *)sep);
+				printf("Kernel: Process %d killed due to a fetch page fault at pc = %p\n", sched_get_active_pid(), (void *)sepc);
 				sched_exit(0);
 				break;
 			case CAUSE_LOAD_PAGE_FAULT:
-				printf("Kernel: Process %d killed due to a load page fault at pc = %p\n", sched_get_active_pid(), (void *)sep);
+				printf("Kernel: Process %d killed due to a load page fault at pc = %p\n", sched_get_active_pid(), (void *)sepc);
 				sched_exit(0);
 				break;
 			default:
