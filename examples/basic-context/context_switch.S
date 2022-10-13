@@ -8,6 +8,10 @@
 .text
 .globl context_switch
 .align 2
+# Ce changement de contexte ne marche que si la fonction
+# est appelée par une tâche, et non par un gestionnaire
+# d'interruption.
+# Il faut la modifier en conséquence lorsque cela arrivera
 context_switch:
 	# Sauvegarde du contexte de l'ancien processus
 	sd sp,    0(a0)
