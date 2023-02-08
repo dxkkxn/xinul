@@ -68,6 +68,7 @@ static inline void enter_supervisor_mode()
 	 * CSR concernés: mepc et mstatus.
 	 * Voir aussi riscv.h pour la macro mret().
 	 */
+	csr_write(satp, 0);
 
 }
 
