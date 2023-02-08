@@ -13,6 +13,7 @@
 
 #include "bios/info.h"
 #include "traps/trap.h"
+#include "timer.h"
 
 /*
  * Prototypes externes
@@ -29,7 +30,7 @@ static void delegate_traps()
 
 	/*
 	 * Délégations de certaines interruptions et exceptions vers le mode Supervisor.
-	 * A compléter au fur et à mesure du projet celon les besoins.
+	 * A compléter au fur et à mesure du projet selon les besoins.
 	 * Rien à faire ici dans un premier temps!
 	 * CSR concernés: mideleg et medeleg.
 	 */
@@ -90,6 +91,15 @@ __attribute__((noreturn)) void boot_riscv()
 
 	// Délégations des interruptions et des exceptions
 	delegate_traps();
+
+	//enable machine interrupts
+	csr_set(mstatus, MSTATUS_SIE);
+
+	//enable machine timer interrupts
+	csr_set(mie, MIE_MTIE);
+
+	//set first timer interrupt
+	set_machine_timer_interrupt(1000);
 
 	enter_supervisor_mode();
 	exit(kernel_start());
