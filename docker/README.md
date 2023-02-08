@@ -58,12 +58,12 @@ Ce placer dans le dossier docker puis:
 
 Vous pouvez aller boire un café (un allongé) !
 
+
 ### Lancement du conteneur
 
 Pour lancer le conteneur Docker:
 
     docker container run -ti --name env-riscv riscv /bin/bash
-
 
 ### Clean
 
@@ -75,3 +75,22 @@ Supprimer l'image:
 
     docker image rm riscv
 
+### Custom docker container : 
+
+### Creation du container et l'attacher au src dans votre machine
+
+docker create --interactive --tty -v <projet_directory>:/home/ /tmp/.X11-unix:/tmp/.X11-unix --name projet_os_riscv barbem/risc-v_cep 
+
+### Lancer le container 
+
+docker start  projet_os_riscv
+
+### Ouvrir bash dans le container
+
+sudo docker exec -it projet_os_riscv /bin/bash 
+
+
+## Exemple
+docker create --interactive --net host -e  DISPLAY=$DISPLAY --tty -v /home/frikha/Desktop/semestre_8/projet_os/xinul:/home/ -v /tmp/.X11-unix:/tmp/.X11-unix --name projet_os_riscv_graphic barbem/risc-v_cep 
+
+sudo docker exec -it  projet_os_riscv_graphic /bin/bash 
