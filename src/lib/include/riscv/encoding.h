@@ -108,6 +108,7 @@
 #define MIP_MEIP            (1 << IRQ_M_EXT)
 
 #define MIE_MTIE            (1 << IRQ_M_TIMER)
+#define SIE_STIE            (1 << IRQ_S_TIMER)
 
 #define SIP_SSIP MIP_SSIP
 #define SIP_STIP MIP_STIP

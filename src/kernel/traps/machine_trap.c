@@ -42,6 +42,9 @@ void mtrap_handler(uintptr_t mcause, void *mepc, struct trap_frame *tf)
 			case intr_m_timer:
 				handle_mtimer_interrupt();
 				break;
+			case intr_s_timer: // in case the s timer interrupt has not been delegated to supervisor mode
+				handle_stimer_interrupt();
+				break;
 			default:
 				die(
 						"machine mode: unhandlable interrupt trap %d : %s @ %p",
