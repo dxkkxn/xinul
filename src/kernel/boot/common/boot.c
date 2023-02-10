@@ -14,6 +14,7 @@
 #include "bios/info.h"
 #include "traps/trap.h"
 #include "timer.h"
+#include "frame_dist.h"
 
 extern void _start();
 extern int tic;
@@ -100,10 +101,8 @@ __attribute__((noreturn)) void boot_riscv()
 
 	//enable machine interrupts
 	csr_set(mstatus, MSTATUS_MIE);
-
 	//enable machine timer interrupts
 	csr_set(sie, SIE_STIE);
-
 	//enable supervisorinterrupts
 	csr_set(sstatus, SSTATUS_SIE);
 
@@ -111,9 +110,9 @@ __attribute__((noreturn)) void boot_riscv()
 	tic = 0;
 
 	//set first timer interrupt
-	set_supervisor_timer_interrupt(0);
+	set_supervisor_timer_interrupt(1000);
 
-	
+	init_frames();
 
 	enter_supervisor_mode();
 	exit(kernel_start());
