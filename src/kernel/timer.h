@@ -2,12 +2,12 @@
 
 #include "stdint.h"
 
+# define TIC_PER 50
 
 /*
  * Prototypes
  */
 
-// int tic; //global timer variable
 
 void handle_mtimer_interrupt();
 void set_machine_timer_interrupt(uint64_t delta_ms);
