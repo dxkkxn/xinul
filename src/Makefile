@@ -71,7 +71,7 @@ QEMU_GDB_OPTS = -s -S
 # Pour afficher l'affichage série en console, marche à travers ssh
 QEMU_NO_GRAPH_OPTS = -nographic
 # Pour avoir l'uart + le VGA en mode graphique
-QEMU_GRAPH_OPTS = -sdl -serial mon:stdio
+QEMU_GRAPH_OPTS = --enable-sdl --with-sdlabi=2.0 -display sdl -serial mon:stdio
 
 #
 # Docker

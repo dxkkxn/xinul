@@ -24,6 +24,8 @@ void set_machine_timer_interrupt(uint64_t delta_ms)
 	 * Les macros get_mtime() et set_mtimecmp(x) de "drivers/clint.h" sont données pour lire et écrire les registres de ce composant.
 	 */
 
+	uint64_t interrupt_time = get_mtime() + delta_ms; // get time of next interrupt
+	set_mtimecmp(interrupt_time); // lorsque mtime >= mtimecmp, une interruption est générée
 }
 
 void handle_mtimer_interrupt()
