@@ -17,6 +17,10 @@ _start:
     la      t0, mtrap_entry # load adress mtrap_entry in t0
     csrw    mtvec, t0 # write mtrap_entry in mtvec
 
+    # Mise en place du vecteur de trap supervisor
+    la      t0, strap_entry
+    csrw    stvec, t0
+
     # Mise en place des piles (stacks) en fonction du hart (~core)
     csrr    t0, mhartid # mhardid is just number of the processeur running the code
     slli    t0, t0, STACK_SHIFT # shift left logic immediate  src, dest, 10: t0 = t0<<10

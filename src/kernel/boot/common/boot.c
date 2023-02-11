@@ -13,6 +13,10 @@
 
 #include "bios/info.h"
 #include "traps/trap.h"
+#include "timer.h"
+
+extern void _start();
+extern int tic;
 
 /*
  * Prototypes externes
@@ -29,10 +33,13 @@ static void delegate_traps()
 
 	/*
 	 * Délégations de certaines interruptions et exceptions vers le mode Supervisor.
-	 * A compléter au fur et à mesure du projet celon les besoins.
+	 * A compléter au fur et à mesure du projet selon les besoins.
 	 * Rien à faire ici dans un premier temps!
 	 * CSR concernés: mideleg et medeleg.
 	 */
+
+	//delegate s timer
+	csr_set(mideleg, SIE_STIE);
 }
 
 static inline void setup_pmp(void) {
@@ -91,13 +98,14 @@ static inline void enter_supervisor_mode() {
  //kernel_start défini dans le fichier start.c
  csr_write(mepc, kernel_start());
 
-  // L'objectif du code  suivant est dans le mettre dans la case MPP
+ // L'objectif du code  suivant est dans le mettre dans la case MPP
  // du registre csr mstatus le niveau auquel on veut en aller après avoir traité
  // l'interruption auquel on est maintenant. Dans notre cas on veut passer du mode
  // actuel qui est le mode machine vers le mode superviseur qui est identifié avec
  // les bits suivants : 01
  csr_set(mstatus, MSTATUS_MPP);
  csr_clear(mstatus, MSTATUS_MPP<<1);
+
   //On désactive les interruptions dans le mode superviseur
  csr_clear(mstatus, MSTATUS_SIE);
 
@@ -120,18 +128,34 @@ static inline void enter_supervisor_mode() {
 */
 __attribute__((noreturn)) void boot_riscv()
 {
- // Configuration des composants spécifiques à la machine (uart / htif, timer et interruptions externes).
- arch_setup();
+  // Configuration des composants spécifiques à la machine (uart / htif, timer et interruptions externes).
+  arch_setup();
 
 
- display_info_proc();
+  display_info_proc();
+
+  // Délégations des interruptions et des exceptions
+  delegate_traps();
 
 
- // Délégations des interruptions et des exceptions
- delegate_traps();
+	//enable machine interrupts
+	csr_set(mstatus, MSTATUS_MIE);
 
+	//enable machine timer interrupts
+	csr_set(sie, SIE_STIE);
 
- enter_supervisor_mode();
- exit(kernel_start());
- __builtin_unreachable();
+	//enable supervisorinterrupts
+	csr_set(sstatus, SSTATUS_SIE);
+
+	//init timer to 0
+	tic = 0;
+
+	//set first timer interrupt
+	set_supervisor_timer_interrupt(0);
+
+	
+
+	enter_supervisor_mode();
+  //exit(kernel_start());
+	__builtin_unreachable();
 }
