@@ -103,10 +103,10 @@ static inline void enter_supervisor_mode() {
  // l'interruption auquel on est maintenant. Dans notre cas on veut passer du mode
  // actuel qui est le mode machine vers le mode superviseur qui est identifié avec
  // les bits suivants : 01
- csr_set(mstatus, MSTATUS_MPP);
- csr_clear(mstatus, MSTATUS_MPP<<1);
+ csr_set(mstatus, MSTATUS_MPP_0);
+ csr_clear(mstatus, MSTATUS_MPP_1);
 
-  //On désactive les interruptions dans le mode superviseur
+//On désactive les interruptions dans le mode superviseur
  csr_clear(mstatus, MSTATUS_SIE);
 
 
@@ -151,9 +151,7 @@ __attribute__((noreturn)) void boot_riscv()
 	tic = 0;
 
 	//set first timer interrupt
-	set_supervisor_timer_interrupt(0);
-
-	
+	set_supervisor_timer_interrupt(0); 
 
 	enter_supervisor_mode();
   //exit(kernel_start());
