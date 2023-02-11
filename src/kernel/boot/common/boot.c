@@ -55,61 +55,83 @@ static inline void setup_pmp(void) {
                        : : "r"(pmpc), "r"(pmpa) : "t0");
 }
 
+
+/**
+* Cette fonction fera la configuration nécessaire pour le passage dans le mode
+* de superviseur à partir du mode machine qui est le mode dans lequel on boot
+* lors du lancement du processeur
+*/
 static inline void enter_supervisor_mode() {
 
-  /* __asm__ __volatile__ ("csrw stap %0\n" */
-  /*                       "csrw mstatus %0\n"); */
-  
-  //On désactive pour le moment la mémoire virtuel, 
-  //eventuelement il faut revenir sur cela 
-  //et changer la valeur stockée dans le registre 
-  csr_write(satp, 0); 
-  
-  // global desactivation of interrupts
-  uint64_t mstatus = csr_read(mstatus);
-  csr_write(mstatus, mstatus ^ ((1<<1) | (1<<3))); //bits sie and mie are 1 and 3
-  
-  csr_write(mie, 0);
 
-	// Il faut obligatoirement configurer la protection de la mémoire physique avant de passer en mode supervisor.
-	setup_pmp();
+ //On désactive pour le moment la mémoire virtuel,
+ //éventuellement il faut revenir sur cela
+ //et changer la valeur stockée dans le registre
+ csr_write(satp, 0);
+  //On désactive les interruptions machine uniquement
+ csr_clear(mstatus, MSTATUS_MIE);
 
-	/*
-	 * Configuration du mode à utiliser lors de l'instruction mret.
-	 *
-	 * CSR concernés: mepc et mstatus.
-	 * Voir aussi riscv.h pour la macro mret().
-	 */
-  // changing to supervisor mode
-  csr_write(mepc, kernel_start());
-  mstatus = csr_read(mstatus);
-  csr_write(mstatus, mstatus ^ (1<<12)); // writing 0 at bit 12 (0 indexed)
-  csr_write(mstatus, 1<<11); // writing 1 at bit 11 | mpp = 01
-  csr_write(sie, 1);
-  mret();
+
+ // Il faut obligatoirement configurer la protection de la mémoire physique
+ // avant de passer en mode superviseur.
+ setup_pmp();
+
+
+ /*
+  * Configuration du mode à utiliser lors de l'instruction mret.
+  *
+  * CSR concernés: mepc et mstatus.
+  * Voir aussi riscv.h pour la macro mret().
+ */
+
+
+ // changing to supervisor mode
+ //On met dans le registre mepc l'adresse de la méthode
+ //qu'on exécutera en mode superviseur qui dans ce cas la méthode
+ //kernel_start défini dans le fichier start.c
+ csr_write(mepc, kernel_start());
+
+  // L'objectif du code  suivant est dans le mettre dans la case MPP
+ // du registre csr mstatus le niveau auquel on veut en aller après avoir traité
+ // l'interruption auquel on est maintenant. Dans notre cas on veut passer du mode
+ // actuel qui est le mode machine vers le mode superviseur qui est identifié avec
+ // les bits suivants : 01
+ csr_set(mstatus, MSTATUS_MPP);
+ csr_clear(mstatus, MSTATUS_MPP<<1);
+  //On désactive les interruptions dans le mode superviseur
+ csr_clear(mstatus, MSTATUS_SIE);
+
+
+ // Le passage au niveau mit dans le registre sera fait automatiquement avec l'instruction
+ // mret qui changera le niveau suivant ce qui existe dans mpp
+ mret();
 }
 
+
 /*
- * boot_riscv
- *
- * Cette fonction est appelée depuis crtm.S
- * A ce stade, seul le vecteur de trap machine mtvec a été configuré.
- * La pile en cours d'utilisation est la pile machine qui a été alouée dans crtm.S.
- * Cette pile est également utilisée pour traiter les traps machine.
- *
- * Le processeur est toujours en mode machine
- */
+* boot_riscv
+*
+* Cette fonction est appelée depuis crtm.S
+* A ce stade, seul le vecteur de trap machine mtvec a été configuré.
+* La pile en cours d'utilisation est la pile machine qui a été allouée dans crtm.S.
+* Cette pile est également utilisée pour traiter les traps machine.
+*
+* Le processeur est toujours en mode machine
+*/
 __attribute__((noreturn)) void boot_riscv()
 {
-	// Configuration des composants spécifiques à la machine (uart / htif, timer et interruptions externes).
-	arch_setup();
+ // Configuration des composants spécifiques à la machine (uart / htif, timer et interruptions externes).
+ arch_setup();
 
-	display_info_proc();
 
-	// Délégations des interruptions et des exceptions
-	delegate_traps();
+ display_info_proc();
 
-	enter_supervisor_mode();
-	exit(kernel_start());
-	__builtin_unreachable();
+
+ // Délégations des interruptions et des exceptions
+ delegate_traps();
+
+
+ enter_supervisor_mode();
+ exit(kernel_start());
+ __builtin_unreachable();
 }
