@@ -138,20 +138,20 @@ __attribute__((noreturn)) void boot_riscv()
   delegate_traps();
 
 
-	//enable machine interrupts
-	csr_set(mstatus, MSTATUS_MIE);
+	// //enable machine interrupts
+	// csr_set(mstatus, MSTATUS_MIE);
 
-	//enable machine timer interrupts
-	csr_set(sie, SIE_STIE);
+	// //enable machine timer interrupts
+	// csr_set(sie, SIE_STIE);
 
-	//enable supervisorinterrupts
-	csr_set(sstatus, SSTATUS_SIE);
+	// //enable supervisorinterrupts
+	// csr_set(sstatus, SSTATUS_SIE);
 
-	//init timer to 0
-	tic = 0;
+	// //init timer to 0
+	// tic = 0;
 
-	//set first timer interrupt
-	set_supervisor_timer_interrupt(0); 
+	// //set first timer interrupt
+	// set_supervisor_timer_interrupt(0); 
 
 	enter_supervisor_mode();
   //exit(kernel_start());
